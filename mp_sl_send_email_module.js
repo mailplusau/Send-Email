@@ -6,8 +6,8 @@
  *
  * Remarks: New Address Module        
  * 
- * @Last Modified by:   ankithravindran
- * @Last Modified time: 2019-08-28 11:48:05
+ * @Last Modified by:   Ankith
+ * @Last Modified time: 2019-11-22 15:05:13
  *
  */
 
@@ -33,6 +33,8 @@ function sendEmail(request, response) {
 
         var params = request.getParameter('params');
         var customer_id = request.getParameter('custid');
+        var closed_won = request.getParameter('closedwon');
+        var opp_with_value = request.getParameter('oppwithvalue');
 
         if (isNullorEmpty(params)) {
             var params = request.getParameter('custparam_params');
@@ -204,6 +206,9 @@ function sendEmail(request, response) {
         form.addField('custpage_sof', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_field_names', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_field_values', 'textarea', 'BODY').setDisplayType('hidden');
+        form.addField('custpage_closed_won', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(closed_won);
+        form.addField('custpage_opp_with_values', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(opp_with_value);
+        form.addField('custpage_save_record', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue('F');
 
 
         form.addField('custpage_callbackdate', 'textarea', 'BODY').setDisplayType('hidden');
@@ -221,12 +226,12 @@ function sendEmail(request, response) {
 
 
 
-        var inlineQty = '';
+        var inlinehTML = '';
 
-        var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&amp;c=1048144&amp;h=9ee6accfd476c9cae718&amp;_xt=.css"><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&amp;c=1048144&amp;h=ef2cda20731d146b5e98&amp;_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&amp;c=1048144&amp;h=a0ef6ac4e28f91203dfe&amp;_xt=.css"><script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&amp;c=1048144&amp;h=a0ef6ac4e28f91203dfe&amp;_xt=.css"><link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu" crossorigin="anonymous"></script><style>.mandatory{color:red;}</style>';
+        var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&amp;c=1048144&amp;h=9ee6accfd476c9cae718&amp;_xt=.css"><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&amp;c=1048144&amp;h=ef2cda20731d146b5e98&amp;_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&amp;c=1048144&amp;h=a0ef6ac4e28f91203dfe&amp;_xt=.css"><script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&amp;c=1048144&amp;h=a0ef6ac4e28f91203dfe&amp;_xt=.css"><link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js" integrity="sha384-CchuzHs077vGtfhGYl9Qtc7Vx64rXBXdIAZIPbItbNyWIRTdG0oYAqki3Ry13Yzu" crossorigin="anonymous"></script><style>.mandatory{color:red;}ol {margin: 0 0 1.5em;padding: 0;counter-reset: item;}ol > li {margin: 0;padding: 0 0 0 2em;text-indent: -2em;list-style-type: none;counter-increment: item;}ol > li:before {display: inline-block;width: 1em;padding-right: 0.5em;font-weight: bold;text-align: right;content: counter(item) ".";}</style>';
 
 
-        inlinehtml2 += '<div class="se-pre-con"></div><div id="myModal" class="modal fade" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Modal Header</h4></div><div class="modal-body"><div id="summernote">Hello Summernote</div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div><div style=\"background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute\"><b><u>Important Instructions:</u></b></div><br/><br/><br><br><br><br><div class="container" style="padding-top: 3%;"><div id="alert" class="alert alert-danger fade in "></div>';
+        inlinehtml2 += '<div class="se-pre-con"></div><div id="myModal" class="modal fade" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Modal Header</h4></div><div class="modal-body"><div id="summernote">Hello Summernote</div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div><div style=\"background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute\"><b><u>Important Instructions:</u></b><br><b>Purpose:</b> This page will send a Quote or Service Commencement Form for the customer to sign. You can also save this information and not email it however you will need to set a callback date to save your work.<br><ol><li> Select either Closed Won or Opportunity with Value</li><li>Complete the Services & Price tab to confirm the services to quote or sign-up</li><li>Select any appropriate forms or brochures you want to complete or email (note: service commencement and standing order are mandatory to sign-up a customer)</li><li>Set a callback and save your work or specify who to send the information to and Select Send Email to finalise.</li></ol></div><br/><br/><br><br><br><br><div class="container" style="padding-top: 3%;"><div id="alert" class="alert alert-danger fade in "></div>';
 
         if (isNullorEmpty(callback) && isNullorEmpty(nosale)) {
             var email_class = '';
@@ -242,39 +247,60 @@ function sendEmail(request, response) {
             var attachments_class = 'hide';
         }
 
-        inlineQty += '<form id="myForm">';
+        inlinehTML += '<form id="myForm">';
+
+        inlinehTML += '<div class="form-group container row_form_quote">';
+        inlinehTML += '<div class="row">';
+        inlinehTML += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
+        if(closed_won == 'T'){
+            inlinehTML += '<input type="checkbox" checked id="form" class="" />';
+        } else {
+            inlinehTML += '<input type="checkbox" id="form" class="" />';  
+        }
+        inlinehTML += '</span></div></div>';
+        inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
+        if(opp_with_value == 'T'){
+            inlinehTML += '<input type="checkbox" checked id="quote" class="" />';
+        } else {
+            inlinehTML += '<input type="checkbox" id="quote" class="" />';
+        }
+        
+        inlinehTML += '</span></div></div>';
+        // inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
+        inlinehTML += '</div>';
+        inlinehTML += '</div>';
 
 
-        inlineQty += '<div class="tabs"><ul class="nav nav-tabs nav-justified" style="padding-top: 3%;">';
+        inlinehTML += '<div class="tabs main_tabs hide"><ul class="nav nav-pills nav-justified" style="padding-top: 3%;">';
 
         var tab_content = '';
 
         if (isNullorEmpty(callback)) {
-            inlineQty += '<li role="presentation" class="attachments_li ' + attachments_class + '"><a href="#attachments_link">ATTACHMENTS</a></li>';
-            inlineQty += '<li role="presentation" class="services_li hide"><a href="#services">MERGE FIELDS & QUOTE</a></li>';
+            inlinehTML += '<li role="presentation" class="services_li ' + attachments_class + '" style="font-weight: bold;"><a href="#services"><u>SERVICES & PRICE</u></a></li>';
+            inlinehTML += '<li role="presentation" class="attachments_li" style="font-weight: bold;"><a href="#attachments_link"><u>FORMS & BROCHURES</u></a></li>'
         }
 
-        inlineQty += '<li role="presentation" class="email_li ' + email_class + '"><a href="#email">EMAIL</a></li>';
+        inlinehTML += '<li role="presentation" class="email_li ' + email_class + '" style="font-weight: bold;"><a href="#email"><u>EMAIL & CALL BACK</u></a></li>';
 
         if (callback == 'T') {
-            inlineQty += '<li role="presentation" class="callback_li ' + callback_class + '"><a href="#callback">SET APPOINTMENT</a></li>';
+            inlinehTML += '<li role="presentation" class="callback_li ' + callback_class + '" style="font-weight: bold;"><a href="#callback"><u>SET APPOINTMENT</u></a></li>';
         }
 
 
 
-        inlineQty += '</ul>';
+        inlinehTML += '</ul>';
 
         if (isNullorEmpty(callback)) {
 
 
             if (isNullorEmpty(nosale)) {
                 //Attachments Tab Contenet
-                tab_content += '<div role="tabpanel" class="tab-pane ' + attachments_class + '" id="attachments_link">';
+                tab_content += '<div role="tabpanel" class="tab-pane " id="attachments_link">';
                 tab_content += attachmentsSection(resultSetAtt);
                 tab_content += '</div>';
 
                 //Service Details Tab Content
-                tab_content += '<div role="tabpanel" class="tab-pane" id="services">';
+                tab_content += '<div role="tabpanel" class="tab-pane ' + attachments_class + '" id="services">';
                 tab_content += serviceChangeSection(resultSet_service_change);
                 tab_content += '</div>';
             }
@@ -295,15 +321,15 @@ function sendEmail(request, response) {
 
 
 
-        inlineQty += '<div class="tab-content" style="padding-top: 3%;">';
+        inlinehTML += '<div class="tab-content" style="padding-top: 3%;">';
 
-        inlineQty += tab_content;
+        inlinehTML += tab_content;
 
-        inlineQty += '</div></div>';
+        inlinehTML += '</div></div>';
 
 
 
-        form.addField('preview_table', 'inlinehtml', '').setLayoutType('outsidebelow', 'startrow').setDefaultValue(inlineQty);
+        form.addField('preview_table', 'inlinehtml', '').setLayoutType('outsidebelow', 'startrow').setDefaultValue(inlinehTML);
         if (callback == 'T') {
             form.addField('sales_rep', 'select', 'Allocate to Sales Rep', 'employee').setLayoutType('outsidebelow', 'startrow');
         }
@@ -312,9 +338,10 @@ function sendEmail(request, response) {
 
         form.setScript('customscript_cl_send_email_module');
 
-        form.addSubmitButton('Send');
+        form.addSubmitButton('Send Email');
+        form.addButton('update_record', 'Save', 'onclick_update()');
         form.addButton('back', 'Back', 'onclick_back()');
-        form.addButton('back', 'Reset', 'onclick_reset()');
+        form.addButton('reset', 'Reset', 'onclick_reset()');
 
         response.writePage(form);
 
@@ -534,6 +561,8 @@ function sendEmail(request, response) {
                 if (customerStatus != 13) {
                     recCustomer.setFieldValue('entitystatus', 19);
                 }
+                //Set the Date - Prospect Opportunity
+                recCustomer.setFieldValue('custentity_date_prospect_opportunity', getDate());
                 phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - Info Sent');
             } else {
                 phonecall.setFieldValue('title', ' X Sales - ' + sales_campaign_name + ' - Info Sent');
@@ -554,6 +583,7 @@ function sendEmail(request, response) {
                 if (customerStatus != 13) {
                     recCustomer.setFieldValue('entitystatus', 51);
                 }
+                //Set the Date - Prospect Opportunity & Closed Won
                 recCustomer.setFieldValue('custentity_date_prospect_opportunity', getDate());
                 recCustomer.setFieldValue('custentity_cust_closed_won', 'T');
                 phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - Forms Sent');
@@ -572,6 +602,7 @@ function sendEmail(request, response) {
         } else if (outcome == 'sendquote') {
             if (sales_campaign_type != 1) {
                 recCustomer.setFieldValue('entitystatus', 50);
+                //Set the Date - Prospect Opportunity.
                 recCustomer.setFieldValue('custentity_date_prospect_opportunity', getDate());
                 phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - Quote Sent');
             } else {
@@ -918,18 +949,30 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_da
 function attachmentsSection(resultSetAtt) {
     var html = '<div class="form-group container row_form_quote">';
     html += '<div class="row">';
-    html += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND FORMS" /><span class="input-group-addon"><input type="checkbox" id="form" class="" /></span></div></div>';
-    html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND QUOTE" /><span class="input-group-addon"><input type="checkbox" id="quote" class="" /></span></div></div>';
-    html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
+    html += '<div class="col-xs-4"><h4><u> FORMS </u></h4></div>'
+        // html += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND FORMS" /><span class="input-group-addon"><input type="checkbox" id="form" class="" /></span></div></div>';
+        // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND QUOTE" /><span class="input-group-addon"><input type="checkbox" id="quote" class="" /></span></div></div>';
+        // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
     html += '</div>';
     html += '</div>';
 
+    html += '<div class="form-group container row_scf">';
+    html += '</div>';
 
+
+    html += '<div class="form-group container row_form_quote">';
+    html += '<div class="row">';
+    html += '<div class="col-xs-4"><h4><u> BROCHURES </u></h4></div>';
+    // html += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND FORMS" /><span class="input-group-addon"><input type="checkbox" id="form" class="" /></span></div></div>';
+    // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND QUOTE" /><span class="input-group-addon"><input type="checkbox" id="quote" class="" /></span></div></div>';
+    // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
+    html += '</div>';
+    html += '</div>';
 
     html += '<div class="form-group container row_attachments">';
     html += '<div class="row">'
 
-    // inlineQty += '<div class="col-xs-12 template_section">';
+    // inlinehTML += '<div class="col-xs-12 template_section">';
     resultSetAtt.forEachResult(function(searchResultAtt) {
 
         var attId = searchResultAtt.getValue('internalid');
@@ -944,8 +987,7 @@ function attachmentsSection(resultSetAtt) {
     html += '</div>';
     html += '</div>';
 
-    html += '<div class="form-group container row_scf">';
-    html += '</div>';
+
 
     return html;
 }
@@ -958,7 +1000,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
     if (isNullorEmpty(nosale)) {
         html += '<span class="mandatory">*</span>';
     }
-    html += '</span><select id="send_to" class="form-control " ><option value="' + 0 + '" data-firstname="NO NAME">PROGRESS WITHOUT EMAIL EMAIL</option>';
+    html += '</span><select id="send_to" class="form-control " ><option value=""></option><option value="' + 0 + '" data-firstname="NO NAME">PROGRESS WITHOUT EMAIL</option>';
     if (contactResult.length != 0) {
         resultSet_contacts.forEachResult(function(searchResult_contacts) {
             var id = searchResult_contacts.getValue('internalid');
@@ -1076,19 +1118,19 @@ function call_back() {
 
 
 function serviceChangeSection(resultSet_service_change) {
-    var inlineQty = '';
+    var inlinehTML = '';
     if (isNullorEmpty(resultSet_service_change)) {
-        inlineQty += '<div class="form-group container createservicechg_section">';
-        inlineQty += '<div class="row">';
-        inlineQty += '<div class="col-xs-3 createservicechg"><input type="button" value="CREATE SERVICE CHANGE" class="form-control btn btn-success" id="createservicechg" /></div>';
-        inlineQty += '</div>';
-        inlineQty += '</div>';
+        inlinehTML += '<div class="form-group container createservicechg_section">';
+        inlinehTML += '<div class="row">';
+        inlinehTML += '<div class="col-xs-3 createservicechg"><input type="button" value="ADD SERVICES" class="form-control btn btn-success" id="createservicechg" /></div>';
+        inlinehTML += '</div>';
+        inlinehTML += '</div>';
     }
 
-    inlineQty += '<div class="form-group container service_chg_section">';
-    inlineQty += '<div class="row">';
-    inlineQty += '<div class="col-xs-12 service_chg_div">';
-    inlineQty += '<table border="0" cellpadding="15" id="service_chg" class="table table-responsive table-striped service_chg tablesorter" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th style="vertical-align: middle;text-align: center;"><b>ACTION</b></th><th style="vertical-align: middle;text-align: center;"><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>CHANGE TYPE</b></th><th style="vertical-align: middle;text-align: center;"><b>DATE EFFECTIVE</b></th><th style="vertical-align: middle;text-align: center;"><b>OLD PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>NEW PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th></tr></thead><tbody>';
+    inlinehTML += '<div class="form-group container service_chg_section">';
+    inlinehTML += '<div class="row">';
+    inlinehTML += '<div class="col-xs-12 service_chg_div">';
+    inlinehTML += '<table border="0" cellpadding="15" id="service_chg" class="table table-responsive table-striped service_chg tablesorter" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th style="vertical-align: middle;text-align: center;"><b>ACTION</b></th><th style="vertical-align: middle;text-align: center;"><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>CHANGE TYPE</b></th><th style="vertical-align: middle;text-align: center;"><b>DATE EFFECTIVE</b></th><th style="vertical-align: middle;text-align: center;"><b>OLD PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>NEW PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th></tr></thead><tbody>';
     if (!isNullorEmpty(resultSet_service_change)) {
         resultSet_service_change.forEachResult(function(searchResult_service_change) {
             var serviceChangeId = searchResult_service_change.getValue('internalid');
@@ -1102,38 +1144,38 @@ function serviceChangeSection(resultSet_service_change) {
             var serviceChangeTypeText = searchResult_service_change.getText('custrecord_servicechg_type');
             var serviceChangeFreqText = searchResult_service_change.getText('custrecord_servicechg_new_freq');
 
-            inlineQty += '<tr>';
+            inlinehTML += '<tr>';
 
-            inlineQty += '<td><button class="btn btn-warning btn-xs edit_class glyphicon glyphicon-pencil" data-dateeffective="' + dateEffective + '" data-commreg="' + commRegId + '" type="button" data-toggle="tooltip" data-placement="right" title="Edit"></button></td>';
+            inlinehTML += '<td><button class="btn btn-warning btn-xs edit_class glyphicon glyphicon-pencil" data-dateeffective="' + dateEffective + '" data-commreg="' + commRegId + '" type="button" data-toggle="tooltip" data-placement="right" title="Edit"></button></td>';
 
 
-            inlineQty += '<td><input id="service_name" class="form-control service_name" data-serviceid="' + serviceId + '" data-servicetypeid="" readonly value="' + serviceText + '" /></td>';
-            inlineQty += '<td><input id="service_chg_type" class="form-control service_name" readonly value="' + serviceChangeTypeText + '" /></td>';
-            inlineQty += '<td><input id="date_effective" class="form-control service_name" readonly value="' + dateEffective + '" /></td>';
-            inlineQty += '<td><div class="service_price_div input-group"><span class="input-group-addon">$</span><input class="form-control old_service_price_class" disabled value="' + oldServicePrice + '"  type="number" step=".01" /></div></td>';
-            inlineQty += '<td><div class="service_price_div input-group"><span class="input-group-addon">$</span><input class="form-control new_service_price_class" disabled value="' + newServiceChangePrice + '"  type="number" step=".01" /></div></td>';
+            inlinehTML += '<td><input id="service_name" class="form-control service_name" data-serviceid="' + serviceId + '" data-servicetypeid="" readonly value="' + serviceText + '" /></td>';
+            inlinehTML += '<td><input id="service_chg_type" class="form-control service_name" readonly value="' + serviceChangeTypeText + '" /></td>';
+            inlinehTML += '<td><input id="date_effective" class="form-control service_name" readonly value="' + dateEffective + '" /></td>';
+            inlinehTML += '<td><div class="service_price_div input-group"><span class="input-group-addon">$</span><input class="form-control old_service_price_class" disabled value="' + oldServicePrice + '"  type="number" step=".01" /></div></td>';
+            inlinehTML += '<td><div class="service_price_div input-group"><span class="input-group-addon">$</span><input class="form-control new_service_price_class" disabled value="' + newServiceChangePrice + '"  type="number" step=".01" /></div></td>';
 
-            inlineQty += '<td>' + serviceChangeFreqText + '</td>';
+            inlinehTML += '<td>' + serviceChangeFreqText + '</td>';
             var fileID = searchResult_service_change.getValue("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null);
 
             // if (!isNullorEmpty(fileID)) {
             // 	var fileRecord = nlapiLoadFile(fileID);
-            // 	inlineQty += '<td><a href="' + fileRecord.getURL() + '" target="_blank">' + searchResult_service_change.getText("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null) + '</a></td>';
+            // 	inlinehTML += '<td><a href="' + fileRecord.getURL() + '" target="_blank">' + searchResult_service_change.getText("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null) + '</a></td>';
             // } else {
-            // 	inlineQty += '<td></td>';
+            // 	inlinehTML += '<td></td>';
             // }
 
 
-            inlineQty += '</tr>';
+            inlinehTML += '</tr>';
             return true;
         });
     }
-    inlineQty += '</tbody></table>';
-    inlineQty += '</div>';
-    inlineQty += '</div>';
-    inlineQty += '</div>';
+    inlinehTML += '</tbody></table>';
+    inlinehTML += '</div>';
+    inlinehTML += '</div>';
+    inlinehTML += '</div>';
 
-    return inlineQty;
+    return inlinehTML;
 }
 
 function getDate() {

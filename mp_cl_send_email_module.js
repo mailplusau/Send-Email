@@ -15,7 +15,7 @@ $(window).load(function() {
     $(".se-pre-con").fadeOut("slow");
 });
 
-$(".nav-tabs").on("click", "a", function(e) {
+$(".nav-pills").on("click", "a", function(e) {
 
     $(this).tab('show');
 });
@@ -45,6 +45,245 @@ function pageInit() {
             dialogsInBody: true
         });
     });
+
+    var closed_won = nlapiGetFieldValue('custpage_closed_won');
+    var opp_with_value = nlapiGetFieldValue('custpage_opp_with_value');
+
+    if (closed_won == 'T') {
+        $('#quote').prop('checked', false);
+        $('#form').prop('checked', true);
+        // $('#quote').prop('checked', false);
+        $('.main_tabs').removeClass('hide');
+
+        if ($('#no_email').is(':checked')) {
+
+            $('.subject_section').addClass('hide');
+            $('#dear').addClass('hide');
+            $('.body_section').addClass('hide');
+            $('.cc_section').addClass('hide');
+            $('.template_section').addClass('hide');
+
+            nlapiSetFieldValue('custpage_to', 0);
+        } else {
+            var customer_status = nlapiGetFieldValue('custpage_customer_status');
+
+            console.log(customer_status)
+
+            var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_salesp_campaign_templates');
+
+
+            var newFiltersCampTemp = new Array();
+            if (customer_status == '13') {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 2);
+            } else {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 1);
+            }
+
+            // // newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#quote').is(':checked')) {
+            //  newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', [2, 5]);
+            // } else {
+            newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', 2);
+            // }
+
+
+            searchedCampTemp.addFilters(newFiltersCampTemp);
+
+            var resultSetCampTemp = searchedCampTemp.runSearch();
+
+
+            selectList = $("#template");
+
+            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+
+                var tempId = searchResultCampTemp.getValue('internalid');
+                var tempName = searchResultCampTemp.getValue('name');
+
+                var option = new Option(tempName, tempId);
+                selectList.append(option, null);
+
+                return true;
+            });
+
+            // //Search for Attachments
+            // var searchedAtt = nlapiLoadSearch('customrecord_comm_attachment', 'customsearch_salesp_attachments');
+
+            // var newFiltersAtt = new Array();
+            // if (customer_status == '13') {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 2);
+            // } else {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 1);
+            // }
+
+            // // newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#quote').is(':checked')) {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 2, 5]);
+            // } else {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 2]);
+            // }
+
+
+            // searchedAtt.addFilters(newFiltersAtt);
+
+            // var resultSetAtt = searchedAtt.runSearch();
+
+            // var newHtml = '<div class="row">';
+
+            // resultSetAtt.forEachResult(function(searchResultAtt) {
+
+            //  var attId = searchResultAtt.getValue('internalid');
+            //  var attName = searchResultAtt.getValue('name');
+            //  var file = searchResultAtt.getValue('custrecord_comm_attach_file');
+            //  // var fileRecord = nlapiLoadFile(file);
+            //  // 
+            //  console.log(file)
+
+            //  var preview_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=' + file + '&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg');
+
+            //  newHtml += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + preview_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" /></span></div></div>';
+
+            //  return true;
+            // });
+
+            // newHtml += '</div>';
+
+            var newHtml2 = '<div class="row">';
+
+            var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF159_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+
+            // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+
+            newHtml2 += '</div>';
+            newHtml2 += '</div>';
+
+
+
+            // $(".row_attachments").html(newHtml);
+            $(".row_scf").html(newHtml2);
+        }
+
+    }
+
+    if (opp_with_value == 'T') {
+        $('.main_tabs').removeClass('hide');
+        $('#form').prop('checked', false);
+        $('#quote').prop('checked', true);
+
+        if ($('#no_email').is(':checked')) {
+
+            $('.subject_section').addClass('hide');
+            $('#dear').addClass('hide');
+            $('.body_section').addClass('hide');
+            $('.cc_section').addClass('hide');
+            $('.template_section').addClass('hide');
+
+            nlapiSetFieldValue('custpage_to', 0);
+        } else {
+
+            var customer_status = nlapiGetFieldValue('custpage_customer_status');
+
+            var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_salesp_campaign_templates');
+
+
+            var newFiltersCampTemp = new Array();
+            if (customer_status == '13') {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 2);
+            } else {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 1);
+            }
+
+            // newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            //  newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', [2, 5]);
+            // } else {
+            newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', 5);
+            // }
+
+
+            searchedCampTemp.addFilters(newFiltersCampTemp);
+
+            var resultSetCampTemp = searchedCampTemp.runSearch();
+
+
+            selectList = $("#template");
+
+            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+
+                var tempId = searchResultCampTemp.getValue('internalid');
+                var tempName = searchResultCampTemp.getValue('name');
+
+                var option = new Option(tempName, tempId);
+                selectList.append(option, null);
+
+                return true;
+            });
+
+            //Search for Attachments
+            // var searchedAtt = nlapiLoadSearch('customrecord_comm_attachment', 'customsearch_salesp_attachments');
+
+            // var newFiltersAtt = new Array();
+            // if (customer_status == '13') {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 2);
+            // } else {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 1);
+            // }
+
+            // // newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 2, 5]);
+            // } else {
+            //  newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 5]);
+            // }
+
+
+            // searchedAtt.addFilters(newFiltersAtt);
+
+            // var resultSetAtt = searchedAtt.runSearch();
+
+            // var newHtml = '<div class="row">';
+
+            // resultSetAtt.forEachResult(function(searchResultAtt) {
+
+            //  var attId = searchResultAtt.getValue('internalid');
+            //  var attName = searchResultAtt.getValue('name');
+            //  var file = searchResultAtt.getValue('custrecord_comm_attach_file');
+            //  // var fileRecord = nlapiLoadFile(file);
+
+
+            //  newHtml += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview()"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" /></span></div></div>';
+
+            //  return true;
+            // });
+
+            // newHtml += '</div>';
+
+            var newHtml2 = '<div class="row">';
+            var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF159_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+
+            // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+
+            newHtml2 += '</div>';
+            newHtml2 += '</div>';
+
+
+            // $(".row_attachments").html(newHtml);
+            $(".row_scf").html(newHtml2);
+        }
+    }
+
+    document.getElementById('tdbody_update_record').style = 'background-color: #125ab2 !important;color: white;';
 
     AddStyle('https://1048144.app.netsuite.com/core/media/media.nl?id=1988776&c=1048144&h=58352d0b4544df20b40f&_xt=.css', 'head');
     // $('#attachments').selectator({
@@ -189,7 +428,7 @@ $(document).on('click', '#form', function(event) {
 
         $('#quote').prop('checked', false);
         // $('#quote').prop('checked', false);
-        $('.services_li').removeClass('hide');
+        $('.main_tabs').removeClass('hide');
 
         if ($('#no_email').is(':checked')) {
 
@@ -307,9 +546,9 @@ $(document).on('click', '#form', function(event) {
 
 
     } else {
-        $('#services').removeClass('active');
-        $('.services_li').removeClass('active');
-        $('.services_li').addClass('hide');
+        // $('#services').removeClass('active');
+        $('.main_tabs').removeClass('active');
+        $('.main_tabs').addClass('hide');
     }
 });
 
@@ -356,7 +595,7 @@ $(document).on('click', '.propscf', function(event) {
 
 $(document).on('click', '#quote', function(event) {
     if ($('#quote').is(':checked')) {
-        $('.services_li').removeClass('hide');
+        $('.main_tabs').removeClass('hide');
         $('#form').prop('checked', false);
 
         if ($('#no_email').is(':checked')) {
@@ -447,7 +686,7 @@ $(document).on('click', '#quote', function(event) {
 
             // newHtml += '</div>';
 
-            
+            var newHtml2 = '<div class="row">';
             var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             var SCF159_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
@@ -467,9 +706,9 @@ $(document).on('click', '#quote', function(event) {
         }
 
     } else {
-        $('#services').removeClass('active');
-        $('.services_li').removeClass('active');
-        $('.services_li').addClass('hide');
+        // $('#services').removeClass('active');
+        $('.main_tabs').removeClass('active');
+        $('.main_tabs').addClass('hide');
     }
 });
 
@@ -492,13 +731,17 @@ $(document).on("change", "#attachments", function(e) {
 });
 
 $(document).on('change', '#send_to', function(e) {
-
+    $('#dear').removeClass('hide');
+    $('.body_section').removeClass('hide');
+    $('.cc_section').removeClass('hide');
+    $('.template_section').removeClass('hide');
+    nlapiSetFieldValue('custpage_to', null);
     var templateID = $('#template option:selected').val();
     if (!isNullorEmpty(templateID)) {
         var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', $('#template option:selected').val());
         var templateId = recCommTemp.getFieldValue('custrecord_camp_comm_email_template');
         var subject = recCommTemp.getFieldValue('custrecord_camp_comm_subject');
-         var first_name = $('#send_to option:selected').data("firstname");
+        var first_name = $('#send_to option:selected').data("firstname");
 
         var userID = nlapiGetContext().getUser();
 
@@ -557,11 +800,23 @@ $(document).on('change', '#template', function(e) {
 
 $(document).on('click', '.createservicechg', function(event) {
 
+    var closed_won = 'F';
+    var opp_with_value = 'F';
+    if ($('#form').is(':checked')) {
+        closed_won = 'T'
+    }
+
+    if ($('#quote').is(':checked')) {
+        opp_with_value = 'T';
+    }
+
     var params = {
         custid: parseInt(nlapiGetFieldValue('custpage_customer_id')),
         salesrecordid: parseInt(nlapiGetFieldValue('custpage_sales_record_id')),
         salesrep: 'F',
         sendemail: 'T',
+        closedwon: closed_won,
+        oppwithvalue: opp_with_value,
         commreg: null,
         customid: 'customscript_sl_send_email_module',
         customdeploy: 'customdeploy_sl_send_email_module'
@@ -582,18 +837,31 @@ function validate() {
 
     if (isNullorEmpty(callback) && isNullorEmpty(outcome)) {
         var send_to = $('#send_to').val();
+        var template = $('#template').val();
         var subject = $('#subject').val();
         var dear = $('#send_to').attr("data-firstname");
         var body = $('#email_body').summernote('code');
-        var callback_time = onTimeChange($('#time').val());
+        if (!isNullorEmpty($('#time').val())) {
+            var callback_time = onTimeChange($('#time').val());
+        } else {
+            var callback_time = null;
+        }
+
         var callback_date = $('#date').val();
 
+        console.log($('#time').val());
 
 
         if (isNullorEmpty(send_to)) {
             alertMessage += 'Please Select the Contact Person to Send To</br>';
             return_value = false;
         }
+
+        if (isNullorEmpty(template)) {
+            alertMessage += 'Please Select the Template</br>';
+            return_value = false;
+        }
+
 
         if (isNullorEmpty(subject) && send_to != 0) {
             alertMessage += 'Please Enter a Subject</br>';
@@ -642,6 +910,19 @@ function validate() {
 
     }
     return return_value;
+}
+
+function onclick_update() {
+    nlapiSetFieldValue('custpage_save_record', 'T');
+    $('.services_li').removeClass('hide');
+    $('.subject_section').addClass('hide');
+    $('#dear').addClass('hide');
+    $('.body_section').addClass('hide');
+    $('.cc_section').addClass('hide');
+    $('.template_section').addClass('hide');
+    $('#send_to').val(0)
+    nlapiSetFieldValue('custpage_to', 0);
+    $('#submitter').trigger('click');
 }
 
 function saveRecord() {
@@ -767,7 +1048,7 @@ function saveRecord() {
 
     // alert(nlapiGetFieldValue('custpage_outcome'))
 
-    
+
 
     return true;
 
@@ -787,6 +1068,15 @@ $(document).on('click', '.edit_class', function(event) {
     var commregid = $(this).attr('data-commreg');
     var dateEffective = $(this).attr('data-dateeffective');
 
+    var closed_won = 'F';
+    var opp_with_value = 'F';
+    if ($('#form').is(':checked')) {
+        closed_won = 'T'
+    }
+
+    if ($('#quote').is(':checked')) {
+        opp_with_value = 'T';
+    }
 
     var params = {
         custid: parseInt(nlapiGetFieldValue('custpage_customer_id')),
@@ -795,6 +1085,8 @@ $(document).on('click', '.edit_class', function(event) {
         sendemail: 'T',
         commreg: commregid,
         date: dateEffective,
+        closedwon: closed_won,
+        oppwithvalue: opp_with_value,
         customid: 'customscript_sl_send_email_module',
         customdeploy: 'customdeploy_sl_send_email_module'
     }
