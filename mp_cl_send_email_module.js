@@ -857,7 +857,7 @@ function validate() {
             return_value = false;
         }
 
-        if (isNullorEmpty(template)) {
+        if (isNullorEmpty(template) && send_to != 0) {
             alertMessage += 'Please Select the Template</br>';
             return_value = false;
         }
