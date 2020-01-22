@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2019-11-22 15:05:13
+ * @Last Modified time: 2020-01-23 08:14:24
  *
  */
 
@@ -248,47 +248,61 @@ function sendEmail(request, response) {
         }
 
         inlinehTML += '<form id="myForm">';
-
-        inlinehTML += '<div class="form-group container row_form_quote">';
-        inlinehTML += '<div class="row">';
-        inlinehTML += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
-        if(closed_won == 'T'){
-            inlinehTML += '<input type="checkbox" checked id="form" class="" />';
-        } else {
-            inlinehTML += '<input type="checkbox" id="form" class="" />';  
-        }
-        inlinehTML += '</span></div></div>';
-        inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
-        if(opp_with_value == 'T'){
-            inlinehTML += '<input type="checkbox" checked id="quote" class="" />';
-        } else {
-            inlinehTML += '<input type="checkbox" id="quote" class="" />';
-        }
-        
-        inlinehTML += '</span></div></div>';
-        // inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
-        inlinehTML += '</div>';
-        inlinehTML += '</div>';
-
-
-        inlinehTML += '<div class="tabs main_tabs hide"><ul class="nav nav-pills nav-justified" style="padding-top: 3%;">';
-
-        var tab_content = '';
-
-        if (isNullorEmpty(callback)) {
-            inlinehTML += '<li role="presentation" class="services_li ' + attachments_class + '" style="font-weight: bold;"><a href="#services"><u>SERVICES & PRICE</u></a></li>';
-            inlinehTML += '<li role="presentation" class="attachments_li" style="font-weight: bold;"><a href="#attachments_link"><u>FORMS & BROCHURES</u></a></li>'
-        }
-
-        inlinehTML += '<li role="presentation" class="email_li ' + email_class + '" style="font-weight: bold;"><a href="#email"><u>EMAIL & CALL BACK</u></a></li>';
-
         if (callback == 'T') {
+            inlinehTML += '<div class="tabs main_tabs "><ul class="nav nav-pills nav-justified" style="padding-top: 3%;">';
+
+            var tab_content = '';
             inlinehTML += '<li role="presentation" class="callback_li ' + callback_class + '" style="font-weight: bold;"><a href="#callback"><u>SET APPOINTMENT</u></a></li>';
+            inlinehTML += '</ul>';
+        } else if (nosale == 'T') {
+            inlinehTML += '<div class="tabs main_tabs "><ul class="nav nav-pills nav-justified" style="padding-top: 3%;">';
+
+            var tab_content = '';
+            inlinehTML += '<li role="presentation" class="email_li ' + email_class + '" style="font-weight: bold;"><a href="#email"><u>EMAIL & CALL BACK</u></a></li>';
+            inlinehTML += '</ul>';
+        } else {
+            inlinehTML += '<div class="form-group container row_form_quote">';
+            inlinehTML += '<div class="row">';
+            inlinehTML += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
+            if (closed_won == 'T') {
+                inlinehTML += '<input type="checkbox" checked id="form" class="" />';
+            } else {
+                inlinehTML += '<input type="checkbox" id="form" class="" />';
+            }
+            inlinehTML += '</span></div></div>';
+            inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
+            if (opp_with_value == 'T') {
+                inlinehTML += '<input type="checkbox" checked id="quote" class="" />';
+            } else {
+                inlinehTML += '<input type="checkbox" id="quote" class="" />';
+            }
+
+            inlinehTML += '</span></div></div>';
+            // inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
+            inlinehTML += '</div>';
+            inlinehTML += '</div>';
+
+
+            inlinehTML += '<div class="tabs main_tabs hide"><ul class="nav nav-pills nav-justified" style="padding-top: 3%;">';
+
+            var tab_content = '';
+
+            if (isNullorEmpty(callback) && isNullorEmpty(nosale)) {
+                inlinehTML += '<li role="presentation" class="services_li ' + attachments_class + '" style="font-weight: bold;"><a href="#services"><u>SERVICES & PRICE</u></a></li>';
+                inlinehTML += '<li role="presentation" class="attachments_li" style="font-weight: bold;"><a href="#attachments_link"><u>FORMS & BROCHURES</u></a></li>'
+            }
+
+            inlinehTML += '<li role="presentation" class="email_li ' + email_class + '" style="font-weight: bold;"><a href="#email"><u>EMAIL & CALL BACK</u></a></li>';
+
+            if (callback == 'T') {
+                inlinehTML += '<li role="presentation" class="callback_li ' + callback_class + '" style="font-weight: bold;"><a href="#callback"><u>SET APPOINTMENT</u></a></li>';
+            }
+
+
+
+            inlinehTML += '</ul>';
         }
 
-
-
-        inlinehTML += '</ul>';
 
         if (isNullorEmpty(callback)) {
 
@@ -640,7 +654,7 @@ function sendEmail(request, response) {
         } else if (outcome == 'nosale') {
             if (sales_campaign_type != 1) {
                 if (customerStatus != 13) {
-                    recCustomer.setFieldValue('entitystatus', 21);
+                    recCustomer.setFieldValue('entitystatus', 59);
                 }
                 recCustomer.setFieldValue('custentity_date_lead_lost', getDate());
                 phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - LOST');
