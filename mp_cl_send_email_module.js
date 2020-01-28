@@ -47,7 +47,8 @@ function pageInit() {
     });
 
     var closed_won = nlapiGetFieldValue('custpage_closed_won');
-    var opp_with_value = nlapiGetFieldValue('custpage_opp_with_value');
+    var opp_with_value = nlapiGetFieldValue('custpage_opp_with_values');
+    console.log(opp_with_value)
 
     if (closed_won == 'T') {
         $('#quote').prop('checked', false);
@@ -731,36 +732,49 @@ $(document).on("change", "#attachments", function(e) {
 });
 
 $(document).on('change', '#send_to', function(e) {
-    $('#dear').removeClass('hide');
-    $('.body_section').removeClass('hide');
-    $('.cc_section').removeClass('hide');
-    $('.template_section').removeClass('hide');
-    nlapiSetFieldValue('custpage_to', null);
-    var templateID = $('#template option:selected').val();
-    if (!isNullorEmpty(templateID)) {
-        var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', $('#template option:selected').val());
-        var templateId = recCommTemp.getFieldValue('custrecord_camp_comm_email_template');
-        var subject = recCommTemp.getFieldValue('custrecord_camp_comm_subject');
-        var first_name = $('#send_to option:selected').data("firstname");
-
-        var userID = nlapiGetContext().getUser();
-
-        var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
 
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID);
+    if ($('#send_to').val() == 0) {
+        $('.subject_section').addClass('hide');
+        $('#dear').addClass('hide');
+        $('.body_section').addClass('hide');
+        $('.cc_section').addClass('hide');
+        $('.template_section').addClass('hide');
 
-        urlCall = nlapiRequestURL(url);
-        var emailHtml = urlCall.getBody();
-        var emailSubject = urlCall.getHeader('Custom-Header-SubjectLine');
+        nlapiSetFieldValue('custpage_to', 0);
+    } else {
+        $('#dear').removeClass('hide');
+        $('.body_section').removeClass('hide');
+        $('.cc_section').removeClass('hide');
+        $('.template_section').removeClass('hide');
+        nlapiSetFieldValue('custpage_to', null);
+        var templateID = $('#template option:selected').val();
+        if (!isNullorEmpty(templateID)) {
+            var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', $('#template option:selected').val());
+            var templateId = recCommTemp.getFieldValue('custrecord_camp_comm_email_template');
+            var subject = recCommTemp.getFieldValue('custrecord_camp_comm_subject');
+            var first_name = $('#send_to option:selected').data("firstname");
 
-        console.log(urlCall);
-        console.log(subject);
-        console.log(emailSubject);
+            var userID = nlapiGetContext().getUser();
 
-        $('#email_body').summernote('code', emailHtml);
-        $('#subject').val(subject);
+            var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
+
+
+            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID);
+
+            urlCall = nlapiRequestURL(url);
+            var emailHtml = urlCall.getBody();
+            var emailSubject = urlCall.getHeader('Custom-Header-SubjectLine');
+
+            console.log(urlCall);
+            console.log(subject);
+            console.log(emailSubject);
+
+            $('#email_body').summernote('code', emailHtml);
+            $('#subject').val(subject);
+        }
     }
+
 });
 
 $(document).on('change', '#template', function(e) {
