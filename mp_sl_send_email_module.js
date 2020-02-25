@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-02-20 10:27:19
+ * @Last Modified time: 2020-02-24 08:50:27
  *
  */
 
@@ -44,6 +44,7 @@ function sendEmail(request, response) {
 
         var nosale = null;
         var invite_to_portal = null;
+        var unity = null;
 
         if (isNullorEmpty(customer_id)) {
             entryParamsString = params;
@@ -66,6 +67,7 @@ function sendEmail(request, response) {
             callback = params.callback;
             nosale = params.nosale;
             invite_to_portal = params.invitetoportal;
+            unity = params.unity;
         } else {
             var customer_id = parseInt(request.getParameter('custid'));
             var customer_record = nlapiLoadRecord('customer', customer_id);
@@ -237,6 +239,7 @@ function sendEmail(request, response) {
 
         form.addField('custpage_callback', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(callback);
         form.addField('custpage_invite', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(invite_to_portal);
+        form.addField('custpage_unity', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(unity);
         form.addField('custpage_nosalereason', 'textarea', 'BODY').setDisplayType('hidden');
 
 
@@ -349,7 +352,7 @@ function sendEmail(request, response) {
 
             //Email Template Tab Contenet
             tab_content += '<div role="tabpanel" class="tab-pane ' + email_class + '" id="email">';
-            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale);
+            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal);
             tab_content += '</div>';
 
 
@@ -1071,19 +1074,19 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
         var file = searchResultAtt.getValue('custrecord_comm_attach_file');
         var fileRecord = nlapiLoadFile(file);
 
-        nlapiLogExecution('DEBUG',file )
-        nlapiLogExecution('DEBUG',attName )
+        nlapiLogExecution('DEBUG', file)
+        nlapiLogExecution('DEBUG', attName)
 
-        if(invite_to_portal == 'T'){
-            if(file != 2511427){
-                 html += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + fileRecord.getURL() + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" checked/></span></div></div>';
+        if (invite_to_portal == 'T') {
+            if (file != 2511427) {
+                html += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + fileRecord.getURL() + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" checked/></span></div></div>';
             }
-           
+
         } else {
             html += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + fileRecord.getURL() + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" /></span></div></div>';
         }
 
-        
+
         return true;
     });
     html += '</div>';
@@ -1094,7 +1097,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
     return html;
 }
 
-function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale) {
+function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal) {
     var html = '<div class="form-group container row_to ">';
     html += '<div class="row">'
 
@@ -1133,7 +1136,17 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
         var tempId = searchResultCampTemp.getValue('internalid');
         var tempName = searchResultCampTemp.getValue('name');
 
-        html += '<option value="' + tempId + '">' + tempName + '</option>'
+        if (unity == 'T') {
+            if (tempId == 60) {
+                html += '<option value="' + tempId + '" selected>' + tempName + '</option>'
+            } else {
+                html += '<option value="' + tempId + '">' + tempName + '</option>'
+            }
+        } else {
+            html += '<option value="' + tempId + '">' + tempName + '</option>'
+        }
+
+
         return true;
     });
     html += '</select></div></div>';
@@ -1154,8 +1167,23 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
     if (isNullorEmpty(nosale)) {
         html += '<div class="form-group container row_call_back">';
         html += '<div class="row">';
-        html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
-        html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+        if (invite_to_portal == 'T') {
+            nlapiLogExecution('DEBUG', 'getDatePlusTwo', getDatePlusTwo())
+            var date_split = getDatePlusTwo().split('/');
+            if (parseInt(date_split[1]) < 10) {
+                date_split[1] = '0' + date_split[1];
+            }
+            if (parseInt(date_split[0]) < 10) {
+                date_split[0] = '0' + date_split[0];
+            }
+            var dat_prefill = date_split[2] + '-' + date_split[1] + '-' + date_split[0];
+            html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" value="' + dat_prefill + '" class="form-control" /></div></div>';
+            html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" value="10:00" id="time" class="form-control" /></div></div>';
+        } else {
+            html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
+            html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+        }
+
         html += '</div>';
         html += '</div>';
         html += '<div class="form-group container row_call_back_notes">';
@@ -1202,11 +1230,14 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
 }
 
 
-function call_back() {
+function call_back(invite_to_portal, unity) {
     var html = '<div class="form-group container row_call_back">';
     html += '<div class="row">';
+
     html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
     html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+
+
     html += '</div>';
     html += '</div>';
     html += '<div class="form-group container row_call_back_notes">';
@@ -1280,6 +1311,17 @@ function serviceChangeSection(resultSet_service_change) {
     return inlinehTML;
 }
 
+function getDatePlusTwo() {
+    var date = new Date();
+    if (date.getHours() > 6) {
+        date = nlapiAddDays(date, 3);
+    } else {
+        date = nlapiAddDays(date, 2);
+    }
+    date = nlapiDateToString(date);
+    return date;
+}
+
 function getDate() {
     var date = new Date();
     if (date.getHours() > 6) {
@@ -1321,6 +1363,8 @@ function freqCal(freq) {
     multiselect = multiselect.slice(0, -1)
     return multiselect;
 }
+
+
 
 
 Date.prototype.addHours = function(h) {
