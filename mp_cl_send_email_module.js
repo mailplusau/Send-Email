@@ -49,7 +49,8 @@ function pageInit() {
     var closed_won = nlapiGetFieldValue('custpage_closed_won');
     var opp_with_value = nlapiGetFieldValue('custpage_opp_with_values');
     var invite_to_portal = nlapiGetFieldValue('custpage_invite');
-    console.log(opp_with_value)
+    var unity = nlapiGetFieldValue('custpage_unity');
+    console.log(unity)
 
     if (closed_won == 'T') {
         $('#quote').prop('checked', false);
@@ -285,8 +286,39 @@ function pageInit() {
         }
     }
 
-    if(invite_to_portal == 'T'){
+    if (invite_to_portal == 'T') {
         $('.main_tabs').removeClass('hide');
+        if (unity == 'T') {
+            var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', 60);
+            var templateId = recCommTemp.getFieldValue('custrecord_camp_comm_email_template');
+            var subject = recCommTemp.getFieldValue('custrecord_camp_comm_subject');
+            var first_name = $('#send_to option:selected').data("firstname");
+
+            var userID = nlapiGetContext().getUser();
+
+            var employeeRec
+
+            console.log(first_name);
+            console.log(userID);
+            console.log($('#send_to').val());
+
+
+
+            var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
+
+
+            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID);
+
+            urlCall = nlapiRequestURL(url);
+            var emailHtml = urlCall.getBody();
+            var emailSubject = urlCall.getHeader('Custom-Header-SubjectLine');
+
+            console.log(urlCall);
+            console.log(subject);
+            console.log(emailSubject);
+
+            $('#email_body').summernote('code', emailHtml);
+        }
     }
 
     document.getElementById('tdbody_update_record').style = 'background-color: #125ab2 !important;color: white;';
@@ -721,7 +753,7 @@ $(document).on('click', '#quote', function(event) {
         // $('#services').removeClass('active');
         $('.main_tabs').removeClass('active');
         $('.main_tabs').addClass('hide');
-         $('#services').addClass('active');
+        $('#services').addClass('active');
         $('.services_li').addClass('active');
     }
 });
