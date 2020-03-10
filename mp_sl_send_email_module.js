@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-02-24 08:50:27
+ * @Last Modified time: 2020-03-04 09:56:31
  *
  */
 
@@ -45,6 +45,7 @@ function sendEmail(request, response) {
         var nosale = null;
         var invite_to_portal = null;
         var unity = null;
+        var sendinfo = null;
 
         if (isNullorEmpty(customer_id)) {
             entryParamsString = params;
@@ -68,6 +69,7 @@ function sendEmail(request, response) {
             nosale = params.nosale;
             invite_to_portal = params.invitetoportal;
             unity = params.unity;
+            sendinfo = params.sendinfo;
         } else {
             var customer_id = parseInt(request.getParameter('custid'));
             var customer_record = nlapiLoadRecord('customer', customer_id);
@@ -240,6 +242,7 @@ function sendEmail(request, response) {
         form.addField('custpage_callback', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(callback);
         form.addField('custpage_invite', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(invite_to_portal);
         form.addField('custpage_unity', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(unity);
+        form.addField('custpage_sendinfo', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(sendinfo);
         form.addField('custpage_nosalereason', 'textarea', 'BODY').setDisplayType('hidden');
 
 
@@ -304,7 +307,12 @@ function sendEmail(request, response) {
 
             inlinehTML += '</span></div></div>';
             if (invite_to_portal == 'T') {
-                inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+                if(isNullorEmpty(sendinfo)){
+                    inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+                } else {
+                    inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND INFO" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+                }
+                
             } else {
                 inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
             }
@@ -352,7 +360,7 @@ function sendEmail(request, response) {
 
             //Email Template Tab Contenet
             tab_content += '<div role="tabpanel" class="tab-pane ' + email_class + '" id="email">';
-            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal);
+            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal,sendinfo);
             tab_content += '</div>';
 
 
@@ -407,6 +415,7 @@ function sendEmail(request, response) {
         var callbacktime = request.getParameter('custpage_callbacktime');
         var callnotes = request.getParameter('custpage_callnotes');
         var invite_to_portal = request.getParameter('custpage_invite');
+        var sendinfo = request.getParameter('custpage_sendinfo');
 
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
@@ -517,7 +526,7 @@ function sendEmail(request, response) {
                         nlapiSendEmail(nlapiGetUser(), To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments);
                     }
 
-                    if (invite_to_portal == 'T') {
+                    if (invite_to_portal == 'T' && isNullorEmpty(sendinfo)) {
                         var company_name = recCustomer.getFieldValue('companyname');
                         var entity_id = recCustomer.getFieldValue('entityid');
                         var partner = recCustomer.getFieldValue('partner');
@@ -1097,7 +1106,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
     return html;
 }
 
-function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal) {
+function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal,sendinfo) {
     var html = '<div class="form-group container row_to ">';
     html += '<div class="row">'
 
@@ -1136,8 +1145,14 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
         var tempId = searchResultCampTemp.getValue('internalid');
         var tempName = searchResultCampTemp.getValue('name');
 
-        if (unity == 'T') {
+        if (unity == 'T' && isNullorEmpty(sendinfo)) {
             if (tempId == 60) {
+                html += '<option value="' + tempId + '" selected>' + tempName + '</option>'
+            } else {
+                html += '<option value="' + tempId + '">' + tempName + '</option>'
+            }
+        } else if (unity == 'T' && sendinfo == 'T') {
+            if (tempId == 61) {
                 html += '<option value="' + tempId + '" selected>' + tempName + '</option>'
             } else {
                 html += '<option value="' + tempId + '">' + tempName + '</option>'
