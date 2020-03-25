@@ -954,6 +954,11 @@ function validate() {
             alertMessage += 'Please Select Call Back Time</br>';
             return_value = false;
         }
+
+        if(isNullorEmpty($('#appointment_type').val()) || $('#appointment_type').val() == 0){
+            alertMessage += 'Please Select Appointment Type';
+            return_value = false;
+        }
     } else {
         var nosalereason = $('#nosalereason').val();
 
@@ -1090,6 +1095,7 @@ function saveRecord() {
         var callback_time = onTimeChange($('#time').val());
         var callback_date = $('#date').val();
         var callback_notes = $('#notes').val();
+        var callback_type = $('#appointment_type').val();
 
         var splitDate = callback_date.split('-');
         callback_date = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
@@ -1097,6 +1103,7 @@ function saveRecord() {
         nlapiSetFieldValue('custpage_callbackdate', callback_date);
         nlapiSetFieldValue('custpage_callbacktime', callback_time);
         nlapiSetFieldValue('custpage_callnotes', callback_notes);
+        nlapiSetFieldValue('custpage_calltype', callback_type);
 
         nlapiSetFieldValue('custpage_outcome', outcome);
     } else {

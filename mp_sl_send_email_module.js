@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-03-04 09:56:31
+ * @Last Modified time: 2020-03-20 09:23:54
  *
  */
 
@@ -232,6 +232,7 @@ function sendEmail(request, response) {
         form.addField('custpage_callbackdate', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_callbacktime', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_callnotes', 'textarea', 'BODY').setDisplayType('hidden');
+        form.addField('custpage_calltype', 'text', 'BODY').setDisplayType('hidden');
 
         if (isNullorEmpty(nosale)) {
             form.addField('custpage_outcome', 'textarea', 'BODY').setDisplayType('hidden');
@@ -307,12 +308,12 @@ function sendEmail(request, response) {
 
             inlinehTML += '</span></div></div>';
             if (invite_to_portal == 'T') {
-                if(isNullorEmpty(sendinfo)){
+                if (isNullorEmpty(sendinfo)) {
                     inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
                 } else {
                     inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND INFO" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
                 }
-                
+
             } else {
                 inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
             }
@@ -360,7 +361,7 @@ function sendEmail(request, response) {
 
             //Email Template Tab Contenet
             tab_content += '<div role="tabpanel" class="tab-pane ' + email_class + '" id="email">';
-            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal,sendinfo);
+            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo);
             tab_content += '</div>';
 
 
@@ -414,6 +415,7 @@ function sendEmail(request, response) {
         var callbackdate = request.getParameter('custpage_callbackdate');
         var callbacktime = request.getParameter('custpage_callbacktime');
         var callnotes = request.getParameter('custpage_callnotes');
+        var calltype = request.getParameter('custpage_calltype');
         var invite_to_portal = request.getParameter('custpage_invite');
         var sendinfo = request.getParameter('custpage_sendinfo');
 
@@ -471,10 +473,28 @@ function sendEmail(request, response) {
         var phonecall = nlapiCreateRecord('phonecall');
         phonecall.setFieldValue('assigned', recCustomer.getFieldValue('partner'));
         phonecall.setFieldValue('custevent_organiser', nlapiGetUser());
-        phonecall.setFieldValue('startdate', getDate());
+        phonecall.setFieldValue('startdate', callbackdate);
         phonecall.setFieldValue('company', custId);
         phonecall.setFieldText('status', 'Completed');
         phonecall.setFieldValue('custevent_call_type', 2);
+
+        nlapiLogExecution('DEBUG', 'Calltype', calltype)
+
+        if (!isNullorEmpty(calltype) && calltype == 2) {
+            var event = nlapiCreateRecord('calendarevent');
+
+            event.setFieldValue('organizer', nlapiGetUser());
+            event.setFieldValue('startdate', callbackdate);
+            event.setFieldValue('starttime', callbacktime);
+            event.setFieldText('remindertype', 'Email');
+            event.setFieldText('reminderminutes', '1 hour');
+            event.setFieldValue('timedevent', 'T');
+            event.setFieldValue('company', custId);
+            event.setFieldText('status', 'Completed');
+            event.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - Appointment');
+            event.setFieldValue('message', callnotes);
+            nlapiSubmitRecord(event);
+        }
 
 
         if (isNullorEmpty(callback)) {
@@ -1106,7 +1126,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
     return html;
 }
 
-function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal,sendinfo) {
+function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo) {
     var html = '<div class="form-group container row_to ">';
     html += '<div class="row">'
 
@@ -1206,6 +1226,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
         html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
         html += '</div>';
         html += '</div>';
+        html += '<div class="form-group container row_call_back_type">';
     } else {
         html += '<div class="form-group container row_call_back">';
         html += '<div class="row">';
@@ -1240,7 +1261,6 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
     html += '<div class="col-xs-12 body_section"><textarea id="preview" class="hide"></textarea><iframe id="viewer" frameborder="0" scrolling="no" width="400" height="600" style="display: none;"></iframe></div>';
     html += '</div>';
     html += '</div>';
-
     return html;
 }
 
@@ -1258,6 +1278,11 @@ function call_back(invite_to_portal, unity) {
     html += '<div class="form-group container row_call_back_notes">';
     html += '<div class="row">';
     html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group container row_call_back_type">';
+    html += '<div class="row">';
+    html += '<div class="col-xs-8 appointment_type_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT TYPE <span class="mandatory">*</span></span><select  id="appointment_type" class="form-control" ><option value=' + 0 + '></option><option value="1">PHONE CALL</option><option value="2">APPOINTMENT</option></select></div></div>';
     html += '</div>';
     html += '</div>';
 
