@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-03-20 09:23:54
+ * @Last Modified time: 2020-04-02 13:13:01
  *
  */
 
@@ -541,9 +541,9 @@ function sendEmail(request, response) {
 
                 if (!isNullorEmpty(To) && !isNullorEmpty(subject) && !isNullorEmpty(message)) {
                     if (invite_to_portal == 'T') {
-                        nlapiSendEmail(112209, To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments);
+                        nlapiSendEmail(112209, To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments, true);
                     } else {
-                        nlapiSendEmail(nlapiGetUser(), To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments);
+                        nlapiSendEmail(nlapiGetUser(), To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments, true);
                     }
 
                     if (invite_to_portal == 'T' && isNullorEmpty(sendinfo)) {
@@ -569,7 +569,7 @@ function sendEmail(request, response) {
 
                         var email_subject = 'MP Portal - Link User to Customer - ' + entity_id + ' ' + company_name;
 
-                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au']);
+                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au'],null,null,null,true);
 
                     }
 
