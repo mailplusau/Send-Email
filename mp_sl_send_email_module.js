@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-02 13:13:01
+ * @Last Modified time: 2020-04-08 17:12:18
  *
  */
 
@@ -760,6 +760,7 @@ function sendEmail(request, response) {
                     recCustomer.setFieldValue('entitystatus', 59);
                 }
                 recCustomer.setFieldValue('custentity_date_lead_lost', getDate());
+                recCustomer.setFieldValue('custentity_service_cancellation_reason', nosalereason);
                 phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name + ' - LOST');
             } else {
                 phonecall.setFieldValue('title', 'X Sales - ' + sales_campaign_name + ' - LOST');
@@ -767,6 +768,7 @@ function sendEmail(request, response) {
 
 
             phonecall.setFieldValue('message', callnotes);
+            phonecall.setFieldValue('startdate', getDate());
             phonecall.setFieldValue('custevent_call_outcome', 16);
 
             recSales.setFieldValue('custrecord_sales_completed', "T");
@@ -774,7 +776,7 @@ function sendEmail(request, response) {
             recSales.setFieldValue('custrecord_sales_completedate', getDate());
             recSales.setFieldValue('custrecord_sales_assigned', nlapiGetUser());
             recSales.setFieldValue('custrecord_sales_outcome', 10);
-            recSales.setFieldValue('custrecord_sales_nosalereason', nosalereason);
+            // recSales.setFieldValue('custrecord_sales_nosalereason', nosalereason);
             recSales.setFieldValue('custrecord_sales_callbackdate', '');
             recSales.setFieldValue('custrecord_sales_callbacktime', '');
             recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
@@ -1234,7 +1236,12 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
         var col = new Array();
         col[0] = new nlobjSearchColumn('name');
         col[1] = new nlobjSearchColumn('internalId');
-        var results = nlapiSearchRecord('customlist_nosalereason', null, null, col);
+
+        var filter = new Array();
+        filter[0] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+
+
+        var results = nlapiSearchRecord('customlist58', null, filter, col);
         for (var i = 0; results != null && i < results.length; i++) {
             var res = results[i];
             var listValue = res.getValue('name');
