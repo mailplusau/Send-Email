@@ -7,7 +7,7 @@
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-08 17:12:18
+ * @Last Modified time: 2020-04-15 13:48:26
  *
  */
 
@@ -222,6 +222,7 @@ function sendEmail(request, response) {
         form.addField('custpage_attachments', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_scf', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_sof', 'textarea', 'BODY').setDisplayType('hidden');
+        form.addField('custpage_coe', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_field_names', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_field_values', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_closed_won', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(closed_won);
@@ -410,6 +411,7 @@ function sendEmail(request, response) {
         var franchiseeEmail = nlapiLookupField('customer', custId, 'partner.email');
         var attSOForm = request.getParameter('custpage_sof');
         var attSCForm = request.getParameter('custpage_scf');
+        var attCOEForm = request.getParameter('custpage_coe');
         var attachments = request.getParameter('custpage_attachments');
         var callback = request.getParameter('custpage_callback');
         var callbackdate = request.getParameter('custpage_callbackdate');
@@ -421,6 +423,7 @@ function sendEmail(request, response) {
 
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
+        nlapiLogExecution('DEBUG', 'attCOEForm', attCOEForm)
 
         var sales_rep_id;
 
@@ -499,7 +502,7 @@ function sendEmail(request, response) {
 
         if (isNullorEmpty(callback)) {
 
-            if (isNullorEmpty(attSOForm) && isNullorEmpty(attSCForm)) {
+            if (isNullorEmpty(attSOForm) && isNullorEmpty(attSCForm) && isNullorEmpty(attCOEForm)) {
                 var arrAttachments = [];
             } else {
                 if (!isNullorEmpty(request.getParameter('custpage_sof'))) {
@@ -508,9 +511,12 @@ function sendEmail(request, response) {
                 if (!isNullorEmpty(request.getParameter('custpage_scf'))) {
                     attSCForm = parseInt(request.getParameter('custpage_scf'));
                 }
+                if (!isNullorEmpty(request.getParameter('custpage_coe'))) {
+                    attCOEForm = parseInt(request.getParameter('custpage_coe'));
+                }
                 nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
                 nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
-                var arrAttachments = getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_date, end_date, sales_record_id);
+                var arrAttachments = getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm);
             }
 
 
@@ -525,7 +531,7 @@ function sendEmail(request, response) {
             if (!isNullorEmpty(contact_results)) {
                 // if (contact_results.length == 1) {
 
-                nlapiLogExecution('DEBUG', 'attachments', arrAttachments)
+                nlapiLogExecution('DEBUG', 'arrAttachments', arrAttachments)
                 nlapiLogExecution('DEBUG', 'attachments', attachments)
 
                 attachments = attachments.split('|');
@@ -569,7 +575,7 @@ function sendEmail(request, response) {
 
                         var email_subject = 'MP Portal - Link User to Customer - ' + entity_id + ' ' + company_name;
 
-                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au'],null,null,null,true);
+                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au'], null, null, null, true);
 
                     }
 
@@ -805,10 +811,12 @@ function sendEmail(request, response) {
     }
 }
 
-function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_date, end_date, sales_record_id) {
+function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm) {
     var recCustomer = nlapiLoadRecord('customer', custId);
 
     var customerName = recCustomer.getFieldValue('companyname');
+    var customerEntityId = recCustomer.getFieldValue('entityid');
+    var customerVatRegNumber = recCustomer.getFieldValue('vatregnumber');
     //var recCommReg = nlapiLoadRecord('customrecord_commencement_register', request.getParameter('commreg'));
 
 
@@ -1013,7 +1021,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_da
         merge['NLSCNOTES'] = default_note;
     }
 
-    merge['NLDATEEFFECTIVE'] = dateEffective;
+    merge['NLSCSTARTDATE'] = dateEffective;
 
 
     if (attSCForm == 94) {
@@ -1024,12 +1032,14 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_da
 
     merge['NLSALESREPNAME2'] = salesreptext;
     if (isNullorEmpty(stage)) {
-        merge['NLSCSTARTDATE'] = start_date;
-        var fileSCFORM = nlapiMergeRecord(attSCForm, 'customer', custId, null, null, merge);
-        fileSCFORM.setName('MP_ServiceCommencement_' + custId + '.pdf');
+        if (!isNullorEmpty(attSCForm)) {
+            merge['NLSCSTARTDATE'] = dateEffective;
+            var fileSCFORM = nlapiMergeRecord(attSCForm, 'customer', custId, null, null, merge);
+            fileSCFORM.setName('MP_ServiceCommencement_' + custId + '.pdf');
+        }
     } else {
         if (stage == 0) {
-            merge['NLSCSTARTDATE'] = start_date;
+            merge['NLSCSTARTDATE'] = dateEffective;
             merge['NLSCENDDATE'] = end_date;
             merge['NLSCSIGNDATE'] = getDate();
             var fileSCFORM = nlapiMergeRecord(165, 'customer', custId, null, null, merge);
@@ -1062,9 +1072,19 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage, start_da
         soMerge['NLSOPADD1'] = SOpostaladdress;
 
         var fileSOFORM = nlapiMergeRecord(attSOForm, 'customer', custId, null, null, soMerge);
-        fileSOFORM.setName('StandingOrder_' + custId + '.pdf');
+        fileSOFORM.setName('MP_StandingOrder_' + custId + '.pdf');
 
         attachments[nPos] = fileSOFORM;
+        nPos++;
+    }
+
+    if (!isNullorEmpty(attCOEForm)) {
+        merge['NLSCNOTES'] = 'Change of Entity to ' + customerEntityId + ' ' + customerName + ' ABN ' + customerVatRegNumber + ' as of ' + dateEffective + '. \nPrice excludes GST but includes the first 16kg of mails. Every 16kg of mail after incurs a $2.75 charge plus charge for registered mail $2.20 and parcels $1.10.\nExcludes MailPlus Express parcels.';
+
+        var fileCOEFORM = nlapiMergeRecord(attCOEForm, 'customer', custId, null, null, merge);
+        fileCOEFORM.setName('MP_ChangeOfEntityForm_' + custId + '.pdf');
+
+        attachments[nPos] = fileCOEFORM;
         nPos++;
     }
 
