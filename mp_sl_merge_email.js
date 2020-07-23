@@ -21,11 +21,18 @@ function main(request, response) {
             var sms = recCommTemp.getFieldValue('custrecord_camp_comm_sms_template');
 
             var file = nlapiCreateEmailMerger(templateId);
-            file.setEntity('customer', recId);
+            nlapiLogExecution('DEBUG', 'recId', recId);
+            if (recId != 'null'){
+                file.setEntity('customer', recId);
+            }
+            
             nlapiLogExecution('DEBUG', 'USer ID', userID);
             file.setEntity('employee', userID);
             if (!isNullorEmpty(contactID) && contactID !=0) {
-                file.setEntity('contact', contactID);
+                if(contactID != 'null'){
+                    file.setEntity('contact', contactID);
+                }
+                
             }
 
             var mergeResult = file.merge();
@@ -52,7 +59,7 @@ function main(request, response) {
 
                 // set variables in email
                 // emailHtml = emailHtml.replace(/<NLEMCONTACT>/gi,addressee);
-                // emailHtml = emailHtml.replace(/<NLEMSALESPERSON>/gi,salesRep);
+                emailHtml = emailHtml.replace(/<NLEMSALESPERSON>/gi,'Ankith');
 
             }
 
