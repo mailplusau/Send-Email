@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:32
+ * @Last Modified time: 2020-08-17 11:02:10
  *
  */
 
@@ -23,11 +23,15 @@ function sendEmailSS() {
     var pdf = ctx.getSetting('SCRIPT', 'custscript_pdf');
     prev_inv_deploy = ctx.getDeploymentId();
 
-
+    nlapiLogExecution('AUDIT', 'letter_type', letter_type)
+    nlapiLogExecution('AUDIT', 'template', template)
 
     var mpexPricingCustomerList = nlapiLoadSearch('customer', 'customsearch_mpex_price_point_customer_2');
-    var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
-    mpexPricingCustomerList.addFilter(addFilterExpression);
+    if (letter_type != '0') {
+        var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
+        mpexPricingCustomerList.addFilter(addFilterExpression);
+    }
+
 
     var resultSetMpexPricing = mpexPricingCustomerList.runSearch();
 
@@ -165,14 +169,14 @@ function sendEmailSS() {
 
 
 
-        var fileSCFORM = nlapiMergeRecord(pdf, 'customer', custId, null, null, merge);
-        fileSCFORM.setName('MPEX_Pricing_' + companyname + '.pdf');
+        // var fileSCFORM = nlapiMergeRecord(pdf, 'customer', custId, null, null, merge);
+        // fileSCFORM.setName('MPEX_Pricing_' + companyname + '.pdf');
 
-        fileSCFORM.setFolder(2414361);
+        // fileSCFORM.setFolder(2414361);
 
-        var id = nlapiSubmitFile(fileSCFORM);
+        // var id = nlapiSubmitFile(fileSCFORM);
 
-        recCustomer.setFieldValue('custentity_mpex_price_letter', id);
+        // recCustomer.setFieldValue('custentity_mpex_price_letter', id);
         nlapiSubmitRecord(recCustomer);
 
         var params = {

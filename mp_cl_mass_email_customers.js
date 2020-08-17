@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:18
+ * @Last Modified time: 2020-08-17 11:02:08
  *
  */
 
@@ -52,8 +52,11 @@ function pageInit() {
 
         var mpexPriceSearch = nlapiLoadSearch('customer', 'customsearch_mpex_price_point_customer_2');
 
-        var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'is', parseInt(letter_type));
-        mpexPriceSearch.addFilter(addFilterExpression);
+        if (letter_type != '0') {
+            var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'is', parseInt(letter_type));
+            mpexPriceSearch.addFilter(addFilterExpression);
+        }
+
 
         var resultSetCustomer = mpexPriceSearch.runSearch();
 

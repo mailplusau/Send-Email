@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 10:50:05
+ * @Last Modified time: 2020-08-17 11:02:06
  *
  */
 
@@ -62,16 +62,21 @@ function sendEmail(request, response) {
             var listName = searchResultCampTemp.getValue('name');
 
             if (letter_type == listId) {
-                inlinehtml2 += '<option value="' + listId + '" selected>' + listName + '</option>'
+                inlinehtml2 += '<option value="' + listId + '" selected>' + listName + '</option>';
 
             } else {
-                inlinehtml2 += '<option value="' + listId + '">' + listName + '</option>'
+                inlinehtml2 += '<option value="' + listId + '">' + listName + '</option>';
 
             }
 
 
             return true;
         });
+        if(letter_type == '0'){
+            inlinehtml2 += '<option value="0" selected>Mass Email</option>';
+        } else {
+            inlinehtml2 += '<option value="0">Mass Email</option>';
+        }
         inlinehtml2 += '</select></div></div>';
         inlinehtml2 += '</div>';
         inlinehtml2 += '</div>';

@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:44
+ * @Last Modified time: 2020-08-17 11:02:14
  *
  */
 
@@ -42,8 +42,8 @@ function updateProgressBar() {
                 clearInterval(progressBar);
                 $('#progress-records').attr('class', 'progress-bar progress-bar-success');
                 // displaySentEmails();
-                var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_download_letters', 'customdeploy1') + '&type=' + letter_type;
-                window.open(upload_url, "_self");
+                // var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_download_letters', 'customdeploy1') + '&type=' + letter_type;
+                // window.open(upload_url, "_self");
             }
 
             var nb_records_moved = resultSetLength - nb_records_left_to_move;
@@ -77,8 +77,11 @@ function updateProgressBar() {
 function loadMPEXPriceCustomers(letter_type) {
     var mpexPriceSearch = nlapiLoadSearch('customer', 'customsearch_mpex_price_point_customer_2');
 
-    var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
-    mpexPriceSearch.addFilter(addFilterExpression);
+    if (letter_type != '0') {
+        var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
+        mpexPriceSearch.addFilter(addFilterExpression);
+    }
+
 
     var resultSetCustomer = mpexPriceSearch.runSearch();
 
@@ -105,8 +108,10 @@ $(document).ready(function() {
 function loadMPEXPriceCustomersSent(letter_type) {
     var mpexPriceSearch = nlapiLoadSearch('customer', 'customsearch_mpex_price_point_customer_3');
 
-    var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
-    mpexPriceSearch.addFilter(addFilterExpression);
+    if (letter_type != '0') {
+        var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'anyof', parseInt(letter_type));
+        mpexPriceSearch.addFilter(addFilterExpression);
+    }
 
     var resultSetCustomer = mpexPriceSearch.runSearch();
 
