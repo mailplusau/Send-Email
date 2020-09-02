@@ -22,17 +22,17 @@ function main(request, response) {
 
             var file = nlapiCreateEmailMerger(templateId);
             nlapiLogExecution('DEBUG', 'recId', recId);
-            if (recId != 'null'){
+            if (recId != 'null') {
                 file.setEntity('customer', recId);
             }
-            
+
             nlapiLogExecution('DEBUG', 'USer ID', userID);
             file.setEntity('employee', userID);
-            if (!isNullorEmpty(contactID) && contactID !=0) {
-                if(contactID != 'null'){
+            if (!isNullorEmpty(contactID) && contactID != 0) {
+                if (contactID != 'null') {
                     file.setEntity('contact', contactID);
                 }
-                
+
             }
 
             var mergeResult = file.merge();
@@ -59,7 +59,14 @@ function main(request, response) {
 
                 // set variables in email
                 // emailHtml = emailHtml.replace(/<NLEMCONTACT>/gi,addressee);
-                emailHtml = emailHtml.replace(/<NLEMSALESPERSON>/gi,'Ankith');
+                nlapiLogExecution('AUDIT', 'templateId', templateId)
+                if (templateId == 286) {
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var last5_entityid = entityid.substr(entityid.length - 5)
+                    emailHtml = emailHtml.replace(/<NLEMREFERRALCODE>/gi, 'SPREADTHELOVE' + last5_entityid);
+                }
+                emailHtml = emailHtml.replace(/<NLEMSALESPERSON>/gi, 'Ankith');
 
             }
 

@@ -6,8 +6,8 @@
  *
  * Remarks: New Address Module        
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-15 13:48:26
+ * @Last Modified by:   ankit
+ * @Last Modified time: 2020-09-02 15:45:05
  *
  */
 
@@ -46,6 +46,7 @@ function sendEmail(request, response) {
         var invite_to_portal = null;
         var unity = null;
         var sendinfo = null;
+        var referral = null;
 
         if (isNullorEmpty(customer_id)) {
             entryParamsString = params;
@@ -70,6 +71,7 @@ function sendEmail(request, response) {
             invite_to_portal = params.invitetoportal;
             unity = params.unity;
             sendinfo = params.sendinfo;
+            referral = params.referral;
         } else {
             var customer_id = parseInt(request.getParameter('custid'));
             var customer_record = nlapiLoadRecord('customer', customer_id);
@@ -245,6 +247,7 @@ function sendEmail(request, response) {
         form.addField('custpage_invite', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(invite_to_portal);
         form.addField('custpage_unity', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(unity);
         form.addField('custpage_sendinfo', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(sendinfo);
+        form.addField('custpage_referral', 'textarea', 'BODY').setDisplayType('hidden').setDefaultValue(referral);
         form.addField('custpage_nosalereason', 'textarea', 'BODY').setDisplayType('hidden');
 
 
@@ -257,7 +260,7 @@ function sendEmail(request, response) {
         inlinehtml2 += '<div class="se-pre-con"></div><div id="myModal" class="modal fade" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Modal Header</h4></div><div class="modal-body"><div id="summernote">Hello Summernote</div></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div><div style=\"background-color: #cfeefc !important;border: 1px solid #417ed9;padding: 10px 10px 10px 20px;width:96%;position:absolute\"><b><u>Important Instructions:</u></b><br><b>Purpose:</b> This page will send a Quote or Service Commencement Form for the customer to sign. You can also save this information and not email it however you will need to set a callback date to save your work.<br><ol><li> Select either Closed Won or Opportunity with Value</li><li>Complete the Services & Price tab to confirm the services to quote or sign-up</li><li>Select any appropriate forms or brochures you want to complete or email (note: service commencement and standing order are mandatory to sign-up a customer)</li><li>Set a callback and save your work or specify who to send the information to and Select Send Email to finalise.</li></ol></div><br/><br/><br><br><br><br><div class="container" style="padding-top: 3%;"><div id="alert" class="alert alert-danger fade in "></div>';
 
         if (isNullorEmpty(callback) && isNullorEmpty(nosale)) {
-            if (invite_to_portal == 'T') {
+            if (invite_to_portal == 'T' || referral == 'T') {
                 var email_class = 'active';
                 var callback_class = '';
                 var attachments_class = 'hide';
@@ -293,14 +296,14 @@ function sendEmail(request, response) {
         } else {
             inlinehTML += '<div class="form-group container row_form_quote">';
             inlinehTML += '<div class="row">';
-            inlinehTML += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
+            inlinehTML += '<div class="col-xs-3 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
             if (closed_won == 'T') {
                 inlinehTML += '<input type="checkbox" checked id="form" class="" />';
             } else {
                 inlinehTML += '<input type="checkbox" id="form" class="" />';
             }
             inlinehTML += '</span></div></div>';
-            inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
+            inlinehTML += '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
             if (opp_with_value == 'T') {
                 inlinehTML += '<input type="checkbox" checked id="quote" class="" />';
             } else {
@@ -310,13 +313,15 @@ function sendEmail(request, response) {
             inlinehTML += '</span></div></div>';
             if (invite_to_portal == 'T') {
                 if (isNullorEmpty(sendinfo)) {
-                    inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+                    inlinehTML += '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
                 } else {
-                    inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND INFO" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+                    inlinehTML += '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND INFO" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
                 }
 
+            } else if (referral == 'T') {
+                inlinehTML += '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="REFERRAL PROGRAM" /><span class="input-group-addon"><input type="checkbox" id="referral_program" class="" checked/></span></div></div>';
             } else {
-                inlinehTML += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
+                inlinehTML += '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
             }
 
             inlinehTML += '</div>';
@@ -362,7 +367,7 @@ function sendEmail(request, response) {
 
             //Email Template Tab Contenet
             tab_content += '<div role="tabpanel" class="tab-pane ' + email_class + '" id="email">';
-            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo);
+            tab_content += email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo, referral);
             tab_content += '</div>';
 
 
@@ -420,6 +425,7 @@ function sendEmail(request, response) {
         var calltype = request.getParameter('custpage_calltype');
         var invite_to_portal = request.getParameter('custpage_invite');
         var sendinfo = request.getParameter('custpage_sendinfo');
+        var referral = request.getParameter('custpage_referral');
 
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
@@ -474,7 +480,7 @@ function sendEmail(request, response) {
         }
 
         var phonecall = nlapiCreateRecord('phonecall');
-        phonecall.setFieldValue('assigned', recCustomer.getFieldValue('partner'));
+        phonecall.setFieldValue('assigned', nlapiGetUser());
         phonecall.setFieldValue('custevent_organiser', nlapiGetUser());
         phonecall.setFieldValue('startdate', callbackdate);
         phonecall.setFieldValue('company', custId);
@@ -575,7 +581,7 @@ function sendEmail(request, response) {
 
                         var email_subject = 'MP Portal - Link User to Customer - ' + entity_id + ' ' + company_name;
 
-                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au'], null, null, null, true);
+                        nlapiSendEmail(112209, ['mailplussupport@protechly.com'], email_subject, email_body, ['mj@roundtableapps.com', 'ankith.ravindran@mailplus.com.au'], null, records, null, true);
 
                     }
 
@@ -677,6 +683,13 @@ function sendEmail(request, response) {
         } else if (outcome == 'sendinfo') {
             if (invite_to_portal == 'T') {
                 phonecall.setFieldValue('title', 'Sales - Invite to Customer Portal');
+            } else if (referral == 'T') {
+                phonecall.setFieldValue('title', 'Sales - Referral Program');
+                recCustomer.setFieldValue('custentity_referral_program', 1);
+                var entityid = recCustomer.getFieldValue('entityid');
+                var last5_entityid = entityid.substr(entityid.length - 5);
+                recCustomer.setFieldValue('custentity_referral_code', 'SPREADTHELOVE' + last5_entityid)
+
             } else {
                 if (sales_campaign_type != 1) {
                     if (customerStatus != 13) {
@@ -789,7 +802,7 @@ function sendEmail(request, response) {
         }
 
         if (isNullorEmpty(sales_rep_id)) {
-            if (invite_to_portal != 'T') {
+            if (invite_to_portal != 'T' && referral != 'T') {
                 recSales.setFieldValue('custrecord_sales_callbackdate', callbackdate);
                 recSales.setFieldValue('custrecord_sales_callbacktime', callbacktime);
                 recSales.setFieldValue('custrecord_sales_assigned', nlapiGetUser());
@@ -1148,7 +1161,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
     return html;
 }
 
-function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo) {
+function email_template(resultSetCampTemp, contactResult, resultSet_contacts, nosale, unity, invite_to_portal, sendinfo, referral) {
     var html = '<div class="form-group container row_to ">';
     html += '<div class="row">'
 
@@ -1199,6 +1212,12 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
             } else {
                 html += '<option value="' + tempId + '">' + tempName + '</option>'
             }
+        } else if (referral == 'T') {
+            if (tempId == 95) {
+                html += '<option value="' + tempId + '" selected>' + tempName + '</option>'
+            } else {
+                html += '<option value="' + tempId + '">' + tempName + '</option>'
+            }
         } else {
             html += '<option value="' + tempId + '">' + tempName + '</option>'
         }
@@ -1221,61 +1240,63 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts, no
     html += '</div>';
     html += '</div>';
 
-    if (isNullorEmpty(nosale)) {
-        html += '<div class="form-group container row_call_back">';
-        html += '<div class="row">';
-        if (invite_to_portal == 'T') {
-            nlapiLogExecution('DEBUG', 'getDatePlusTwo', getDatePlusTwo())
-            var date_split = getDatePlusTwo().split('/');
-            if (parseInt(date_split[1]) < 10) {
-                date_split[1] = '0' + date_split[1];
+    if (referral != 'T') {
+        if (isNullorEmpty(nosale)) {
+            html += '<div class="form-group container row_call_back">';
+            html += '<div class="row">';
+            if (invite_to_portal == 'T') {
+                nlapiLogExecution('DEBUG', 'getDatePlusTwo', getDatePlusTwo())
+                var date_split = getDatePlusTwo().split('/');
+                if (parseInt(date_split[1]) < 10) {
+                    date_split[1] = '0' + date_split[1];
+                }
+                if (parseInt(date_split[0]) < 10) {
+                    date_split[0] = '0' + date_split[0];
+                }
+                var dat_prefill = date_split[2] + '-' + date_split[1] + '-' + date_split[0];
+                html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" value="' + dat_prefill + '" class="form-control" /></div></div>';
+                html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" value="10:00" id="time" class="form-control" /></div></div>';
+            } else {
+                html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
+                html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
             }
-            if (parseInt(date_split[0]) < 10) {
-                date_split[0] = '0' + date_split[0];
-            }
-            var dat_prefill = date_split[2] + '-' + date_split[1] + '-' + date_split[0];
-            html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" value="' + dat_prefill + '" class="form-control" /></div></div>';
-            html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" value="10:00" id="time" class="form-control" /></div></div>';
+
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group container row_call_back_notes">';
+            html += '<div class="row">';
+            html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group container row_call_back_type">';
         } else {
-            html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
-            html += '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+            html += '<div class="form-group container row_call_back">';
+            html += '<div class="row">';
+            html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">LOST REASON <span class="mandatory">*</span></span><select id="nosalereason" class="form-control nosalereason" required><option></option>';
+            var col = new Array();
+            col[0] = new nlobjSearchColumn('name');
+            col[1] = new nlobjSearchColumn('internalId');
+
+            var filter = new Array();
+            filter[0] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+
+
+            var results = nlapiSearchRecord('customlist58', null, filter, col);
+            for (var i = 0; results != null && i < results.length; i++) {
+                var res = results[i];
+                var listValue = res.getValue('name');
+                var listID = res.getValue('internalId');
+
+                html += '<option value="' + listID + '">' + listValue + '</option>';
+            }
+            html += '</select></div></div>';
+
+            html += '<div class="form-group container row_call_back_notes">';
+            html += '<div class="row">';
+            html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">LOST NOTES </span><textarea  id="nosalenotes" class="form-control" ></textarea></div></div>';
+            html += '</div>';
+            html += '</div>';
         }
-
-        html += '</div>';
-        html += '</div>';
-        html += '<div class="form-group container row_call_back_notes">';
-        html += '<div class="row">';
-        html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
-        html += '</div>';
-        html += '</div>';
-        html += '<div class="form-group container row_call_back_type">';
-    } else {
-        html += '<div class="form-group container row_call_back">';
-        html += '<div class="row">';
-        html += '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">LOST REASON <span class="mandatory">*</span></span><select id="nosalereason" class="form-control nosalereason" required><option></option>';
-        var col = new Array();
-        col[0] = new nlobjSearchColumn('name');
-        col[1] = new nlobjSearchColumn('internalId');
-
-        var filter = new Array();
-        filter[0] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
-
-
-        var results = nlapiSearchRecord('customlist58', null, filter, col);
-        for (var i = 0; results != null && i < results.length; i++) {
-            var res = results[i];
-            var listValue = res.getValue('name');
-            var listID = res.getValue('internalId');
-
-            html += '<option value="' + listID + '">' + listValue + '</option>';
-        }
-        html += '</select></div></div>';
-
-        html += '<div class="form-group container row_call_back_notes">';
-        html += '<div class="row">';
-        html += '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">LOST NOTES </span><textarea  id="nosalenotes" class="form-control" ></textarea></div></div>';
-        html += '</div>';
-        html += '</div>';
     }
 
     html += '<div class="form-group container row_body ">';
