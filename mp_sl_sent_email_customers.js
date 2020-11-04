@@ -6,8 +6,8 @@
  *
  * Description:         
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:38
+ * @Last Modified by:   Ankith Ravindran
+ * @Last Modified time: 2020-11-04 11:51:48
  *
  */
 
@@ -53,7 +53,7 @@ function sendEmails(request, response) {
         form.addField('custpage_template', 'text', 'Customer ID').setDisplayType('hidden').setDefaultValue(template);
         form.addField('custpage_result_set_length', 'text', 'Customer ID').setDisplayType('hidden').setDefaultValue(result_set_length);
 
-        form.setScript('customscript_cl_sent_email');
+        form.setScript('customscript_cl_sent_email_customers');
         response.writePage(form);
 
     } else {

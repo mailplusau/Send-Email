@@ -6,8 +6,8 @@
  *
  * Description:         
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:18
+ * @Last Modified by:   Ankith Ravindran
+ * @Last Modified time: 2020-11-04 12:36:14
  *
  */
 
@@ -43,16 +43,19 @@ function pageInit() {
         });
     });
 
+    var zee = nlapiGetFieldValue('zee');
+
+    if (!isNullorEmpty(zee) && zee != 0) {
+
         $('.template_section').removeClass('hide');
         $('.row_subject').removeClass('hide');
         $('.row_body').removeClass('hide');
 
-        var mpexPriceSearch = nlapiLoadSearch('customer', 'customsearch_mpex_price_point_customer_2');
+        var customerSearch = nlapiLoadSearch('customer', 'customsearch_mass_email_customer_list');
 
-        var addFilterExpression = new nlobjSearchFilter('custentity_mpex_price_letter_types', null, 'is', parseInt(letter_type));
-        mpexPriceSearch.addFilter(addFilterExpression);
-
-        var resultSetCustomer = mpexPriceSearch.runSearch();
+        var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', zee);
+        customerSearch.addFilter(addFilterExpression);
+        var resultSetCustomer = customerSearch.runSearch();
 
 
         var count = 0;
@@ -64,43 +67,11 @@ function pageInit() {
 
         resultSetCustomer.forEachResult(function(searchResult) {
 
-            var custid = searchResult.getValue("internalid");
-            var entityid = searchResult.getValue("entityid");
-            var zee_id = searchResult.getValue("partner");
-            var companyname = searchResult.getValue("companyname");
-            var mpex_1kg = searchResult.getValue("custentity_mpex_1kg_price_point");
-            var mpex_3kg = searchResult.getValue("custentity_mpex_3kg_price_point");
-            var mpex_5kg = searchResult.getValue("custentity_mpex_5kg_price_point");
-            var mpex_500g = searchResult.getValue("custentity_mpex_500g_price_point");
-            var mpex_b4 = searchResult.getValue("custentity_mpex_b4_price_point");
-            var mpex_c5 = searchResult.getValue("custentity_mpex_c5_price_point");
-            var mpex_dl = searchResult.getValue("custentity_mpex_dl_price_point");
+            var custid = searchResult.getValue('internalid');
+            var entityid = searchResult.getValue('entityid');
+            var companyname = searchResult.getValue('companyname');
 
-            if (isNullorEmpty(mpex_1kg)) {
-                mpex_1kg = '0';
-            }
-            if (isNullorEmpty(mpex_3kg)) {
-                mpex_3kg = '0';
-            }
-            if (isNullorEmpty(mpex_5kg)) {
-                mpex_5kg = '0';
-            }
-            if (isNullorEmpty(mpex_500g)) {
-                mpex_500g = '0';
-            }
-            if (isNullorEmpty(mpex_b4)) {
-                mpex_b4 = '0';
-            }
-            if (isNullorEmpty(mpex_c5)) {
-                mpex_c5 = '0';
-            }
-            if (isNullorEmpty(mpex_dl)) {
-                mpex_dl = '0';
-            }
-
-            console.log(mpex_1kg)
-
-            dataSet += '{"cust_id":"' + custid + '", "entityid":"' + entityid + '", "companyname_text":"' + companyname + '", "company_name":"' + companyname + '","mpex_1kg": "' + mpex_1kg + '","mpex_3kg": "' + mpex_3kg + '","mpex_5kg": "' + mpex_5kg + '","mpex_500g": "' + mpex_500g + '","mpex_b4": "' + mpex_b4 + '","mpex_c5": "' + mpex_c5 + '","mpex_dl": "' + mpex_dl + '"},';
+            dataSet += '{"cust_id":"' + custid + '", "entityid":"' + entityid + '", "companyname_text":"' + companyname + '", "company_name":"' + companyname + '"},';
 
             count++;
             return true;
@@ -137,136 +108,6 @@ function pageInit() {
                     "render": function(data, type, row) {
                         return '<p><b>' + data.companyname_text + '</b><p><input type="hidden" class="form-control customer_id text-center" value="' + data.cust_id + '">';
                     }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_5kg text-center" value="' + data.mpex_5kg + '"><select class="form-control 5kg text-center" readonly>';
-                        if (data.mpex_5kg == 1) {
-
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option>h<option value="4">Standard</option>'
-                        } else if (data.mpex_5kg == 2) {
-
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_5kg == 4) {
-
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-
-                            column_data += '<option value="0"></option><option value="1"selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-                    },
-
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_3kg text-center" value="' + data.mpex_3kg + '"><select class="form-control 3kg text-center" readonly>';
-                        if (data.mpex_3kg == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_3kg == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_3kg == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_1kg text-center" value="' + data.mpex_1kg + '"><select class="form-control 1kg text-center" readonly>';
-                        if (data.mpex_1kg == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_1kg == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_1kg == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_500g text-center" value="' + data.mpex_500g + '"><select class="form-control 500g text-center" readonly>';
-                        if (data.mpex_500g == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_500g == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_500g == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_b4 text-center" value="' + data.mpex_b4 + '"><select class="form-control b4 text-center" readonly>';
-                        if (data.mpex_b4 == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_b4 == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_b4 == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_c5 text-center" value="' + data.mpex_c5 + '"><select class="form-control c5 text-center" readonly>';
-                        if (data.mpex_c5 == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_c5 == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_c5 == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
-                }, {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        var column_data = '<input type="hidden" class="form-control old_dl text-center" value="' + data.mpex_dl + '"><select class="form-control dl text-center" readonly>';
-                        if (data.mpex_dl == "1") {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_dl == "2") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2" selected>Platinum</option><option value="4">Standard</option>'
-                        } else if (data.mpex_dl == "4") {
-                            column_data += '<option value="0"></option><option value="1">Gold</option><option value="2">Platinum</option><option value="4" selected>Standard</option>'
-                        } else {
-                            column_data += '<option value="0"></option><option value="1" selected>Gold</option><option value="2">Platinum</option><option value="4">Standard</option>'
-                        }
-
-                        column_data += '</select>';
-                        return column_data;
-
-                    }
                 }],
                 "order": [
                     [1, 'asc']
@@ -276,93 +117,6 @@ function pageInit() {
                 "fixedHeader": {
                     "header": true
                 },
-                "createdRow": function(row, data, index) {
-                    console.log(data.mpex_5kg);
-                    console.log(index);
-                    if (data.mpex_5kg == 1) {
-                        $('td', row).eq(2).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_5kg == 2) {
-                        $('td', row).eq(2).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_5kg == 4) {
-                        $('td', row).eq(2).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(2).removeAttr("style");
-                    }
-                    if (data.mpex_3kg == 1) {
-                        $('td', row).eq(3).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_3kg == 2) {
-                        $('td', row).eq(3).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_3kg == 4) {
-                        $('td', row).eq(3).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(3).removeAttr("style");
-                    }
-                    if (data.mpex_1kg == 1) {
-                        $('td', row).eq(4).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_1kg == 2) {
-                        $('td', row).eq(4).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_1kg == 4) {
-                        $('td', row).eq(4).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(4).removeAttr("style");
-                    }
-                    if (data.mpex_500g == 1) {
-                        $('td', row).eq(5).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_500g == 2) {
-                        $('td', row).eq(5).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_500g == 4) {
-                        $('td', row).eq(5).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(5).removeAttr("style");
-                    }
-                    if (data.mpex_b4 == 1) {
-                        $('td', row).eq(6).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_b4 == 2) {
-                        $('td', row).eq(6).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_b4 == 4) {
-                        $('td', row).eq(6).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(6).removeAttr("style");
-                    }
-                    if (data.mpex_c5 == 1) {
-                        $('td', row).eq(7).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_c5 == 2) {
-                        $('td', row).eq(7).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_c5 == 4) {
-                        $('td', row).eq(7).css('background-color', '#7abcf5');
-                    } else {
-                        $('td', row).eq(7).removeAttr("style");
-                    }
-                    if (data.mpex_dl == 1) {
-                        $('td', row).eq(8).css('background-color', '#ecc60b');
-
-                    } else if (data.mpex_dl == 2) {
-                        $('td', row).eq(8).css('background-color', '#a7a6a1');
-
-                    } else if (data.mpex_dl == 4) {
-                        $('td', row).eq(8).css('background-color', '#7abcf5');
-
-                    } else {
-                        $('td', row).eq(8).removeAttr("style");
-                    }
-                }
             });
         });
         $("#customer_length").css({
@@ -381,9 +135,21 @@ function pageInit() {
         //  selectFirstOptionOnSearch: false
         // });
 
-
+    }
 
 }
+
+//On selecting zee, reload the SMC - Summary page with selected Zee parameter
+$(document).on("change", ".zee_dropdown", function(e) {
+
+    var zee = $(this).val();
+
+    var url = baseURL + "/app/site/hosting/scriptlet.nl?script=1076&deploy=1&sorts[customername]=1";
+
+    url += "&zee=" + zee + "";
+
+    window.location.href = url;
+});
 
 $(document).on('change', '#template', function(e) {
 

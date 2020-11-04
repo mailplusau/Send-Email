@@ -6,8 +6,8 @@
  *
  * Description:         
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-22 09:30:44
+ * @Last Modified by:   Ankith Ravindran
+ * @Last Modified time: 2020-11-04 11:51:50
  *
  */
 
@@ -76,7 +76,7 @@ function updateProgressBar() {
 function loadCustomers(zee) {
     var customerSearch = nlapiLoadSearch('customer', 'customsearch_mass_email_customer_list');
 
-    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', zee);
+    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', parseInt(zee));
     customerSearch.addFilter(addFilterExpression);
     var resultSetCustomer = customerSearch.runSearch();
 
@@ -93,8 +93,6 @@ $(document).ready(function() {
             title: "ID"
         }, {
             title: "Company Name"
-        }, {
-            title: "URL"
         }],
         pageLength: 100
     });
@@ -103,7 +101,7 @@ $(document).ready(function() {
 function loadCustomersSent(zee) {
     var mpexPriceSearch = nlapiLoadSearch('customer', 'customsearch_mass_email_customer_list_2');
 
-    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', zee);
+    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', parseInt(zee));
     customerSearch.addFilter(addFilterExpression);
     var resultSetCustomer = customerSearch.runSearch();
 
@@ -130,9 +128,9 @@ function getResultSetLength(resultSet) {
 function displaySentEmails() {
     console.log("displaySentEmails()");
 
-    var letter_type = nlapiGetFieldValue('custpage_letter_type');
+    var zee = nlapiGetFieldValue('custpage_zee');
     // Display the table of barcodes
-    var resultCustomerSet = loadCustomersSent(letter_type);
+    var resultCustomerSet = loadCustomersSent(zee);
     var recordDataSet = [];
     var slice_index = 0;
 
@@ -144,11 +142,10 @@ function displaySentEmails() {
             console.log(internalid)
             var entityid = searchCustomerResult.getValue('entityid');
             var companyname = searchCustomerResult.getValue('companyname');
-            var letter = searchCustomerResult.getValue('custentity_mpex_price_letter');
             // var fileRecord2 = nlapiLoadFile(letter);
             // var url2 = fileRecord2.getURL();
 
-            recordDataSet.push([internalid, entityid, companyname, letter]);
+            recordDataSet.push([internalid, entityid, companyname]);
 
             console.log(recordDataSet)
 

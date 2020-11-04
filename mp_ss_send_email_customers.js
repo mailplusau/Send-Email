@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith Ravindran
- * @Last Modified time: 2020-11-04 10:27:13
+ * @Last Modified time: 2020-11-04 11:51:45
  *
  */
 
@@ -23,11 +23,11 @@ function sendEmailSS() {
 
     prev_inv_deploy = ctx.getDeploymentId();
 
-
+    nlapiLogExecution('DEBUG', 'ZEE', zee)
 
     var customerSearch = nlapiLoadSearch('customer', 'customsearch_mass_email_customer_list');
 
-    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', zee);
+    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof', parseInt(zee));
     customerSearch.addFilter(addFilterExpression);
     var resultSetCustomer = customerSearch.runSearch();
 
@@ -38,9 +38,9 @@ function sendEmailSS() {
         var usage_loopstart_cust = ctx.getRemainingUsage();
         if ((usage_loopstart_cust < 400)) {
             var params = {
-                custscript_letter_zee: zee,
-                custscript_subject: subject,
-                custscript_template: template
+                custscript_mass_email_zee: parseInt(zee),
+                custscript_mass_email_subject: subject,
+                custscript_mass_email_template: template
             }
 
             reschedule = rescheduleScript(prev_inv_deploy, adhoc_inv_deploy, params);
@@ -54,15 +54,18 @@ function sendEmailSS() {
         var entityid = searchResult.getValue('entityid');
         var companyname = searchResult.getValue('companyname');
 
-        var recCustomer = nlapiLoadRecord('customer', custId);
+        var recCustomer = nlapiLoadRecord('customer', custid);
         var account_email = recCustomer.getFieldValue('email');
         var service_email = recCustomer.getFieldValue('custentity_email_service');
 
         recCustomer.setFieldValue('custentity_mass_email_sent', 1);
 
+        var mergeResult = nlapiCreateEmailMerger(template).merge();
+        var emailBody = mergeResult.getBody();
+
 
         var emailAttach = new Object();
-        emailAttach['entity'] = custId;
+        emailAttach['entity'] = custid;
 
         if (isNullorEmpty(account_email) && isNullorEmpty(service_email)) {
 
@@ -79,9 +82,9 @@ function sendEmailSS() {
         nlapiSubmitRecord(recCustomer);
 
         var params = {
-            custscript_letter_zee: zee,
-            custscript_subject: subject,
-            custscript_template: template
+            custscript_mass_email_zee: parseInt(zee),
+            custscript_mass_email_subject: subject,
+            custscript_mass_email_template: template
         }
 
         reschedule = rescheduleScript(prev_inv_deploy, adhoc_inv_deploy, params);
