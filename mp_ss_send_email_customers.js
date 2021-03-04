@@ -6,8 +6,8 @@
  *
  * Description:         
  * 
- * @Last Modified by:   Ankith Ravindran
- * @Last Modified time: 2020-11-04 11:51:45
+ * @Last Modified by:   ankit
+ * @Last Modified time: 2021-03-05 08:18:45
  *
  */
 
@@ -20,10 +20,12 @@ function sendEmailSS() {
     var zee = ctx.getSetting('SCRIPT', 'custscript_mass_email_zee');
     var subject = ctx.getSetting('SCRIPT', 'custscript_mass_email_subject');
     var template = ctx.getSetting('SCRIPT', 'custscript_mass_email_template');
+    var old_zee = ctx.getSetting('SCRIPT', 'custscript_mass_email_old_zee');
 
     prev_inv_deploy = ctx.getDeploymentId();
 
     nlapiLogExecution('DEBUG', 'ZEE', zee)
+    nlapiLogExecution('DEBUG', 'template', template)
 
     var customerSearch = nlapiLoadSearch('customer', 'customsearch_mass_email_customer_list');
 
@@ -40,6 +42,7 @@ function sendEmailSS() {
             var params = {
                 custscript_mass_email_zee: parseInt(zee),
                 custscript_mass_email_subject: subject,
+                custscript_mass_email_old_zee: old_zee,
                 custscript_mass_email_template: template
             }
 
@@ -60,7 +63,13 @@ function sendEmailSS() {
 
         recCustomer.setFieldValue('custentity_mass_email_sent', 1);
 
-        var mergeResult = nlapiCreateEmailMerger(template).merge();
+        var emailMerger = nlapiCreateEmailMerger(template);
+        if (template == 298) {
+            emailMerger.setEntity('customer', custid);
+            emailMerger.setEntity('partner', zee);
+        }
+
+        var mergeResult = emailMerger.merge();
         var emailBody = mergeResult.getBody();
 
 
@@ -70,6 +79,8 @@ function sendEmailSS() {
         if (isNullorEmpty(account_email) && isNullorEmpty(service_email)) {
 
         } else {
+
+            // nlapiSendEmail(112209, 'ankith.ravindran@mailplus.com.au', subject, emailBody, null, null, emailAttach, null, true);
 
             if (!isNullorEmpty(account_email)) {
                 nlapiSendEmail(112209, account_email, subject, emailBody, null, null, emailAttach, null, true);

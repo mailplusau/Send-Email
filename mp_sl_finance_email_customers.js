@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   ankit
- * @Last Modified time: 2021-03-05 08:18:38
+ * @Last Modified time: 2021-03-04 11:22:59
  *
  */
 
@@ -63,6 +63,32 @@ function sendEmail(request, response) {
             });
 
             inlinehtml2 += '</select></div>';
+
+            inlinehtml2 += '<div class="col-xs-4 admin_section" style="width: 20%;left: 40%;position: absolute;"><b>Select Old Zee</b> <select class="form-control old_zee_dropdown" >';
+
+            //WS Edit: Updated Search to SMC Franchisee (exc Old/Inactives)
+            //Search: SMC - Franchisees
+            var searched_zee = nlapiLoadSearch('partner', 'customsearch_smc_old_franchisee');
+
+            var resultSet_zee = searched_zee.runSearch();
+
+            var count_zee = 0;
+
+            var zee_id;
+
+            inlinehtml2 += '<option value=""></option>'
+
+            resultSet_zee.forEachResult(function(searchResult_zee) {
+                zee_id = searchResult_zee.getValue('internalid');
+                // WS Edit: Updated entityid to companyname
+                zee_name = searchResult_zee.getValue('companyname');
+
+                inlinehtml2 += '<option value="' + zee_id + '">' + zee_name + '</option>';
+
+                return true;
+            });
+
+            inlinehtml2 += '</select></div>';
         }
 
         if (!isNullorEmpty(request.getParameter('zee'))) {
@@ -73,17 +99,8 @@ function sendEmail(request, response) {
 
 
         //Searcf for Campaign Templates
-        var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_salesp_campaign_templates');
+        var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_finance_templates');
 
-
-        var newFiltersCampTemp = new Array();
-
-        newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 2);
-        newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
-        newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', 1);
-
-
-        searchedCampTemp.addFilters(newFiltersCampTemp);
 
         var resultSetCampTemp = searchedCampTemp.runSearch();
 
@@ -106,10 +123,9 @@ function sendEmail(request, response) {
         form.addField('custpage_subject', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_body', 'textarea', 'BODY').setDisplayType('hidden');
         form.addField('custpage_result_set_length', 'textarea', 'BODY').setDisplayType('hidden');
-        form.addField('custpage_old_zee', 'textarea', 'BODY').setDisplayType('hidden');
 
         form.addField('preview_table', 'inlinehtml', '').setLayoutType('outsidebelow', 'startrow').setDefaultValue(inlinehtml2);
-        form.setScript('customscript_cl_send_email_customers');
+        form.setScript('customscript_cl_finance_email_customers');
         // form.addButton('pdfprint', 'Print Letters', 'onclick_print()');
         form.addSubmitButton('Send Email');
 
@@ -121,12 +137,10 @@ function sendEmail(request, response) {
         var message = request.getParameter('custpage_body');
         var template = request.getParameter('custpage_template');
         var result_set = request.getParameter('custpage_result_set_length');
-        var old_zee = request.getParameter('custpage_old_zee');
 
         var params = {
             custscript_mass_email_zee: zee,
             custscript_mass_email_subject: subject,
-            custscript_mass_email_old_zee: old_zee,
             custscript_mass_email_template: template
         };
         var reschedule_status = nlapiScheduleScript('customscript_ss_send_email_customers_mas', 'customdeploy1', params);
@@ -180,35 +194,6 @@ function email_template(resultSetCampTemp) {
     html += '<div class="row">'
     html += '<div class="col-xs-8 subject_section"><div class="input-group"><span class="input-group-addon">SUBJECT ';
     html += '</span><input type="text" id="subject" class="form-control" /></div></div>';
-    html += '</div>';
-    html += '</div>';
-
-    html += '<div class="form-group container row_subject hide">';
-    html += '<div class="row">'
-    html += '<div class="col-xs-8 template_section hide"><div class="input-group"><span class="input-group-addon">SELECT OLD ZEE</span> <select class="form-control old_zee_dropdown" >';
-
-    //WS Edit: Updated Search to SMC Franchisee (exc Old/Inactives)
-    //Search: SMC - Franchisees
-    var searched_zee = nlapiLoadSearch('partner', 'customsearch_smc_old_franchisee');
-
-    var resultSet_zee = searched_zee.runSearch();
-
-    var count_zee = 0;
-
-    var zee_id;
-
-    html += '<option value=""></option>'
-
-    resultSet_zee.forEachResult(function(searchResult_zee) {
-        zee_id = searchResult_zee.getValue('internalid');
-        // WS Edit: Updated entityid to companyname
-        zee_name = searchResult_zee.getValue('companyname');
-        html += '<option value="' + zee_id + '">' + zee_name + '</option>';
-
-        return true;
-    });
-
-    html += '</select></div></div>';
     html += '</div>';
     html += '</div>';
 

@@ -6,8 +6,8 @@
  *
  * Description:         
  * 
- * @Last Modified by:   ankit
- * @Last Modified time: 2021-03-05 08:18:41
+ * @Last Modified by:   Ankith Ravindran
+ * @Last Modified time: 2020-11-04 12:36:14
  *
  */
 
@@ -200,7 +200,6 @@ $(document).on("change", "#letter_type", function(e) {
 function saveRecord() {
     var template = $('#template').val();
     var subject = $('#subject').val();
-    var old_zee = $('.old_zee_dropdown').val();
     var body = $('#email_body').summernote('code');
 
     var resultSetLength = $('#customer').DataTable().rows().data().length;
@@ -215,7 +214,6 @@ function saveRecord() {
     nlapiSetFieldValue('custpage_subject', subject);
     nlapiSetFieldValue('custpage_body', body);
     nlapiSetFieldValue('custpage_pdf', pdf_template_id);
-    nlapiSetFieldValue('custpage_old_zee', old_zee);
 
     return true;
 }
