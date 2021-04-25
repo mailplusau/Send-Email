@@ -1,13 +1,13 @@
 /**
  * Module Description
  * 
- * NSVersion    Date            		Author         
- * 1.00       	2018-02-12 16:42:05   	Ankith 
+ * NSVersion    Date                    Author         
+ * 1.00         2018-02-12 16:42:05     Ankith 
  *
  * Remarks: New Address Module        
  * 
  * @Last Modified by:   ankit
- * @Last Modified time: 2020-09-02 15:45:05
+ * @Last Modified time: 2021-03-26 10:15:57
  *
  */
 
@@ -477,6 +477,8 @@ function sendEmail(request, response) {
             var sales_campaign_record = nlapiLoadRecord('customrecord_salescampaign', sales_campaign);
             var sales_campaign_type = sales_campaign_record.getFieldValue('custrecord_salescampaign_recordtype');
             var sales_campaign_name = sales_campaign_record.getFieldValue('name');
+        } else {
+            var recSales = null;
         }
 
         var phonecall = nlapiCreateRecord('phonecall');
@@ -593,8 +595,8 @@ function sendEmail(request, response) {
 
                 }
                 // } else {
-                // 	error_subject = 'Multiple Primary Contacts for Customer ID ' + recCustomer.getFieldValue('entityid');
-                // 	nlapiSendEmail(409635, nlapiGetUser(), error_subject, 'Please enter Primary Contact Details before attempting to resend Communication. Email has not been sent.', ['ankith.ravindran@mailplus.com.au', 'willian.suryadharma@mailplus.com.au']);
+                //  error_subject = 'Multiple Primary Contacts for Customer ID ' + recCustomer.getFieldValue('entityid');
+                //  nlapiSendEmail(409635, nlapiGetUser(), error_subject, 'Please enter Primary Contact Details before attempting to resend Communication. Email has not been sent.', ['ankith.ravindran@mailplus.com.au', 'willian.suryadharma@mailplus.com.au']);
                 // }
             } else if (outcome != 'nosale') {
                 if (To != 0) {
@@ -640,15 +642,18 @@ function sendEmail(request, response) {
             phonecall.setFieldValue('message', callnotes);
             phonecall.setFieldValue('custevent_call_outcome', 17);
 
-            recSales.setFieldValue('custrecord_sales_completed', "F");
-            recSales.setFieldValue('custrecord_sales_inuse', "F");
-            recSales.setFieldValue('custrecord_sales_outcome', 5);
+            if (!isNullorEmpty(recSales)) {
+                recSales.setFieldValue('custrecord_sales_completed', "F");
+                recSales.setFieldValue('custrecord_sales_inuse', "F");
+                recSales.setFieldValue('custrecord_sales_outcome', 5);
+            }
 
 
 
             if (!isNullorEmpty(sales_rep_id)) {
+                if (!isNullorEmpty(recSales)) {
                 recSales.setFieldValue('custrecord_sales_deactivated', 'T');
-                recSales.setFieldValue('custrecord_sales_completed', 'T');
+                recSales.setFieldValue('custrecord_sales_completed', 'T');}
 
                 nlapiSubmitRecord(recSales);
 
@@ -701,11 +706,12 @@ function sendEmail(request, response) {
                 } else {
                     phonecall.setFieldValue('title', ' X Sales - ' + sales_campaign_name + ' - Info Sent');
                 }
+                if (!isNullorEmpty(recSales)) {
                 recSales.setFieldValue('custrecord_sales_completed', "F");
                 recSales.setFieldValue('custrecord_sales_infosent', "T");
                 recSales.setFieldValue('custrecord_sales_inuse', "F");
 
-                recSales.setFieldValue('custrecord_sales_outcome', 4);
+                recSales.setFieldValue('custrecord_sales_outcome', 4);}
             }
 
 
@@ -730,11 +736,11 @@ function sendEmail(request, response) {
 
             phonecall.setFieldValue('message', callnotes);
             phonecall.setFieldValue('custevent_call_outcome', 24);
-
+            if (!isNullorEmpty(recSales)) {
             recSales.setFieldValue('custrecord_sales_completed', "F");
             recSales.setFieldValue('custrecord_sales_formsent', 'T');
             recSales.setFieldValue('custrecord_sales_inuse', "F");
-            recSales.setFieldValue('custrecord_sales_outcome', 14);
+            recSales.setFieldValue('custrecord_sales_outcome', 14);}
         } else if (outcome == 'sendquote') {
             if (sales_campaign_type != 1) {
                 recCustomer.setFieldValue('entitystatus', 50);
@@ -748,11 +754,11 @@ function sendEmail(request, response) {
 
             phonecall.setFieldValue('message', callnotes);
             phonecall.setFieldValue('custevent_call_outcome', 23);
-
+            if (!isNullorEmpty(recSales)) {
             recSales.setFieldValue('custrecord_sales_completed', "F");
             recSales.setFieldValue('custrecord_sales_quotesent', "T");
             recSales.setFieldValue('custrecord_sales_inuse', "F");
-            recSales.setFieldValue('custrecord_sales_outcome', 15);
+            recSales.setFieldValue('custrecord_sales_outcome', 15);}
         } else if (outcome == 'sendformquote') {
             if (sales_campaign_type != 1) {
                 if (customerStatus != 13) {
@@ -767,12 +773,12 @@ function sendEmail(request, response) {
 
             phonecall.setFieldValue('message', callnotes);
             phonecall.setFieldValue('custevent_call_outcome', 24);
-
+            if (!isNullorEmpty(recSales)) {
             recSales.setFieldValue('custrecord_sales_completed', "F");
             recSales.setFieldValue('custrecord_sales_formsent', 'T');
             recSales.setFieldValue('custrecord_sales_quotesent', "T");
             recSales.setFieldValue('custrecord_sales_inuse', "F");
-            recSales.setFieldValue('custrecord_sales_outcome', 14);
+            recSales.setFieldValue('custrecord_sales_outcome', 14);}
         } else if (outcome == 'nosale') {
             if (sales_campaign_type != 1) {
                 if (customerStatus != 13) {
@@ -789,7 +795,7 @@ function sendEmail(request, response) {
             phonecall.setFieldValue('message', callnotes);
             phonecall.setFieldValue('startdate', getDate());
             phonecall.setFieldValue('custevent_call_outcome', 16);
-
+            if (!isNullorEmpty(recSales)) {
             recSales.setFieldValue('custrecord_sales_completed', "T");
             recSales.setFieldValue('custrecord_sales_inuse', "F");
             recSales.setFieldValue('custrecord_sales_completedate', getDate());
@@ -798,16 +804,17 @@ function sendEmail(request, response) {
             // recSales.setFieldValue('custrecord_sales_nosalereason', nosalereason);
             recSales.setFieldValue('custrecord_sales_callbackdate', '');
             recSales.setFieldValue('custrecord_sales_callbacktime', '');
-            recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
+            recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());}
         }
 
         if (isNullorEmpty(sales_rep_id)) {
             if (invite_to_portal != 'T' && referral != 'T') {
+                if (!isNullorEmpty(recSales)) {
                 recSales.setFieldValue('custrecord_sales_callbackdate', callbackdate);
                 recSales.setFieldValue('custrecord_sales_callbacktime', callbacktime);
                 recSales.setFieldValue('custrecord_sales_assigned', nlapiGetUser());
                 recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
-                nlapiSubmitRecord(recSales);
+                nlapiSubmitRecord(recSales);}
             }
         }
 
@@ -1380,10 +1387,10 @@ function serviceChangeSection(resultSet_service_change) {
             var fileID = searchResult_service_change.getValue("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null);
 
             // if (!isNullorEmpty(fileID)) {
-            // 	var fileRecord = nlapiLoadFile(fileID);
-            // 	inlinehTML += '<td><a href="' + fileRecord.getURL() + '" target="_blank">' + searchResult_service_change.getText("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null) + '</a></td>';
+            //  var fileRecord = nlapiLoadFile(fileID);
+            //  inlinehTML += '<td><a href="' + fileRecord.getURL() + '" target="_blank">' + searchResult_service_change.getText("custrecord_scand_form", "CUSTRECORD_SERVICECHG_COMM_REG", null) + '</a></td>';
             // } else {
-            // 	inlinehTML += '<td></td>';
+            //  inlinehTML += '<td></td>';
             // }
 
 
@@ -1451,7 +1458,6 @@ function freqCal(freq) {
     multiselect = multiselect.slice(0, -1)
     return multiselect;
 }
-
 
 
 
