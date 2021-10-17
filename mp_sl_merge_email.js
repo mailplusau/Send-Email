@@ -22,7 +22,7 @@ function main(request, response) {
 
             var file = nlapiCreateEmailMerger(templateId);
             nlapiLogExecution('DEBUG', 'recId', recId);
-            if (recId != 'null') {
+            if (recId != 'null' && !isNullorEmpty(recId)) {
                 file.setEntity('customer', recId);
             }
 
