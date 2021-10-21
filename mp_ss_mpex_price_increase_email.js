@@ -7,7 +7,7 @@
  * Description:         
  * 
  * @Last Modified by:   Ankith Ravindran
- * @Last Modified time: 2021-10-18 07:58:21
+ * @Last Modified time: 2021-10-18 14:26:31
  *
  */
 
@@ -205,38 +205,38 @@ function sendEmailSS() {
         merge['NLSCDL'] = mpex_prices_DL[price_plan_index_dl];
 
 
-        var file = nlapiCreateEmailMerger(322);
-        var mergeResult = file.merge();
+        // var file = nlapiCreateEmailMerger(322);
+        // var mergeResult = file.merge();
 
-        emailHtml = mergeResult.getBody();
-        subject = mergeResult.getSubject();
-        emailHtml = emailHtml.replace(/<nlem5kg>/gi, mpex_prices_5kg[price_plan_index_5kg]);
-        emailHtml = emailHtml.replace(/<nlem3kg>/gi, mpex_prices_3kg[price_plan_index_3kg]);
-        emailHtml = emailHtml.replace(/<nlem1kg>/gi, mpex_prices_1kg[price_plan_index_1kg]);
-        emailHtml = emailHtml.replace(/<nlem500g>/gi, mpex_prices_500g[price_plan_index_500g]);
-        emailHtml = emailHtml.replace(/<nlemb4>/gi, mpex_prices_B4[price_plan_index_b4]);
-        emailHtml = emailHtml.replace(/<nlemc5>/gi, mpex_prices_C5[price_plan_index_c5]);
-        emailHtml = emailHtml.replace(/<nlemdl>/gi, mpex_prices_DL[price_plan_index_dl]);
+        // emailHtml = mergeResult.getBody();
+        // subject = mergeResult.getSubject();
+        // emailHtml = emailHtml.replace(/<nlem5kg>/gi, mpex_prices_5kg[price_plan_index_5kg]);
+        // emailHtml = emailHtml.replace(/<nlem3kg>/gi, mpex_prices_3kg[price_plan_index_3kg]);
+        // emailHtml = emailHtml.replace(/<nlem1kg>/gi, mpex_prices_1kg[price_plan_index_1kg]);
+        // emailHtml = emailHtml.replace(/<nlem500g>/gi, mpex_prices_500g[price_plan_index_500g]);
+        // emailHtml = emailHtml.replace(/<nlemb4>/gi, mpex_prices_B4[price_plan_index_b4]);
+        // emailHtml = emailHtml.replace(/<nlemc5>/gi, mpex_prices_C5[price_plan_index_c5]);
+        // emailHtml = emailHtml.replace(/<nlemdl>/gi, mpex_prices_DL[price_plan_index_dl]);
 
-        nlapiLogExecution('DEBUG', 'emailHtml', emailHtml);
-        // 
-        // 
-        // var mergeResult = nlapiCreateEmailMerger(template).merge();
-        // var emailBody = mergeResult.getBody();
+        // nlapiLogExecution('DEBUG', 'emailHtml', emailHtml);
+        // // 
+        // // 
+        // // var mergeResult = nlapiCreateEmailMerger(template).merge();
+        // // var emailBody = mergeResult.getBody();
 
-        var emailAttach = new Object();
-        emailAttach['entity'] = custId;
+        // var emailAttach = new Object();
+        // emailAttach['entity'] = custId;
 
-        if (isNullorEmpty(account_email) && isNullorEmpty(service_email)) {
+        // if (isNullorEmpty(account_email) && isNullorEmpty(service_email)) {
 
-        } else {
+        // } else {
 
-            if (!isNullorEmpty(account_email)) {
-                nlapiSendEmail(112209, account_email, subject, emailHtml, null, null, emailAttach, null, true);
-            } else if (!isNullorEmpty(service_email)) {
-                nlapiSendEmail(112209, service_email, subject, emailHtml, null, null, emailAttach, null, true);
-            }
-        }
+        //     if (!isNullorEmpty(account_email)) {
+        //         nlapiSendEmail(112209, account_email, subject, emailHtml, null, null, emailAttach, null, true);
+        //     } else if (!isNullorEmpty(service_email)) {
+        //         nlapiSendEmail(112209, service_email, subject, emailHtml, null, null, emailAttach, null, true);
+        //     }
+        // }
 
 
 
