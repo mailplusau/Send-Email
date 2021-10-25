@@ -6,8 +6,8 @@
  *
  * Remarks: New Address Module        
  * 
- * @Last Modified by:   ankit
- * @Last Modified time: 2020-09-02 15:45:05
+ * @Last Modified by:   ankithravindran
+ * @Last Modified time: 2021-10-26 09:23:58
  *
  */
 
@@ -430,6 +430,7 @@ function sendEmail(request, response) {
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
         nlapiLogExecution('DEBUG', 'attCOEForm', attCOEForm)
+        nlapiLogExecution('DEBUG', 'invite_to_portal', invite_to_portal)
 
         var sales_rep_id;
 
@@ -555,8 +556,8 @@ function sendEmail(request, response) {
 
                 if (!isNullorEmpty(To) && !isNullorEmpty(subject) && !isNullorEmpty(message)) {
                     if (invite_to_portal == 'T') {
-                    	recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
-                    	nlapiLogExecution('DEBUG', 'custentity_portal_how_to_guides', 'LIST')
+                        recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
+                        nlapiLogExecution('DEBUG', 'custentity_portal_how_to_guides', 'LIST')
                         nlapiSendEmail(112209, To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments, true);
                     } else {
                         nlapiSendEmail(nlapiGetUser(), To, subject, message, CC, nlapiGetContext().getEmail(), records, arrAttachments, true);
@@ -689,8 +690,8 @@ function sendEmail(request, response) {
 
         } else if (outcome == 'sendinfo') {
             if (invite_to_portal == 'T') {
-            	nlapiLogExecution('DEBUG', 'Inside Sendinfo Outcome', 'Set How to guides to');
-            	recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
+                nlapiLogExecution('DEBUG', 'Inside Sendinfo Outcome', 'Set How to guides to');
+                recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
                 phonecall.setFieldValue('title', 'Sales - Invite to Customer Portal');
             } else if (referral == 'T') {
                 phonecall.setFieldValue('title', 'Sales - Referral Program');
@@ -823,8 +824,8 @@ function sendEmail(request, response) {
         }
         
         if (invite_to_portal == 'T') {
-        	recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
-        	}
+            recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
+            }
 
         nlapiSubmitRecord(recCustomer);
         nlapiSubmitRecord(phonecall);

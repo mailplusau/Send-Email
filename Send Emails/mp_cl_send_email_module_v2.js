@@ -449,7 +449,7 @@ $(document).on('click', '#invite_to_portal', function(event) {
         // $(".row_attachments").html(newHtml);
         $(".row_scf").html(newHtml2);
 
-
+        nlapiSetFieldValue('custpage_invite', 'T')
 
     } else {
         $('.main_tabs').removeClass('active');
