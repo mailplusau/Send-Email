@@ -7,7 +7,7 @@
  * Description:
  *
  * @Last modified by:   ankithravindran
- * @Last modified time: 2022-06-09T08:16:01+10:00
+ * @Last modified time: 2022-06-14T13:24:20+10:00
  *
  */
 
@@ -52,10 +52,10 @@ function pageInit() {
     $('.row_subject').removeClass('hide');
     $('.row_body').removeClass('hide');
 
-    var customerSearch = nlapiLoadSearch('customer',
-      'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
     // var customerSearch = nlapiLoadSearch('customer',
-    //   'customsearch_bi_at_active_customers_2__6');
+    //   'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
+    var customerSearch = nlapiLoadSearch('customer',
+      'customsearch_bi_at_active_customers_2__6');
 
     var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
       zee);
