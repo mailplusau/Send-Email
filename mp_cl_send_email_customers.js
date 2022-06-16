@@ -15,11 +15,11 @@ var baseURL = 'https://1048144.app.netsuite.com';
 if (nlapiGetContext().getEnvironment() == "SANDBOX") {
   baseURL = 'https://system.sandbox.netsuite.com';
 }
-$(window).load(function() {
+$(window).load(function () {
   // Animate loader off screen
   $(".se-pre-con").fadeOut("slow");
 });
-$(document).on('click', '#alert .close', function(e) {
+$(document).on('click', '#alert .close', function (e) {
   $(this).parent().hide();
 });
 
@@ -32,13 +32,13 @@ function showAlert(message) {
   // $(window).scrollTop($('#alert').offset().top);
 }
 
-$(document).on('click', '#alert .close', function(e) {
+$(document).on('click', '#alert .close', function (e) {
   $(this).parent().hide();
 });
 
 function pageInit() {
   $('#alert').hide();
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('#email_body').summernote({
       dialogsInBody: true
     });
@@ -57,9 +57,9 @@ function pageInit() {
     var customerSearch = nlapiLoadSearch('customer',
       'customsearch_bi_at_active_customers_2__6');
 
-    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-      zee);
-    customerSearch.addFilter(addFilterExpression);
+    // var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
+    //   zee);
+    // customerSearch.addFilter(addFilterExpression);
     var resultSetCustomer = customerSearch.runSearch();
 
 
@@ -70,7 +70,7 @@ function pageInit() {
 
     var dataSet = '{"data":[';
 
-    resultSetCustomer.forEachResult(function(searchResult) {
+    resultSetCustomer.forEachResult(function (searchResult) {
 
       var custid = searchResult.getValue('internalid');
       var entityid = searchResult.getValue('entityid');
@@ -102,17 +102,17 @@ function pageInit() {
     // AddStyle('https://1048144.app.netsuite.com/core/media/media.nl?id=1988776&c=1048144&h=58352d0b4544df20b40f&_xt=.css', 'head');
 
     //JQuery to sort table based on click of header. Attached library
-    $(document).ready(function() {
+    $(document).ready(function () {
       table = $("#customer").DataTable({
         "data": parsedData.data,
         "columns": [{
           "data": null,
-          "render": function(data, type, row) {
+          "render": function (data, type, row) {
             return '<p><b>' + data.entityid + '</b><p>';
           }
         }, {
           "data": null,
-          "render": function(data, type, row) {
+          "render": function (data, type, row) {
             return '<p><b>' + data.companyname_text +
               '</b><p><input type="hidden" class="form-control customer_id text-center" value="' +
               data.cust_id + '">';
@@ -151,7 +151,7 @@ function pageInit() {
 }
 
 //On selecting zee, reload the SMC - Summary page with selected Zee parameter
-$(document).on("change", ".zee_dropdown", function(e) {
+$(document).on("change", ".zee_dropdown", function (e) {
 
   var zee = $(this).val();
 
@@ -163,7 +163,7 @@ $(document).on("change", ".zee_dropdown", function(e) {
   window.location.href = url;
 });
 
-$(document).on('change', '#template', function(e) {
+$(document).on('change', '#template', function (e) {
 
   var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', $(
     'option:selected', this).val());
@@ -203,7 +203,7 @@ $(document).on('change', '#template', function(e) {
 
 });
 
-$(document).on("change", "#letter_type", function(e) {
+$(document).on("change", "#letter_type", function (e) {
 
   var letter_type = $(this).val();
 
@@ -254,7 +254,7 @@ function onclick_print() {
 
   var all_pages = [];
 
-  resultSetMpexPricing.forEachResult(function(searchResult) {
+  resultSetMpexPricing.forEachResult(function (searchResult) {
 
     var custId = searchResult.getValue('internalid');
     var companyname = searchResult.getValue('companyname');
@@ -270,35 +270,35 @@ function onclick_print() {
 
     for (p = 1; p <= recCustomer.getLineItemCount('addressbook'); p++) {
       if (isNullorEmpty(postaladdress) && recCustomer.getLineItemValue(
-          'addressbook', 'isresidential', p) == "T") {
+        'addressbook', 'isresidential', p) == "T") {
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }
@@ -307,67 +307,67 @@ function onclick_print() {
         "T") {
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }
       }
       if (isNullorEmpty(billaddressfull) && recCustomer.getLineItemValue(
-          'addressbook', 'defaultbilling', p) == "T") {
+        'addressbook', 'defaultbilling', p) == "T") {
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }

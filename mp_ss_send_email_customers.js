@@ -32,14 +32,14 @@ function sendEmailSS() {
   var customerSearch = nlapiLoadSearch('customer',
     'customsearch_bi_at_active_customers_2__6');
 
-  var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-    parseInt(zee));
-  customerSearch.addFilter(addFilterExpression);
+  // var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
+  //   parseInt(zee));
+  // customerSearch.addFilter(addFilterExpression);
   var resultSetCustomer = customerSearch.runSearch();
 
   var all_pages = [];
 
-  resultSetCustomer.forEachResult(function(searchResult) {
+  resultSetCustomer.forEachResult(function (searchResult) {
 
     var usage_loopstart_cust = ctx.getRemainingUsage();
     if ((usage_loopstart_cust < 400)) {
@@ -79,35 +79,35 @@ function sendEmailSS() {
 
     for (p = 1; p <= recCustomer.getLineItemCount('addressbook'); p++) {
       if (isNullorEmpty(postaladdress) && recCustomer.getLineItemValue(
-          'addressbook', 'isresidential', p) == "T") {
+        'addressbook', 'isresidential', p) == "T") {
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           postaladdress += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }
@@ -116,67 +116,67 @@ function sendEmailSS() {
         "T") {
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           siteaddressfull += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }
       }
       if (isNullorEmpty(billaddressfull) && recCustomer.getLineItemValue(
-          'addressbook', 'defaultbilling', p) == "T") {
+        'addressbook', 'defaultbilling', p) == "T") {
 
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addressee', p))) {
+          'addressee', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addressee', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr1', p))) {
+          'addr1', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr1', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'addr2', p))) {
+          'addr2', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'addr2', p) + '\n';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'city', p))) {
+          'city', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'city', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'state', p))) {
+          'state', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'state', p) + ' ';
         }
         if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook',
-            'zip', p))) {
+          'zip', p))) {
           billaddressfull += recCustomer.getLineItemValue('addressbook',
             'zip', p);
         }
@@ -225,7 +225,7 @@ function sendEmailSS() {
       merge);
     fileSCFORM.setName('Fuel_Surcharge_' + companyname + '.pdf');
 
-    fileSCFORM.setFolder(3248835); // Update the Documents folder with the date the email has been sent out to makwe it easier to download the PDF's
+    fileSCFORM.setFolder(3284100); // Update the Documents folder with the date the email has been sent out to makwe it easier to download the PDF's
 
     var id = nlapiSubmitFile(fileSCFORM);
 
