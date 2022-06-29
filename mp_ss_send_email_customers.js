@@ -27,14 +27,14 @@ function sendEmailSS() {
   nlapiLogExecution('DEBUG', 'ZEE', zee)
   nlapiLogExecution('DEBUG', 'template', template)
 
-  // var customerSearch = nlapiLoadSearch('customer',
-  //   'customsearch_mass_email_customer_list');
   var customerSearch = nlapiLoadSearch('customer',
-    'customsearch_bi_at_active_customers_2__6');
+    'customsearch_mass_email_customer_list');
+  // var customerSearch = nlapiLoadSearch('customer',
+  //   'customsearch_bi_at_active_customers_2__6');
 
-  // var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-  //   parseInt(zee));
-  // customerSearch.addFilter(addFilterExpression);
+  var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
+    parseInt(zee));
+  customerSearch.addFilter(addFilterExpression);
   var resultSetCustomer = customerSearch.runSearch();
 
   var all_pages = [];
@@ -191,7 +191,7 @@ function sendEmailSS() {
 
     var emailMerger = nlapiCreateEmailMerger(template);
     // var emailMerger = nlapiCreateEmailMerger(354);
-    if (template == 298 || template == 326) {
+    if (template == 298 || template == 326 || template == 358) {
       emailMerger.setEntity('customer', custid);
       emailMerger.setEntity('partner', zee);
     }
@@ -221,16 +221,16 @@ function sendEmailSS() {
       }
     }
 
-    var fileSCFORM = nlapiMergeRecord(356, 'customer', custid, null, null,
-      merge);
-    fileSCFORM.setName('Fuel_Surcharge_' + companyname + '.pdf');
+    // var fileSCFORM = nlapiMergeRecord(356, 'customer', custid, null, null,
+    //   merge);
+    // fileSCFORM.setName('Fuel_Surcharge_' + companyname + '.pdf');
 
-    fileSCFORM.setFolder(3284100); // Update the Documents folder with the date the email has been sent out to makwe it easier to download the PDF's
+    // fileSCFORM.setFolder(3284100); // Update the Documents folder with the date the email has been sent out to makwe it easier to download the PDF's
 
-    var id = nlapiSubmitFile(fileSCFORM);
+    // var id = nlapiSubmitFile(fileSCFORM);
 
-    recCustomer.setFieldValue('custentity_mpex_price_letter', id);
-    recCustomer.setFieldValue('custentity_letter_sent', 1);
+    // recCustomer.setFieldValue('custentity_mpex_price_letter', id);
+    // recCustomer.setFieldValue('custentity_letter_sent', 1);
 
 
     nlapiSubmitRecord(recCustomer);

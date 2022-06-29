@@ -52,14 +52,14 @@ function pageInit() {
     $('.row_subject').removeClass('hide');
     $('.row_body').removeClass('hide');
 
-    // var customerSearch = nlapiLoadSearch('customer',
-    //   'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
     var customerSearch = nlapiLoadSearch('customer',
-      'customsearch_bi_at_active_customers_2__6');
+      'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
+    // var customerSearch = nlapiLoadSearch('customer',
+    //   'customsearch_bi_at_active_customers_2__6');
 
-    // var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-    //   zee);
-    // customerSearch.addFilter(addFilterExpression);
+    var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
+      zee);
+    customerSearch.addFilter(addFilterExpression);
     var resultSetCustomer = customerSearch.runSearch();
 
 
