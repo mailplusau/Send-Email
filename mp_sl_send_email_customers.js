@@ -48,7 +48,7 @@ function sendEmail(request, response) {
 
             inlinehtml2 += '<option value=""></option>'
 
-            resultSet_zee.forEachResult(function(searchResult_zee) {
+            resultSet_zee.forEachResult(function (searchResult_zee) {
                 zee_id = searchResult_zee.getValue('internalid');
                 // WS Edit: Updated entityid to companyname
                 zee_name = searchResult_zee.getValue('companyname');
@@ -159,7 +159,7 @@ function email_template(resultSetCampTemp) {
     html += '<span class="mandatory">*</span>';
 
     html += '</span><select  id="template" class="form-control" ><option></option>';
-    resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+    resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
         var tempId = searchResultCampTemp.getValue('internalid');
         var tempName = searchResultCampTemp.getValue('name');
@@ -199,7 +199,7 @@ function email_template(resultSetCampTemp) {
 
     html += '<option value=""></option>'
 
-    resultSet_zee.forEachResult(function(searchResult_zee) {
+    resultSet_zee.forEachResult(function (searchResult_zee) {
         zee_id = searchResult_zee.getValue('internalid');
         // WS Edit: Updated entityid to companyname
         zee_name = searchResult_zee.getValue('companyname');
