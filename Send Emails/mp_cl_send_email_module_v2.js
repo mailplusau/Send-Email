@@ -6,21 +6,21 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
 var urlCall = null;
 var salesRep = escape(nlapiGetContext().getName())
 
-$(function() {
+$(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
 
-$(window).load(function() {
+$(window).load(function () {
     // Animate loader off screen
     $(".se-pre-con").fadeOut("slow");
 });
 
-$(".nav-pills").on("click", "a", function(e) {
+$(".nav-pills").on("click", "a", function (e) {
 
     $(this).tab('show');
 });
 
-$(document).on('click', '#alert .close', function(e) {
+$(document).on('click', '#alert .close', function (e) {
     $(this).parent().hide();
 });
 
@@ -32,7 +32,7 @@ function showAlert(message) {
     // $(window).scrollTop($('#alert').offset().top);
 }
 
-$(document).on('click', '#alert .close', function(e) {
+$(document).on('click', '#alert .close', function (e) {
     $(this).parent().hide();
 });
 
@@ -40,7 +40,7 @@ $(document).on('click', '#alert .close', function(e) {
 
 function pageInit() {
     $('#alert').hide();
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#email_body').summernote({
             dialogsInBody: true
         });
@@ -98,7 +98,7 @@ function pageInit() {
 
             selectList = $("#template");
 
-            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
                 var tempId = searchResultCampTemp.getValue('internalid');
                 var tempName = searchResultCampTemp.getValue('name');
@@ -159,7 +159,7 @@ function pageInit() {
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -217,7 +217,7 @@ function pageInit() {
 
             selectList = $("#template");
 
-            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
                 var tempId = searchResultCampTemp.getValue('internalid');
                 var tempName = searchResultCampTemp.getValue('name');
@@ -274,7 +274,7 @@ function pageInit() {
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -339,7 +339,7 @@ function pageInit() {
 
 }
 
-$(document).on('click', '#invite_to_portal', function(event) {
+$(document).on('click', '#invite_to_portal', function (event) {
     if ($('#invite_to_portal').is(':checked')) {
 
         $('#quote').prop('checked', false);
@@ -381,7 +381,7 @@ $(document).on('click', '#invite_to_portal', function(event) {
 
         selectList = $("#template");
 
-        resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+        resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
             var tempId = searchResultCampTemp.getValue('internalid');
             var tempName = searchResultCampTemp.getValue('name');
@@ -462,7 +462,7 @@ $(document).on('click', '#invite_to_portal', function(event) {
     }
 });
 
-$(document).on('click', '#referral_program', function(event) {
+$(document).on('click', '#referral_program', function (event) {
     if ($('#invite_to_portal').is(':checked')) {
 
         $('#quote').prop('checked', false);
@@ -504,7 +504,7 @@ $(document).on('click', '#referral_program', function(event) {
 
         selectList = $("#template");
 
-        resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+        resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
             var tempId = searchResultCampTemp.getValue('internalid');
             var tempName = searchResultCampTemp.getValue('name');
@@ -585,7 +585,7 @@ $(document).on('click', '#referral_program', function(event) {
     }
 });
 
-$(document).on('click', '#form', function(event) {
+$(document).on('click', '#form', function (event) {
     if ($('#form').is(':checked')) {
 
         $('#quote').prop('checked', false);
@@ -636,7 +636,7 @@ $(document).on('click', '#form', function(event) {
 
             selectList = $("#template");
 
-            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
                 var tempId = searchResultCampTemp.getValue('internalid');
                 var tempName = searchResultCampTemp.getValue('name');
@@ -697,7 +697,7 @@ $(document).on('click', '#form', function(event) {
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -722,7 +722,7 @@ $(document).on('click', '#form', function(event) {
 });
 
 
-$(document).on('click', '.scf', function(event) {
+$(document).on('click', '.scf', function (event) {
     if ($('.scf').is(':checked')) {
         $("input.propscf").attr("disabled", true);
         nlapiSetFieldValue('custpage_scf', 159);
@@ -732,7 +732,7 @@ $(document).on('click', '.scf', function(event) {
     }
 });
 
-$(document).on('click', '.sof', function(event) {
+$(document).on('click', '.sof', function (event) {
     if ($('.scf').is(':checked')) {
         // $("input.propsof").attr("disabled", true);
         nlapiSetFieldValue('custpage_sof', 94);
@@ -742,7 +742,7 @@ $(document).on('click', '.sof', function(event) {
     }
 });
 
-$(document).on('click', '.quotescf', function(event) {
+$(document).on('click', '.quotescf', function (event) {
     if ($('.quotescf').is(':checked')) {
 
         nlapiSetFieldValue('custpage_scf', 180);
@@ -752,7 +752,7 @@ $(document).on('click', '.quotescf', function(event) {
     }
 });
 
-$(document).on('click', '.coe', function(event) {
+$(document).on('click', '.coe', function (event) {
     if ($('.coe').is(':checked')) {
 
         nlapiSetFieldValue('custpage_coe', 186);
@@ -762,7 +762,7 @@ $(document).on('click', '.coe', function(event) {
     }
 });
 
-$(document).on('click', '.propscf', function(event) {
+$(document).on('click', '.propscf', function (event) {
     if ($('.propscf').is(':checked')) {
         $("input.scf").attr("disabled", true);
         nlapiSetFieldValue('custpage_scf', 179);
@@ -772,7 +772,7 @@ $(document).on('click', '.propscf', function(event) {
     }
 });
 
-$(document).on('click', '#quote', function(event) {
+$(document).on('click', '#quote', function (event) {
     if ($('#quote').is(':checked')) {
         $('.main_tabs').removeClass('hide');
         $('#form').prop('checked', false);
@@ -820,7 +820,259 @@ $(document).on('click', '#quote', function(event) {
 
             selectList = $("#template");
 
-            resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
+
+                var tempId = searchResultCampTemp.getValue('internalid');
+                var tempName = searchResultCampTemp.getValue('name');
+
+                var option = new Option(tempName, tempId);
+                selectList.append(option, null);
+
+                return true;
+            });
+
+            //Search for Attachments
+            // var searchedAtt = nlapiLoadSearch('customrecord_comm_attachment', 'customsearch_salesp_attachments');
+
+            // var newFiltersAtt = new Array();
+            // if (customer_status == '13') {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 2);
+            // } else {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 1);
+            // }
+
+            // // newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 2, 5]);
+            // } else {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 5]);
+            // }
+
+
+            // searchedAtt.addFilters(newFiltersAtt);
+
+            // var resultSetAtt = searchedAtt.runSearch();
+
+            // var newHtml = '<div class="row">';
+
+            // resultSetAtt.forEachResult(function(searchResultAtt) {
+
+            // 	var attId = searchResultAtt.getValue('internalid');
+            // 	var attName = searchResultAtt.getValue('name');
+            // 	var file = searchResultAtt.getValue('custrecord_comm_attach_file');
+            // 	// var fileRecord = nlapiLoadFile(file);
+
+
+            // 	newHtml += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview()"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" /></span></div></div>';
+
+            // 	return true;
+            // });
+
+            // newHtml += '</div>';
+
+            var newHtml2 = '<div class="row">';
+            var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF159_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+
+            // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
+
+            newHtml2 += '</div>';
+            newHtml2 += '</div>';
+
+
+            // $(".row_attachments").html(newHtml);
+            $(".row_scf").html(newHtml2);
+        }
+
+    } else {
+        // $('#services').removeClass('active');
+        $('.main_tabs').removeClass('active');
+        $('.main_tabs').addClass('hide');
+        $('#services').addClass('active');
+        $('.services_li').addClass('active');
+    }
+});
+
+$(document).on('click', '#signup', function (event) {
+    if ($('#signup').is(':checked')) {
+        $('.main_tabs').removeClass('hide');
+        $('#form').prop('checked', false);
+        $('#invite_to_portal').prop('checked', false);
+        $('#services').addClass('hide');
+        $('.services_li').addClass('hide');
+        // $('.services_li').removeClass('hide');
+        $('#email').addClass('active');
+        $('.email_li').removeClass('active');
+        if ($('#no_email').is(':checked')) {
+
+            $('.subject_section').addClass('hide');
+            $('#dear').addClass('hide');
+            $('.body_section').addClass('hide');
+            $('.cc_section').addClass('hide');
+            $('.template_section').addClass('hide');
+
+            nlapiSetFieldValue('custpage_to', 0);
+        } else {
+
+            var customer_status = nlapiGetFieldValue('custpage_customer_status');
+
+            var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_salesp_campaign_templates');
+
+
+            var newFiltersCampTemp = new Array();
+            if (customer_status == '13') {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 2);
+            } else {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 1);
+            }
+
+            // newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            // 	newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', [2, 5]);
+            // } else {
+            newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', 5);
+            // }
+
+
+            searchedCampTemp.addFilters(newFiltersCampTemp);
+
+            var resultSetCampTemp = searchedCampTemp.runSearch();
+
+
+            selectList = $("#template");
+
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
+
+                var tempId = searchResultCampTemp.getValue('internalid');
+                var tempName = searchResultCampTemp.getValue('name');
+
+                var option = new Option(tempName, tempId);
+                selectList.append(option, null);
+
+                return true;
+            });
+
+            //Search for Attachments
+            // var searchedAtt = nlapiLoadSearch('customrecord_comm_attachment', 'customsearch_salesp_attachments');
+
+            // var newFiltersAtt = new Array();
+            // if (customer_status == '13') {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 2);
+            // } else {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_camptype', null, 'anyof', 1);
+            // }
+
+            // // newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 2, 5]);
+            // } else {
+            // 	newFiltersAtt[newFiltersAtt.length] = new nlobjSearchFilter('custrecord_comm_attach_commtype', null, 'anyof', [1, 5]);
+            // }
+
+
+            // searchedAtt.addFilters(newFiltersAtt);
+
+            // var resultSetAtt = searchedAtt.runSearch();
+
+            // var newHtml = '<div class="row">';
+
+            // resultSetAtt.forEachResult(function(searchResultAtt) {
+
+            // 	var attId = searchResultAtt.getValue('internalid');
+            // 	var attName = searchResultAtt.getValue('name');
+            // 	var file = searchResultAtt.getValue('custrecord_comm_attach_file');
+            // 	// var fileRecord = nlapiLoadFile(file);
+
+
+            // 	newHtml += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' + attId + '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview()"/></button></span><input type="text" readonly id="" class="form-control" value="' + attName + '"><span class="input-group-addon"><input type="checkbox" id="' + file + '" class="attachments" /></span></div></div>';
+
+            // 	return true;
+            // });
+
+            // newHtml += '</div>';
+
+            var newHtml2 = '<div class="row">';
+            var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF159_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+            var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+
+            // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
+
+            newHtml2 += '</div>';
+            newHtml2 += '</div>';
+
+
+            // $(".row_attachments").html(newHtml);
+            $(".row_scf").html(newHtml2);
+        }
+
+    } else {
+        // $('#services').removeClass('active');
+        $('.main_tabs').removeClass('active');
+        $('.main_tabs').addClass('hide');
+        $('#services').addClass('active');
+        $('.services_li').addClass('active');
+    }
+});
+
+$(document).on('click', '#outofterr', function (event) {
+    if ($('#outofterr').is(':checked')) {
+        $('.main_tabs').removeClass('hide');
+        $('#form').prop('checked', false);
+        $('#invite_to_portal').prop('checked', false);
+        $('#services').addClass('hide');
+        $('.services_li').addClass('hide');
+        // $('.services_li').removeClass('hide');
+        $('#email').addClass('active');
+        $('.email_li').removeClass('active');
+        if ($('#no_email').is(':checked')) {
+
+            $('.subject_section').addClass('hide');
+            $('#dear').addClass('hide');
+            $('.body_section').addClass('hide');
+            $('.cc_section').addClass('hide');
+            $('.template_section').addClass('hide');
+
+            nlapiSetFieldValue('custpage_to', 0);
+        } else {
+
+            var customer_status = nlapiGetFieldValue('custpage_customer_status');
+
+            var searchedCampTemp = nlapiLoadSearch('customrecord_camp_comm_template', 'customsearch_salesp_campaign_templates');
+
+
+            var newFiltersCampTemp = new Array();
+            if (customer_status == '13') {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 2);
+            } else {
+                newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_camp_type', null, 'anyof', 1);
+            }
+
+            // newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('isinactive', null, 'is', 'F');
+            // if ($('#form').is(':checked')) {
+            // 	newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', [2, 5]);
+            // } else {
+            newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter('custrecord_camp_comm_comm_type', null, 'anyof', 5);
+            // }
+
+
+            searchedCampTemp.addFilters(newFiltersCampTemp);
+
+            var resultSetCampTemp = searchedCampTemp.runSearch();
+
+
+            selectList = $("#template");
+
+            resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
                 var tempId = searchResultCampTemp.getValue('internalid');
                 var tempName = searchResultCampTemp.getValue('name');
@@ -900,8 +1152,8 @@ $(document).on('click', '#quote', function(event) {
 
 
 
-$(document).on("change", "#attachments", function(e) {
-    $('option:selected', this).each(function() {
+$(document).on("change", "#attachments", function (e) {
+    $('option:selected', this).each(function () {
         $('#myModal').modal("hide");
         var id = $(this).val();
         console.log(id)
@@ -916,7 +1168,7 @@ $(document).on("change", "#attachments", function(e) {
 
 });
 
-$(document).on('change', '#send_to', function(e) {
+$(document).on('change', '#send_to', function (e) {
 
 
     if ($('#send_to').val() == 0) {
@@ -962,7 +1214,7 @@ $(document).on('change', '#send_to', function(e) {
 
 });
 
-$(document).on('change', '#template', function(e) {
+$(document).on('change', '#template', function (e) {
 
     var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template', $('option:selected', this).val());
     var templateId = recCommTemp.getFieldValue('custrecord_camp_comm_email_template');
@@ -977,12 +1229,43 @@ $(document).on('change', '#template', function(e) {
     console.log(userID);
     console.log($('#send_to').val());
 
+    console.log('Customer Internal ID:' + parseInt(nlapiGetFieldValue('custpage_customer_id')));
 
+    //All Sales Record - Get Sales Rep Details
+    var salesRecordAllSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__2');
+
+    var newFilters_salesRecordAllSearch = new Array();
+    newFilters_salesRecordAllSearch[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_customer', 'is', parseInt(nlapiGetFieldValue('custpage_customer_id')));
+
+    salesRecordAllSearch.addFilters(newFilters_salesRecordAllSearch);
+
+    var salesRecordAutoSignedResult = salesRecordAllSearch.runSearch();
+
+    var salesRecordAutoSignedResultSet = salesRecordAutoSignedResult.getResults(0, 1);
+
+    var salesRepEmail = null;
+    var salesRepName = null;
+
+    if (!isNullorEmpty(salesRecordAutoSignedResultSet)) {
+        if (salesRecordAutoSignedResultSet.length != 0) {
+            salesRecordAutoSignedResult.forEachResult(function (searchResult) {
+
+                salesRepEmail = searchResult.getValue('email', 'CUSTRECORD_SALES_ASSIGNED', null);
+                salesRepId = searchResult.getValue('custrecord_sales_assigned');
+                salesRepName = searchResult.getText('custrecord_sales_assigned');
+                return true;
+            });
+        }
+    }
 
     var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
+    if (!isNullorEmpty(salesRepName)) {
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
+    } else {
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + escape(nlapiGetContext().getName());
+    }
 
-    url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID);
 
     urlCall = nlapiRequestURL(url);
     var emailHtml = urlCall.getBody();
@@ -997,7 +1280,7 @@ $(document).on('change', '#template', function(e) {
 
 });
 
-$(document).on('click', '.createservicechg', function(event) {
+$(document).on('click', '.createservicechg', function (event) {
 
     var closed_won = 'F';
     var opp_with_value = 'F';
@@ -1073,15 +1356,15 @@ function validate() {
             return_value = false;
         }
 
-        if (isNullorEmpty(callback_date) && referral != 'T') {
-            alertMessage += 'Please Select Call Back Date</br>';
-            return_value = false;
-        }
+        // if (isNullorEmpty(callback_date) && referral != 'T') {
+        //     alertMessage += 'Please Select Call Back Date</br>';
+        //     return_value = false;
+        // }
 
-        if (isNullorEmpty(callback_time) && referral != 'T') {
-            alertMessage += 'Please Select Call Back Time</br>';
-            return_value = false;
-        }
+        // if (isNullorEmpty(callback_time) && referral != 'T') {
+        //     alertMessage += 'Please Select Call Back Time</br>';
+        //     return_value = false;
+        // }
 
     } else if (!isNullorEmpty(callback) && isNullorEmpty(outcome) && referral != 'T') {
         var callback_time = onTimeChange($('#time').val());
@@ -1152,6 +1435,7 @@ function saveRecord() {
             outcome = 'nosale'
         }
 
+        var prod_tracking = $('#prod_tracking').val()
         var send_to = $('#send_to').val()
         var send_cc = $('#send_cc').val()
         var subject = $('#subject').val();
@@ -1180,7 +1464,12 @@ function saveRecord() {
                 outcome = 'sendform';
             } else if ($('input#quote').is(':checked')) {
                 outcome = 'sendquote';
+            } else if ($('input#outofterr').is(':checked')) {
+                outcome = 'outofterr';
+            } else if ($('input#signup').is(':checked')) {
+                outcome = 'signupemail';
             }
+
 
             var attachments_ids = [];
             var scf_ids = [];
@@ -1217,6 +1506,7 @@ function saveRecord() {
         }
 
         console.log(send_to);
+        nlapiSetFieldValue('custpage_mp_tracking', prod_tracking);
         nlapiSetFieldValue('custpage_to', send_to);
         nlapiSetFieldValue('custpage_cc', send_cc);
         nlapiSetFieldValue('custpage_subject', subject);
@@ -1238,14 +1528,24 @@ function saveRecord() {
             var callback_date = $('#date').val();
             var callback_notes = $('#notes').val();
             var callback_type = $('#appointment_type').val();
+            console.log('callback_date: ' + callback_date);
+            if (!isNullorEmpty(callback_date)) {
+                var splitDate = callback_date.split('-');
+                callback_date = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
 
-            var splitDate = callback_date.split('-');
-            callback_date = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
+                nlapiSetFieldValue('custpage_callbackdate', callback_date);
+                nlapiSetFieldValue('custpage_callbacktime', callback_time);
+                nlapiSetFieldValue('custpage_callnotes', callback_notes);
+                nlapiSetFieldValue('custpage_calltype', callback_type);
+            } else {
+                nlapiSetFieldValue('custpage_callbackdate', null);
+                nlapiSetFieldValue('custpage_callbacktime', null);
+                nlapiSetFieldValue('custpage_callnotes', null);
+                nlapiSetFieldValue('custpage_calltype', null);
+            }
 
-            nlapiSetFieldValue('custpage_callbackdate', callback_date);
-            nlapiSetFieldValue('custpage_callbacktime', callback_time);
-            nlapiSetFieldValue('custpage_callnotes', callback_notes);
-            nlapiSetFieldValue('custpage_calltype', callback_type);
+
+
 
             nlapiSetFieldValue('custpage_outcome', outcome);
         } else {
@@ -1275,7 +1575,7 @@ function onclick_back() {
 /**
  * [description] - On the click of the edit button
  */
-$(document).on('click', '.edit_class', function(event) {
+$(document).on('click', '.edit_class', function (event) {
 
     var commregid = $(this).attr('data-commreg');
     var dateEffective = $(this).attr('data-dateeffective');
@@ -1647,24 +1947,29 @@ function AddStyle(cssLink, pos) {
 }
 
 function onTimeChange(value) {
-    var timeSplit = value.split(':'),
-        hours,
-        minutes,
-        meridian;
-    hours = timeSplit[0];
-    minutes = timeSplit[1];
-    if (hours > 12) {
-        meridian = 'PM';
-        hours -= 12;
-    } else if (hours < 12) {
-        meridian = 'AM';
-        if (hours == 0) {
-            hours = 12;
+    if (!isNullorEmpty(value)) {
+        var timeSplit = value.split(':'),
+            hours,
+            minutes,
+            meridian;
+        hours = timeSplit[0];
+        minutes = timeSplit[1];
+        if (hours > 12) {
+            meridian = 'PM';
+            hours -= 12;
+        } else if (hours < 12) {
+            meridian = 'AM';
+            if (hours == 0) {
+                hours = 12;
+            }
+        } else {
+            meridian = 'PM';
         }
+        return (hours + ':' + minutes + ' ' + meridian);
     } else {
-        meridian = 'PM';
+        return null;
     }
-    return (hours + ':' + minutes + ' ' + meridian);
+
 }
 
 function convertTo24Hour(time) {

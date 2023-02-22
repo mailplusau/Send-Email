@@ -72,6 +72,8 @@ function sendEmail(request, response) {
       unity = params.unity;
       sendinfo = params.sendinfo;
       referral = params.referral;
+      closed_won = params.closedwon;
+      opp_with_value = params.oppwithvalue;
     } else {
       var customer_id = parseInt(request.getParameter('custid'));
       var customer_record = nlapiLoadRecord('customer', customer_id);
@@ -101,7 +103,7 @@ function sendEmail(request, response) {
       newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
         'custrecord_customer', null, 'anyof', customer_id);
       newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
-        'custrecord_trial_status', null, 'anyof', 10);
+        'custrecord_trial_status', null, 'anyof', [9, 10, 2]);
 
       var col = new Array();
       col[0] = new nlobjSearchColumn('internalId');
@@ -112,17 +114,28 @@ function sendEmail(request, response) {
       col[5] = new nlobjSearchColumn('custrecord_in_out');
       col[6] = new nlobjSearchColumn('custrecord_customer');
       col[7] = new nlobjSearchColumn('custrecord_trial_status');
-      col[7] = new nlobjSearchColumn('custrecord_comm_date_signup');
+      col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
 
 
       var comm_reg_results = nlapiSearchRecord(
         'customrecord_commencement_register', null, newFiltersCommReg, col);
 
       if (!isNullorEmpty(comm_reg_results)) {
+        nlapiLogExecution('DEBUG', 'comm_reg_results', comm_reg_results.length)
         if (comm_reg_results.length == 1) {
           commReg = comm_reg_results[0].getValue('internalid');
         } else if (comm_reg_results.length > 1) {
+          for (var z = 0; z < comm_reg_results.length; z++) {
+            var tempcommReg = comm_reg_results[z].getValue('internalid');
+            var commRegStatus = comm_reg_results[z].getValue('custrecord_trial_status');
+            nlapiLogExecution('DEBUG', 'tempcommReg', tempcommReg)
+            nlapiLogExecution('DEBUG', 'commRegStatus', commRegStatus)
+            if (commRegStatus == 9) {
+              commReg = tempcommReg
+            } else {
 
+            }
+          }
         }
       }
     }
@@ -143,7 +156,7 @@ function sendEmail(request, response) {
       newFilters[newFilters.length] = new nlobjSearchFilter(
         "custrecord_servicechg_comm_reg", null, 'is', commReg);
       newFilters[newFilters.length] = new nlobjSearchFilter(
-        'custrecord_servicechg_status', null, 'anyof', [4]);
+        'custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
 
       searched_service_change.addFilters(newFilters);
 
@@ -225,17 +238,17 @@ function sendEmail(request, response) {
       var form = nlapiCreateForm('Send Email: <a href="' + baseURL +
         '/app/common/entity/custjob.nl?id=' + customer_id + '">' +
         customer_record.getFieldValue('entityid') + '</a> ' + customer_record
-        .getFieldValue('companyname'));
+          .getFieldValue('companyname'));
     } else if (nosale == 'T') {
       var form = nlapiCreateForm('LOST: <a href="' + baseURL +
         '/app/common/entity/custjob.nl?id=' + customer_id + '">' +
         customer_record.getFieldValue('entityid') + '</a> ' + customer_record
-        .getFieldValue('companyname'));
+          .getFieldValue('companyname'));
     } else if (callback == 'T') {
       var form = nlapiCreateForm('Set Appointment: <a href="' + baseURL +
         '/app/common/entity/custjob.nl?id=' + customer_id + '">' +
         customer_record.getFieldValue('entityid') + '</a> ' + customer_record
-        .getFieldValue('companyname'));
+          .getFieldValue('companyname'));
     }
 
 
@@ -254,6 +267,7 @@ function sendEmail(request, response) {
         'hidden').setDefaultValue(deployid);
     }
 
+    form.addField('custpage_mp_tracking', 'textarea', 'MP TRACKING').setDisplayType('hidden');
     form.addField('custpage_to', 'textarea', 'TO').setDisplayType('hidden');
     form.addField('custpage_cc', 'textarea', 'CC').setDisplayType('hidden');
     form.addField('custpage_subject', 'textarea', 'SUBJECT').setDisplayType(
@@ -338,6 +352,23 @@ function sendEmail(request, response) {
       var attachments_class = 'hide';
     }
 
+    if (closed_won == 'T') {
+      var closed_won_class = '';
+      var quote_class = 'hide';
+      var sign_up_class = 'hide';
+      var out_of_terr_class = 'hide'
+    } else if (opp_with_value == 'T') {
+      var closed_won_class = 'hide';
+      var quote_class = '';
+      var sign_up_class = 'hide';
+      var out_of_terr_class = 'hide'
+    } else {
+      var closed_won_class = '';
+      var quote_class = '';
+      var sign_up_class = '';
+      var out_of_terr_class = ''
+    }
+
     inlinehTML += '<form id="myForm">';
     if (callback == 'T') {
       inlinehTML +=
@@ -358,9 +389,9 @@ function sendEmail(request, response) {
       inlinehTML += '</ul>';
     } else {
       inlinehTML += '<div class="form-group container row_form_quote">';
-      inlinehTML += '<div class="row">';
+      inlinehTML += '<div class="row"style="margin-top: 30px">';
       inlinehTML +=
-        '<div class="col-xs-3 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
+        '<div class="col-xs-3 form_section ' + closed_won_class + '"><div class="input-group"><input type="text" class="form-control" readonly value="CLOSED WON" /><span class="input-group-addon">';
       if (closed_won == 'T') {
         inlinehTML += '<input type="checkbox" checked id="form" class="" />';
       } else {
@@ -368,18 +399,37 @@ function sendEmail(request, response) {
       }
       inlinehTML += '</span></div></div>';
       inlinehTML +=
-        '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
+        '<div class="col-xs-3 quote_section ' + quote_class + '"><div class="input-group"><input type="text" class="form-control" readonly value="OPPORTUNITY WITH VALUE" /><span class="input-group-addon">';
       if (opp_with_value == 'T') {
         inlinehTML += '<input type="checkbox" checked id="quote" class="" />';
       } else {
         inlinehTML += '<input type="checkbox" id="quote" class="" />';
       }
+      inlinehTML += '</span></div></div>';
+      inlinehTML +=
+        '<div class="col-xs-3 signup_section ' + sign_up_class + '"><div class="input-group"><input type="text" class="form-control" readonly value="SIGN UP EMAIL - PRODUCT RATES" /><span class="input-group-addon">';
+      if (opp_with_value == 'T') {
+        inlinehTML += '<input type="checkbox" checked id="signup" class="" />';
+      } else {
+        inlinehTML += '<input type="checkbox" id="signup" class="" />';
+      }
+      inlinehTML += '</span></div></div>';
+      inlinehTML +=
+        '<div class="col-xs-3 signup_section ' + out_of_terr_class + '"><div class="input-group"><input type="text" class="form-control" readonly value="OUT OF TERRITORY" /><span class="input-group-addon">';
+      if (opp_with_value == 'T') {
+        inlinehTML += '<input type="checkbox" checked id="outofterr" class="" />';
+      } else {
+        inlinehTML += '<input type="checkbox" id="outofterr" class="" />';
+      }
 
       inlinehTML += '</span></div></div>';
       if (invite_to_portal == 'T') {
         if (isNullorEmpty(sendinfo)) {
-          inlinehTML +=
-            '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+          if (customer_status == 13) {
+            inlinehTML +=
+              '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
+          }
+
         } else {
           inlinehTML +=
             '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND INFO" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" checked /></span></div></div>';
@@ -389,8 +439,11 @@ function sendEmail(request, response) {
         inlinehTML +=
           '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="REFERRAL PROGRAM" /><span class="input-group-addon"><input type="checkbox" id="referral_program" class="" checked/></span></div></div>';
       } else {
-        inlinehTML +=
-          '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
+        if (customer_status == 13) {
+          inlinehTML +=
+            '<div class="col-xs-3 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="INVITE TO PORTAL" /><span class="input-group-addon"><input type="checkbox" id="invite_to_portal" class="" /></span></div></div>';
+        }
+
       }
 
       inlinehTML += '</div>';
@@ -438,7 +491,7 @@ function sendEmail(request, response) {
         //Service Details Tab Content
         tab_content += '<div role="tabpanel" class="tab-pane ' +
           attachments_class + '" id="services">';
-        tab_content += serviceChangeSection(resultSet_service_change);
+        tab_content += serviceChangeSection(resultSet_service_change, closed_won, opp_with_value);
         tab_content += '</div>';
       }
 
@@ -513,6 +566,12 @@ function sendEmail(request, response) {
     var sendinfo = request.getParameter('custpage_sendinfo');
     var referral = request.getParameter('custpage_referral');
 
+
+    var closed_won = request.getParameter('custpage_closed_won');
+    var opp_with_values = request.getParameter('custpage_opp_with_values');
+
+    var mp_prod_tracking = request.getParameter('custpage_mp_tracking');
+
     nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
     nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
     nlapiLogExecution('DEBUG', 'attCOEForm', attCOEForm)
@@ -575,7 +634,7 @@ function sendEmail(request, response) {
     var phonecall = nlapiCreateRecord('phonecall');
     phonecall.setFieldValue('assigned', nlapiGetUser());
     phonecall.setFieldValue('custevent_organiser', nlapiGetUser());
-    phonecall.setFieldValue('startdate', callbackdate);
+    phonecall.setFieldValue('startdate', getDate());
     phonecall.setFieldValue('company', custId);
     phonecall.setFieldText('status', 'Completed');
     phonecall.setFieldValue('custevent_call_type', 2);
@@ -603,7 +662,7 @@ function sendEmail(request, response) {
     if (isNullorEmpty(callback)) {
 
       if (isNullorEmpty(attSOForm) && isNullorEmpty(attSCForm) && isNullorEmpty(
-          attCOEForm)) {
+        attCOEForm)) {
         var arrAttachments = [];
       } else {
         if (!isNullorEmpty(request.getParameter('custpage_sof'))) {
@@ -618,23 +677,21 @@ function sendEmail(request, response) {
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
         var arrAttachments = getAttachments(custId, commRegId, attSCForm,
-          attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm
+          attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm, closed_won, opp_with_value
         );
       }
 
 
       var contact_filter = new Array();
       contact_filter[0] = new nlobjSearchFilter('company', null, 'is', custId);
-      contact_filter[1] = new nlobjSearchFilter('contactrole', null, 'anyof', [-
-        10, -30
-      ]);
+      contact_filter[1] = new nlobjSearchFilter('contactrole', null, 'anyof', [-10, -30]);
 
       var contact_col = new Array();
       contact_col[0] = new nlobjSearchColumn('internalId');
 
       var contact_results = nlapiSearchRecord('contact', null, contact_filter,
         contact_col);
-      if (!isNullorEmpty(contact_results)) {
+      if (!isNullorEmpty(contact_results) && outcome != 'nosale') {
         // if (contact_results.length == 1) {
 
         nlapiLogExecution('DEBUG', 'arrAttachments', arrAttachments)
@@ -651,29 +708,72 @@ function sendEmail(request, response) {
         var records = new Array();
         records['entity'] = custId;
 
+        var customer_record = nlapiLoadRecord('customer', custId);
+        var entity_id = customer_record.getFieldValue('entityid');
+        var customer_name = customer_record.getFieldValue('companyname');
+        var company_name = recCustomer.getFieldValue('companyname');
+        var entity_id = recCustomer.getFieldValue('entityid');
+        var partner = recCustomer.getFieldValue('partner');
+        var partner_text = recCustomer.getFieldText('partner');
+
+
         if (!isNullorEmpty(To) && !isNullorEmpty(subject) && !isNullorEmpty(
-            message)) {
+          message)) {
+          var contactRecord = nlapiLoadRecord('contact', To);
+          var contact_first_name = contactRecord.getFieldValue('firstname');
+          var contact_last_name = contactRecord.getFieldValue('lastname');
+          var contact_email = contactRecord.getFieldValue('email');
+          var contact_phone = contactRecord.getFieldValue('phone');
           if (invite_to_portal == 'T') {
             recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
             nlapiLogExecution('DEBUG', 'custentity_portal_how_to_guides',
               'LIST')
-            nlapiSendEmail(112209, To, subject, message, CC, nlapiGetContext().getEmail(),
-              records, arrAttachments, true);
+            if (role == 3 || role == 1032) { //Administrator or System Support
+              nlapiSendEmail(112209, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, nlapiGetContext().getEmail(),
+                records, arrAttachments, true);
+
+            } else {
+              nlapiSendEmail(nlapiGetContext().getUser(), To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, nlapiGetContext().getEmail(),
+                records, arrAttachments, true);
+              var email_body2 =
+                'Please check the below CUSTOMER details </br></br>';
+              email_body2 +=
+                '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
+                custId + '</br>';
+              email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
+                '</br>';
+              email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
+              nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.pope@mailplus.com.au'],
+                entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
+                'ankith.ravindran@mailplus.com.au'
+              ], null, records, null, true);
+            }
+
           } else {
-            nlapiSendEmail(nlapiGetUser(), To, subject, message, CC,
-              nlapiGetContext().getEmail(), records, arrAttachments, true);
+            if (role == 3 || role == 1032) { //Administrator or System Support
+              nlapiSendEmail(112209, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
+                nlapiGetContext().getEmail(), records, arrAttachments, true);
+            } else {
+              nlapiSendEmail(nlapiGetContext().getUser(), To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
+                nlapiGetContext().getEmail(), records, arrAttachments, true);
+              var email_body2 =
+                'Please check the below CUSTOMER details </br></br>';
+              email_body2 +=
+                '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
+                custId + '</br>';
+              email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
+                '</br>';
+              email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
+              nlapiSendEmail(112209, ['fiona.harrison@protechly.com', 'popie.pope@mailplus.com.au'],
+                entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
+                'ankith.ravindran@mailplus.com.au'
+              ], null, records, null, true);
+            }
+
           }
 
           if (invite_to_portal == 'T' && isNullorEmpty(sendinfo)) {
-            var company_name = recCustomer.getFieldValue('companyname');
-            var entity_id = recCustomer.getFieldValue('entityid');
-            var partner = recCustomer.getFieldValue('partner');
-            var partner_text = recCustomer.getFieldText('partner');
-            var contactRecord = nlapiLoadRecord('contact', To);
-            var contact_first_name = contactRecord.getFieldValue('firstname');
-            var contact_last_name = contactRecord.getFieldValue('lastname');
-            var contact_email = contactRecord.getFieldValue('email');
-            var contact_phone = contactRecord.getFieldValue('phone');
+
 
             var email_body =
               'Please link the USER to the below CUSTOMER details </br></br>';
@@ -694,8 +794,8 @@ function sendEmail(request, response) {
 
             nlapiSendEmail(112209, ['mailplussupport@protechly.com'],
               email_subject, email_body, ['mj@roundtableapps.com',
-                'ankith.ravindran@mailplus.com.au'
-              ], null, records, null, true);
+              'ankith.ravindran@mailplus.com.au'
+            ], null, records, null, true);
 
             var userJSON = '{';
             userJSON += '"customer_ns_id" : "' + custId + '",'
@@ -719,8 +819,8 @@ function sendEmail(request, response) {
               'entityid');
             nlapiSendEmail(409635, nlapiGetUser(), error_subject,
               'Please enter Mandatory Fields TO/SUBJECT/MESSAGE before attempting to resend Communication. Email has not been sent.', [
-                'ankith.ravindran@mailplus.com.au'
-              ]);
+              'ankith.ravindran@mailplus.com.au'
+            ]);
           }
 
         }
@@ -734,8 +834,8 @@ function sendEmail(request, response) {
             'entityid');
           nlapiSendEmail(409635, nlapiGetUser(), error_subject,
             'Please enter Primary Contact Details before attempting to resend Communication. Email has not been sent.', [
-              'ankith.ravindran@mailplus.com.au'
-            ]);
+            'ankith.ravindran@mailplus.com.au'
+          ]);
         }
       }
 
@@ -757,10 +857,10 @@ function sendEmail(request, response) {
         recCustomer.setFieldValue('custentity_date_prospect_in_contact',
           getDate());
         if (isNullorEmpty(sales_rep_id)) {
-          phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Callback');
         } else {
-          phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Assigned to Sales Rep');
           phonecall.setFieldValue('custevent_call_type', 7);
 
@@ -768,10 +868,10 @@ function sendEmail(request, response) {
 
       } else {
         if (isNullorEmpty(sales_rep_id)) {
-          phonecall.setFieldValue('title', 'XSales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Callback');
         } else {
-          phonecall.setFieldValue('title', 'XSales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Assigned to Sales Rep');
           phonecall.setFieldValue('custevent_call_type', 7);
 
@@ -854,10 +954,10 @@ function sendEmail(request, response) {
           //Set the Date - Prospect Opportunity
           recCustomer.setFieldValue('custentity_date_prospect_opportunity',
             getDate());
-          phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Info Sent');
         } else {
-          phonecall.setFieldValue('title', ' X Sales - ' + sales_campaign_name +
+          phonecall.setFieldValue('title', sales_campaign_name +
             ' - Info Sent');
         }
         if (!isNullorEmpty(recSales)) {
@@ -878,17 +978,25 @@ function sendEmail(request, response) {
     } else if (outcome == 'sendform') {
       if (sales_campaign_type != 1) {
         if (customerStatus != 13) {
-          recCustomer.setFieldValue('entitystatus', 51);
+          // recCustomer.setFieldValue('entitystatus', 50);
         }
         //Set the Date - Prospect Opportunity & Closed Won
         recCustomer.setFieldValue('custentity_date_prospect_opportunity',
           getDate());
         recCustomer.setFieldValue('custentity_cust_closed_won', 'T');
-        phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
-          ' - Forms Sent');
+        recCustomer.setFieldValue('entitystatus', 13);
+        recCustomer.setFieldValue('custentity_mpex_surcharge_rate', '31.9');
+        recCustomer.setFieldValue('custentity_sendle_fuel_surcharge', '6.75');
+        recCustomer.setFieldValue('custentity_mpex_surcharge', 1);
+        if (!isNullorEmpty(mp_prod_tracking)) {
+          recCustomer.setFieldValue('custentity_mp_product_tracking', mp_prod_tracking);
+        }
+
+        phonecall.setFieldValue('title', sales_campaign_name +
+          ' - SCF Sent');
       } else {
-        phonecall.setFieldValue('title', 'X Sales - ' + sales_campaign_name +
-          ' - Forms Sent');
+        phonecall.setFieldValue('title', sales_campaign_name +
+          ' - SCF Sent');
       }
 
 
@@ -900,16 +1008,89 @@ function sendEmail(request, response) {
         recSales.setFieldValue('custrecord_sales_inuse', "F");
         recSales.setFieldValue('custrecord_sales_outcome', 14);
       }
+
+      var newFiltersCommReg = new Array();
+      newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_commreg_sales_record', null, 'anyof', sales_record_id);
+      newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_customer', null, 'anyof', custId);
+      newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_trial_status', null, 'anyof', [10, 2]);
+
+      var commencement_date = null;
+
+      var col = new Array();
+      col[0] = new nlobjSearchColumn('internalId');
+      col[1] = new nlobjSearchColumn('custrecord_date_entry');
+      col[2] = new nlobjSearchColumn('custrecord_sale_type');
+      col[3] = new nlobjSearchColumn('custrecord_franchisee');
+      col[4] = new nlobjSearchColumn('custrecord_comm_date');
+      col[5] = new nlobjSearchColumn('custrecord_in_out');
+      col[6] = new nlobjSearchColumn('custrecord_customer');
+      col[7] = new nlobjSearchColumn('custrecord_trial_status');
+      col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
+
+
+      var comm_reg_results = nlapiSearchRecord(
+        'customrecord_commencement_register', null, newFiltersCommReg, col);
+
+      if (!isNullorEmpty(comm_reg_results)) {
+        if (comm_reg_results.length == 1) {
+          commReg = comm_reg_results[0].getValue('internalid');
+          commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
+        } else if (comm_reg_results.length > 1) {
+
+        }
+      }
+
+      var url =
+        'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
+      var template_id = 150;
+      var newLeadEmailTemplateRecord = nlapiLoadRecord(
+        'customrecord_camp_comm_template', template_id);
+      var templateSubject = newLeadEmailTemplateRecord.getFieldValue(
+        'custrecord_camp_comm_subject');
+      var lostNoResponseEmailAttach = new Object();
+      lostNoResponseEmailAttach['entity'] = custId;
+
+      var searched_contact = nlapiLoadSearch('contact',
+        'customsearch_salesp_contacts');
+
+      var newFilters_contact = new Array();
+      newFilters_contact[newFilters_contact.length] = new nlobjSearchFilter(
+        'company', null, 'is', custId);
+      newFilters_contact[newFilters_contact.length] = new nlobjSearchFilter(
+        'isinactive', null, 'is', 'F');
+      newFilters_contact[newFilters_contact.length] = new nlobjSearchFilter(
+        'email', null, 'isnotempty', null);
+
+      searched_contact.addFilters(newFilters_contact);
+
+      var resultSet_contacts = searched_contact.runSearch();
+
+      var contactResult = resultSet_contacts.getResults(0, 1);
+      var contactID = null;
+      if (contactResult.length != 0) {
+        contactID = contactResult[0].getValue('internalid');
+        url += template_id + '&recid=' + custId + '&salesrep=' +
+          null + '&dear=' + null + '&contactid=' + contactID + '&userid=' +
+          encodeURIComponent(nlapiGetContext().getUser()) + '&commdate=' + commencement_date;
+        urlCall = nlapiRequestURL(url);
+        var emailHtml = urlCall.getBody();
+
+        nlapiSendEmail(nlapiGetContext().getUser(), franchiseeEmail, templateSubject, emailHtml, [nlapiGetContext().getEmail()], null, lostNoResponseEmailAttach, null, true);
+      }
+
     } else if (outcome == 'sendquote') {
       if (sales_campaign_type != 1) {
-        recCustomer.setFieldValue('entitystatus', 50);
+        recCustomer.setFieldValue('entitystatus', 58);
         //Set the Date - Prospect Opportunity.
-        recCustomer.setFieldValue('custentity_date_prospect_opportunity',
+        recCustomer.setFieldValue('custentity_date_lead_quote_sent',
           getDate());
-        phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
+        phonecall.setFieldValue('title', sales_campaign_name +
           ' - Quote Sent');
       } else {
-        phonecall.setFieldValue('title', 'X Sales - ' + sales_campaign_name +
+        phonecall.setFieldValue('title', sales_campaign_name +
           ' - Quote Sent');
       }
 
@@ -925,15 +1106,15 @@ function sendEmail(request, response) {
     } else if (outcome == 'sendformquote') {
       if (sales_campaign_type != 1) {
         if (customerStatus != 13) {
-          recCustomer.setFieldValue('entitystatus', 51);
+          recCustomer.setFieldValue('entitystatus', 50);
         }
-        recCustomer.setFieldValue('custentity_date_prospect_opportunity',
+        recCustomer.setFieldValue('custentity_date_lead_quote_sent',
           getDate());
-        phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
-          ' - Forms Sent');
+        phonecall.setFieldValue('title', sales_campaign_name +
+          ' - Quote Sent');
       } else {
-        phonecall.setFieldValue('title', 'X Sales - ' + sales_campaign_name +
-          ' - Forms Sent');
+        phonecall.setFieldValue('title', sales_campaign_name +
+          ' - Quote Sent');
       }
 
 
@@ -950,14 +1131,16 @@ function sendEmail(request, response) {
       if (sales_campaign_type != 1) {
         if (customerStatus != 13) {
           recCustomer.setFieldValue('entitystatus', 59);
+        } else if (customerStatus == 13) {
+          recCustomer.setFieldValue('entitystatus', 22);
         }
         recCustomer.setFieldValue('custentity_date_lead_lost', getDate());
         recCustomer.setFieldValue('custentity_service_cancellation_reason',
           nosalereason);
-        phonecall.setFieldValue('title', 'Sales - ' + sales_campaign_name +
+        phonecall.setFieldValue('title', sales_campaign_name +
           ' - LOST');
       } else {
-        phonecall.setFieldValue('title', 'X Sales - ' + sales_campaign_name +
+        phonecall.setFieldValue('title', sales_campaign_name +
           ' - LOST');
       }
 
@@ -976,13 +1159,60 @@ function sendEmail(request, response) {
         recSales.setFieldValue('custrecord_sales_callbacktime', '');
         recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
       }
+    } else if (outcome == 'outofterr') {
+      if (sales_campaign_type != 1) {
+        if (customerStatus != 13) {
+          recCustomer.setFieldValue('entitystatus', 64);
+        }
+        recCustomer.setFieldValue('custentity_date_lead_lost', getDate());
+        recCustomer.setFieldValue('custentity13', getDate());
+        recCustomer.setFieldValue('custentity_service_cancellation_reason',
+          39);
+
+        phonecall.setFieldValue('title', 'Digital Lead Campaign - Out of Territory');
+
+      }
+      phonecall.setFieldValue('message', callnotes);
+      phonecall.setFieldValue('custevent_call_outcome', 24);
+      if (!isNullorEmpty(recSales)) {
+        recSales.setFieldValue('custrecord_sales_completed', "T");
+        recSales.setFieldValue('custrecord_sales_inuse', "F");
+        recSales.setFieldValue('custrecord_sales_completedate', getDate());
+        recSales.setFieldValue('custrecord_sales_assigned', nlapiGetUser());
+        recSales.setFieldValue('custrecord_sales_outcome', 10);
+        recSales.setFieldValue('custrecord_sales_callbackdate', '');
+        recSales.setFieldValue('custrecord_sales_callbacktime', '');
+        recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
+      }
+    } else if (outcome == 'signupemail') {
+      if (sales_campaign_type != 1) {
+        if (customerStatus != 13) {
+          recCustomer.setFieldValue('entitystatus', 50);
+        }
+        recCustomer.setFieldValue('custentity_date_lead_quote_sent',
+          getDate());
+        phonecall.setFieldValue('title', 'Digital Lead Campaign - Sign Up Email Sent');
+      } else {
+        phonecall.setFieldValue('title', 'Digital Lead Campaign - Sign Up Email Sent');
+      }
+
+
+      phonecall.setFieldValue('message', callnotes);
+      phonecall.setFieldValue('custevent_call_outcome', 24);
+      if (!isNullorEmpty(recSales)) {
+        recSales.setFieldValue('custrecord_sales_completed', "F");
+        recSales.setFieldValue('custrecord_sales_formsent', 'T');
+        recSales.setFieldValue('custrecord_sales_quotesent', "T");
+        recSales.setFieldValue('custrecord_sales_inuse', "F");
+        recSales.setFieldValue('custrecord_sales_outcome', 14);
+      }
     }
 
     if (isNullorEmpty(sales_rep_id)) {
       if (invite_to_portal != 'T' && referral != 'T') {
         if (!isNullorEmpty(recSales)) {
-          recSales.setFieldValue('custrecord_sales_callbackdate', callbackdate);
-          recSales.setFieldValue('custrecord_sales_callbacktime', callbacktime);
+          recSales.setFieldValue('custrecord_sales_callbackdate', '');
+          recSales.setFieldValue('custrecord_sales_callbacktime', '');
           recSales.setFieldValue('custrecord_sales_assigned', nlapiGetUser());
           recSales.setFieldValue('custrecord_sales_lastcalldate', getDate());
           nlapiSubmitRecord(recSales);
@@ -993,7 +1223,6 @@ function sendEmail(request, response) {
     if (invite_to_portal == 'T') {
       recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
     }
-
     nlapiSubmitRecord(recCustomer);
     nlapiSubmitRecord(phonecall);
 
@@ -1009,7 +1238,7 @@ function sendEmail(request, response) {
 }
 
 function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
-  start_date, end_date, sales_record_id, attCOEForm) {
+  start_date, end_date, sales_record_id, attCOEForm, closed_won, opp_with_value) {
   var recCustomer = nlapiLoadRecord('customer', custId);
 
   var customerName = recCustomer.getFieldValue('companyname');
@@ -1029,6 +1258,9 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
   columns[1] = new nlobjSearchColumn('firstname');
   columns[2] = new nlobjSearchColumn('lastname');
   columns[3] = new nlobjSearchColumn('contactrole');
+  columns[4] = new nlobjSearchColumn('custentity_connect_admin');
+  columns[5] = new nlobjSearchColumn('custentity_connect_user');
+
 
   var searchResults = nlapiSearchRecord('contact', null, filters, columns);
 
@@ -1037,6 +1269,8 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
   var decisioncontact = '';
   var decisionfirstname = '';
   var apcontact = '';
+
+  var create_portal = '';
 
   if (!isNullorEmpty(searchResults)) {
     for (m = 0; m < searchResults.length; m++) {
@@ -1057,7 +1291,9 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
         decisionfirstname = searchResults[m].getValue(columns[1]);
       }
 
-
+      if (searchResults[m].getValue(columns[4]) == 1 || searchResults[m].getValue(columns[5]) == 1) {
+        create_portal = 'Yes'
+      }
     }
   }
 
@@ -1071,7 +1307,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
   newFilters[newFilters.length] = new nlobjSearchFilter(
     "custrecord_servicechg_comm_reg", null, 'is', commRegId);
   newFilters[newFilters.length] = new nlobjSearchFilter(
-    'custrecord_servicechg_status', null, 'anyof', [4]);
+    'custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
 
   searched_service_change.addFilters(newFilters);
 
@@ -1080,6 +1316,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
   var serviceResult = resultSet_service_change.getResults(0, 6);
 
   var service = [];
+  var serviceFreq = [];
   var price = [];
 
   var service_freq = '';
@@ -1112,10 +1349,19 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
     service_freq += serviceNSItemText + ' - ' + freqCal(serviceChangeFreqText) +
       ' | ';
 
+
+
     nlapiLogExecution('DEBUG', 'serviceNSItem', serviceNSItem);
     nlapiLogExecution('DEBUG', 'serviceNSItemText', serviceNSItemText);
+    nlapiLogExecution('DEBUG', 'serviceChangeFreqText.length', serviceChangeFreqText.length);
+    nlapiLogExecution('DEBUG', 'serviceChangeFreqText.split(,).length', serviceChangeFreqText.split(',').length);
 
     service[service.length] = serviceNSItemText;
+    if (serviceChangeFreqText.split(',').length == 5) {
+      serviceFreq[serviceFreq.length] = 'Daily';
+    } else {
+      serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+    }
     price[price.length] = newServiceChangePrice;
   }
 
@@ -1133,7 +1379,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
 
   for (p = 1; p <= recCustomer.getLineItemCount('addressbook'); p++) {
     if (isNullorEmpty(postaladdress) && recCustomer.getLineItemValue(
-        'addressbook', 'isresidential', p) == "T") {
+      'addressbook', 'isresidential', p) == "T") {
       if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook', 'addr1', p))) {
         postaladdress += recCustomer.getLineItemValue('addressbook', 'addr1', p) +
           '\n';
@@ -1160,7 +1406,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
       }
     }
     if (isNullorEmpty(siteaddress) && recCustomer.getLineItemValue(
-        'addressbook', 'defaultshipping', p) == "T") {
+      'addressbook', 'defaultshipping', p) == "T") {
       if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook', 'addr1', p))) {
         siteaddress += recCustomer.getLineItemValue('addressbook', 'addr1', p) +
           '  ';
@@ -1199,7 +1445,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
       }
     }
     if (isNullorEmpty(billaddressfull) && recCustomer.getLineItemValue(
-        'addressbook', 'defaultbilling', p) == "T") {
+      'addressbook', 'defaultbilling', p) == "T") {
       if (!isNullorEmpty(recCustomer.getLineItemValue('addressbook', 'addr1', p))) {
         billaddressfull += recCustomer.getLineItemValue('addressbook', 'addr1',
           p) + '\n';
@@ -1232,6 +1478,8 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
 
   }
 
+  merge['NLSPORTAL'] = create_portal;
+
   merge['NLCUSTOMERNAME'] = customerName;
   merge['NLSTREETADDRESS'] = addr1_addr2;
   merge['NLCITYSTATECODE'] = city_state_code;
@@ -1250,6 +1498,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
 
   for (var x = 0; x < service.length; x++) {
     merge['NLSERVICEITEM' + (x + 1)] = service[x];
+    merge['NLSCFREQ' + (x + 1)] = serviceFreq[x];
     merge['NLSCPRICE' + (x + 1)] = price[x];
   }
 
@@ -1280,6 +1529,43 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
       var fileSCFORM = nlapiMergeRecord(attSCForm, 'customer', custId, null,
         null, merge);
       fileSCFORM.setName('MP_ServiceCommencement_' + custId + '.pdf');
+
+      if (closed_won == 'T') {
+        fileSCFORM.setFolder(1212243);
+
+        var type = fileSCFORM.getType();
+        if (type == 'JPGIMAGE') {
+          type = 'jpg';
+          var file_name = getDate() + '_' + customerEntityId + '.' + type;
+
+        } else if (type == 'PDF') {
+          type == 'pdf';
+          var file_name = getDate() + '_' + customerEntityId + '.' + type;
+        } else if (type == 'PNGIMAGE') {
+          type == 'png';
+          var file_name = getDate() + '_' + customerEntityId + '.' + type;
+        } else if (type == 'PJPGIMAGE') {
+          type == 'png';
+          var file_name = getDate() + '_' + customerEntityId + '.' + type;
+        }
+
+        fileSCFORM.setName(file_name);
+
+        // Create file and upload it to the file cabinet.
+        var id = nlapiSubmitFile(fileSCFORM);
+
+        var commRegRecord = nlapiLoadRecord(
+          'customrecord_commencement_register', commRegId);
+
+        commRegRecord.setFieldValue('custrecord_scand_form', id);
+        commRegRecord.setFieldValue('custrecord_trial_status', 9);
+        commRegRecord.setFieldValue('custrecord_finalised_by',
+          nlapiGetContext().getUser());
+        commRegRecord.setFieldValue('custrecord_finalised_on', getDate());
+
+        nlapiSubmitRecord(commRegRecord);
+
+      }
     }
   } else {
     if (stage == 0) {
@@ -1345,9 +1631,9 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
   var html = '<div class="form-group container row_form_quote">';
   html += '<div class="row">';
   html += '<div class="col-xs-4"><h4><u> FORMS </u></h4></div>'
-    // html += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND FORMS" /><span class="input-group-addon"><input type="checkbox" id="form" class="" /></span></div></div>';
-    // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND QUOTE" /><span class="input-group-addon"><input type="checkbox" id="quote" class="" /></span></div></div>';
-    // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
+  // html += '<div class="col-xs-4 form_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND FORMS" /><span class="input-group-addon"><input type="checkbox" id="form" class="" /></span></div></div>';
+  // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="SEND QUOTE" /><span class="input-group-addon"><input type="checkbox" id="quote" class="" /></span></div></div>';
+  // html += '<div class="col-xs-4 quote_section"><div class="input-group"><input type="text" class="form-control" readonly value="PROGRESS WITHOUT EMAIL" /><span class="input-group-addon"><input type="checkbox" id="no_email" class="" /></span></div></div>';
   html += '</div>';
   html += '</div>';
 
@@ -1368,7 +1654,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
   html += '<div class="row">'
 
   // inlinehTML += '<div class="col-xs-12 template_section">';
-  resultSetAtt.forEachResult(function(searchResultAtt) {
+  resultSetAtt.forEachResult(function (searchResultAtt) {
 
     var attId = searchResultAtt.getValue('internalid');
     var attName = searchResultAtt.getValue('name');
@@ -1381,7 +1667,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
     if (invite_to_portal == 'T') {
       if (file != 2511427) {
         html +=
-          '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' +
+          '<div class="col-xs-3"><div class="input-group"><span class="input-group-addon"><button type="button" id="' +
           attId +
           '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' +
           fileRecord.getURL() +
@@ -1393,7 +1679,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
 
     } else {
       html +=
-        '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="' +
+        '<div class="col-xs-3"><div class="input-group"><span class="input-group-addon"><button type="button" id="' +
         attId +
         '" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' +
         fileRecord.getURL() +
@@ -1416,7 +1702,35 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
 
 function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
   nosale, unity, invite_to_portal, sendinfo, referral) {
+
   var html = '<div class="form-group container row_to ">';
+  html += '<div class="row">';
+
+  html += '<div class="col-xs-4 survey1"><div class="input-group"><span class="input-group-addon" id="survey1_text">MP Product Tracking Required? </span><select id="prod_tracking" class="form-control prod_tracking"><option></option>';
+  var col = new Array();
+  col[0] = new nlobjSearchColumn('name');
+  col[1] = new nlobjSearchColumn('internalId');
+  var results = nlapiSearchRecord('customlist107', null, null, col);
+  for (var i = 0; results != null && i < results.length; i++) {
+    var res = results[i];
+    var listValue = res.getValue('name');
+    var listID = res.getValue('internalId');
+
+    if (listID == 2) {
+      html += '<option value="' + listID + '" selected>' + listValue + '</option>';
+    } else {
+      html += '<option value="' + listID + '">' + listValue + '</option>';
+    }
+
+
+
+  }
+  html += '</select></div></div>';
+
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="form-group container row_to ">';
   html += '<div class="row">'
 
   html +=
@@ -1425,10 +1739,10 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
     html += '<span class="mandatory">*</span>';
   }
   html +=
-    '</span><select id="send_to" class="form-control " ><option value=""></option><option value="' +
+    '</span><select id="send_to" class="form-control " multi><option value=""></option><option value="' +
     0 + '" data-firstname="NO NAME">PROGRESS WITHOUT EMAIL</option>';
   if (contactResult.length != 0) {
-    resultSet_contacts.forEachResult(function(searchResult_contacts) {
+    resultSet_contacts.forEachResult(function (searchResult_contacts) {
       var id = searchResult_contacts.getValue('internalid');
       var first_name = searchResult_contacts.getValue('firstname');
       var last_name = searchResult_contacts.getValue('lastname');
@@ -1456,7 +1770,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
   }
   html +=
     '</span><select  id="template" class="form-control" ><option></option>';
-  resultSetCampTemp.forEachResult(function(searchResultCampTemp) {
+  resultSetCampTemp.forEachResult(function (searchResultCampTemp) {
 
     var tempId = searchResultCampTemp.getValue('internalid');
     var tempName = searchResultCampTemp.getValue('name');
@@ -1483,6 +1797,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
         html += '<option value="' + tempId + '">' + tempName + '</option>'
       }
     } else {
+
       html += '<option value="' + tempId + '">' + tempName + '</option>'
     }
 
@@ -1521,26 +1836,26 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
         }
         var dat_prefill = date_split[2] + '-' + date_split[1] + '-' +
           date_split[0];
-        html +=
-          '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" value="' +
-          dat_prefill + '" class="form-control" /></div></div>';
-        html +=
-          '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" value="10:00" id="time" class="form-control" /></div></div>';
+        // html +=
+        //   '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" value="' +
+        //   dat_prefill + '" class="form-control" /></div></div>';
+        // html +=
+        //   '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" value="10:00" id="time" class="form-control" /></div></div>';
       } else {
-        html +=
-          '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
-        html +=
-          '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+        // html +=
+        //   '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
+        // html +=
+        //   '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
       }
 
       html += '</div>';
       html += '</div>';
-      html += '<div class="form-group container row_call_back_notes">';
-      html += '<div class="row">';
-      html +=
-        '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
-      html += '</div>';
-      html += '</div>';
+      // html += '<div class="form-group container row_call_back_notes">';
+      // html += '<div class="row">';
+      // html +=
+      //   '<div class="col-xs-8 notes_section"><div class="input-group"><span class="input-group-addon">APPOINTMENT NOTES </span><textarea  id="notes" class="form-control" ></textarea></div></div>';
+      // html += '</div>';
+      // html += '</div>';
       html += '<div class="form-group container row_call_back_type">';
     } else {
       html += '<div class="form-group container row_call_back">';
@@ -1621,13 +1936,19 @@ function call_back(invite_to_portal, unity) {
 }
 
 
-function serviceChangeSection(resultSet_service_change) {
+function serviceChangeSection(resultSet_service_change, closed_won, opp_with_value) {
   var inlinehTML = '';
   if (isNullorEmpty(resultSet_service_change)) {
     inlinehTML += '<div class="form-group container createservicechg_section">';
     inlinehTML += '<div class="row">';
-    inlinehTML +=
-      '<div class="col-xs-3 createservicechg"><input type="button" value="ADD SERVICES" class="form-control btn btn-success" id="createservicechg" /></div>';
+    if (closed_won == 'T') {
+      inlinehTML +=
+        '<div class="col-xs-3 createservicechg"><input type="button" value="ADD SERVICES" class="form-control btn btn-success" id="createservicechg" data-id="signed"/></div>';
+    } else if (opp_with_value == "T") {
+      inlinehTML +=
+        '<div class="col-xs-3 createservicechg"><input type="button" value="ADD SERVICES" class="form-control btn btn-success" id="createservicechg" data-id="quote" /></div>';
+    }
+
     inlinehTML += '</div>';
     inlinehTML += '</div>';
   }
@@ -1638,7 +1959,7 @@ function serviceChangeSection(resultSet_service_change) {
   inlinehTML +=
     '<table border="0" cellpadding="15" id="service_chg" class="table table-responsive table-striped service_chg tablesorter" cellspacing="0" style="width: 100%;"><thead style="color: white;background-color: #607799;"><tr><th style="vertical-align: middle;text-align: center;"><b>ACTION</b></th><th style="vertical-align: middle;text-align: center;"><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>CHANGE TYPE</b></th><th style="vertical-align: middle;text-align: center;"><b>DATE EFFECTIVE</b></th><th style="vertical-align: middle;text-align: center;"><b>OLD PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>NEW PRICE</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th></tr></thead><tbody>';
   if (!isNullorEmpty(resultSet_service_change)) {
-    resultSet_service_change.forEachResult(function(searchResult_service_change) {
+    resultSet_service_change.forEachResult(function (searchResult_service_change) {
       var serviceChangeId = searchResult_service_change.getValue(
         'internalid');
       var serviceId = searchResult_service_change.getValue(
@@ -1766,7 +2087,7 @@ function freqCal(freq) {
 
 
 
-Date.prototype.addHours = function(h) {
+Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
   return this;
 }
