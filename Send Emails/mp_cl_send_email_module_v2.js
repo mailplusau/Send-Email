@@ -159,7 +159,7 @@ function pageInit() {
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -274,7 +274,7 @@ function pageInit() {
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -1245,6 +1245,7 @@ $(document).on('change', '#template', function (e) {
 
     var salesRepEmail = null;
     var salesRepName = null;
+    var salesRepId = null
 
     if (!isNullorEmpty(salesRecordAutoSignedResultSet)) {
         if (salesRecordAutoSignedResultSet.length != 0) {
@@ -1258,12 +1259,24 @@ $(document).on('change', '#template', function (e) {
         }
     }
 
+    //If Sales Rep is Belinda, Lee or Kerina
+    if (salesRepId != '668712' || salesRepId != '668711' || salesRepId != '696160') {
+        var franchiseeSalesRepAssigned = nlapiLookupField('customer', parseInt(nlapiGetFieldValue('custpage_customer_id')), 'partner.custentity_sales_rep_assigned');
+        if (franchiseeSalesRepAssigned == '668712') {
+            salesRepName = 'Belinda Urbani'
+        } else if (franchiseeSalesRepAssigned == '668711') {
+            salesRepName = 'Lee Russell'
+        } else if (franchiseeSalesRepAssigned == '696160') {
+            salesRepName = 'Kerina Helliwell'
+        }
+    }
+
     var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
     if (!isNullorEmpty(salesRepName)) {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
     } else {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + escape(nlapiGetContext().getName());
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
     }
 
 
@@ -1292,6 +1305,8 @@ $(document).on('click', '.createservicechg', function (event) {
         opp_with_value = 'T';
     }
 
+    var save_customer = nlapiGetFieldValue('custpage_save_customer');
+
     var params = {
         custid: parseInt(nlapiGetFieldValue('custpage_customer_id')),
         salesrecordid: parseInt(nlapiGetFieldValue('custpage_sales_record_id')),
@@ -1299,6 +1314,7 @@ $(document).on('click', '.createservicechg', function (event) {
         sendemail: 'T',
         closedwon: closed_won,
         oppwithvalue: opp_with_value,
+        savecustomer: save_customer,
         commreg: null,
         customid: 'customscript_sl_send_email_module',
         customdeploy: 'customdeploy_sl_send_email_module'

@@ -121,7 +121,37 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
-                if (templateId == 374 || templateId == 378) {
+                if (templateId == 390) {
+
+                    var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
+
+                    var newFiltersSalesRep = new Array();
+                    newFiltersSalesRep[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_assigned', 'anyof', salesRep);
+
+                    salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+                    var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+                    var salesRepDetailsName = ''
+                    var salesRepDetailsEmail = ''
+                    var salesRepDetailsPhone = ''
+
+                    salesRepDetailsSearchResults.forEachResult(function (salesRepDetailsSearchResultSet) {
+
+                        salesRepDetailsName = salesRepDetailsSearchResultSet.getText("custrecord_sales_assigned", null, "GROUP");
+                        salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue("email", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+                        salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue("phone", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+
+                        return true;
+                    });
+
+                    emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepDetailsName);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepphone>/gi, salesRepDetailsEmail);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepemail>/gi, salesRepDetailsPhone);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepemailsignature>/gi, salesRepDetailsName);
+                }
+
+                if (templateId == 374 || templateId == 378 || templateId == 382) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
                     var companyname = customer_record.getFieldValue('companyname');
@@ -171,6 +201,33 @@ function main(request, response) {
                             return true;
                         });
                     }
+
+                    var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
+
+                    var newFiltersSalesRep = new Array();
+                    newFiltersSalesRep[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_assigned', 'anyof', salesRep);
+
+                    salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+                    var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+                    var salesRepDetailsName = ''
+                    var salesRepDetailsEmail = ''
+                    var salesRepDetailsPhone = ''
+
+                    salesRepDetailsSearchResults.forEachResult(function (salesRepDetailsSearchResultSet) {
+
+                        salesRepDetailsName = salesRepDetailsSearchResultSet.getText("custrecord_sales_assigned", null, "GROUP");
+                        salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue("email", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+                        salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue("phone", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+
+                        return true;
+                    });
+
+                    emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepDetailsName);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepphone>/gi, salesRepDetailsEmail);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepemail>/gi, salesRepDetailsPhone);
+                    emailHtml = emailHtml.replace(/<nlemsalesrepemailsignature>/gi, salesRepDetailsName);
 
                     var signUp = '<a class="mcnButton " href="https://mailplus.com.au/sign-up/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '&lastname=' + lastname + '&contactid=' + contactID + '&state=' + state + '&salesRep=' + salesRep + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Create my account</a>'
 
@@ -613,7 +670,7 @@ function main(request, response) {
                         });
                     }
 
-                   
+
                     var recContact = nlapiLoadRecord('contact', contactID);
 
                     var contactEmail = recContact.getFieldValue('email');
@@ -622,7 +679,7 @@ function main(request, response) {
 
 
 
-                    var customerDetails = 'Customer Name: ' + entityid + ' ' + companyname 
+                    var customerDetails = 'Customer Name: ' + entityid + ' ' + companyname
                     var customerAddressDetails = 'Address: ' + addr1 + ', ' + addr2 + ', ' + city + ' ' + state + ' - ' + zip + '</br>';
 
                     var contactDetails = 'First Name: ' + firstname;
@@ -667,25 +724,25 @@ function main(request, response) {
                         var customer_record = nlapiLoadRecord('customer', recId);
                         var entityid = customer_record.getFieldValue('entityid');
                         var companyname = customer_record.getFieldValue('companyname');
-    
+
                         var recContact = nlapiLoadRecord('contact', contactID);
-    
+
                         var contactEmail = recContact.getFieldValue('email');
                         var contactPhone = recContact.getFieldValue('phone');
                         var firstname = recContact.getFieldValue('firstname')
-    
+
                         var bookACall = '<a class="mcnButton " href="https://mailplus.com.au/book-a-sales-call/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '&lastname=' + lastname + '&contactid=' + contactID + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Book a Call</a>'
-    
+
                         // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
                         emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
                         // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                     } else {
                         var bookACall = '<a class="mcnButton " href="" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Book a Call</a>'
-    
+
                         // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
                         emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
                     }
-                   
+
                 }
 
                 if (templateId == 385) {
@@ -745,7 +802,7 @@ function main(request, response) {
 
                     var notInterested = '<a class="mcnButton " href="https://mailplus.com.au/not-interested/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Not Interested</a>';
 
-                  
+
                     emailHtml = emailHtml.replace(/<nlemsignup>/gi, signUp);
                     emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
 

@@ -6,8 +6,8 @@
  *
  * Remarks:         
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-04-15 13:17:42
+ * @Last Modified by:   mailplusar
+ * @Last Modified time: 2018-05-28 10:37:12
  *
  */
 
@@ -40,6 +40,8 @@ function main(request, response) {
     columns[1] = new nlobjSearchColumn('firstname');
     columns[2] = new nlobjSearchColumn('lastname');
     columns[3] = new nlobjSearchColumn('contactrole');
+    columns[4] = new nlobjSearchColumn('custentity_connect_admin');
+    columns[5] = new nlobjSearchColumn('custentity_connect_user');
 
     var searchResults = nlapiSearchRecord('contact', null, filters, columns);
 
@@ -48,6 +50,8 @@ function main(request, response) {
     var decisioncontact = '';
     var decisionfirstname = '';
     var apcontact = '';
+
+    var create_portal = '';
 
     if (!isNullorEmpty(searchResults)) {
         for (m = 0; m < searchResults.length; m++) {
@@ -65,9 +69,13 @@ function main(request, response) {
                 decisionfirstname = searchResults[m].getValue(columns[1]) + ' ';
             }
 
-
+            if (searchResults[m].getValue(columns[4]) == 1 || searchResults[m].getValue(columns[5]) == 1) {
+                create_portal = 'Yes'
+            }
         }
     }
+
+    nlapiLogExecution('DEBUG', 'create_portal', create_portal);
 
     if (!isNullorEmpty(commRegId)) {
         var searched_service_change = nlapiLoadSearch('customrecord_servicechg', 'customsearch_salesp_service_chg');
@@ -75,7 +83,7 @@ function main(request, response) {
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_service_customer", "CUSTRECORD_SERVICECHG_SERVICE", 'is', custId);
         newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_servicechg_comm_reg", null, 'is', commRegId);
-        newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_servicechg_status', null, 'anyof', [4]);
+        newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
 
         searched_service_change.addFilters(newFilters);
 
@@ -84,6 +92,7 @@ function main(request, response) {
         var serviceResult = resultSet_service_change.getResults(0, 6);
 
         var service = [];
+        var serviceFreq = [];
         var price = [];
 
         var service_freq = '';
@@ -106,11 +115,15 @@ function main(request, response) {
 
             nlapiLogExecution('DEBUG', 'serviceNSItem', serviceNSItem);
             nlapiLogExecution('DEBUG', 'serviceNSItemText', serviceNSItemText);
-
-
-            service_freq += serviceNSItemText + ' - ' + freqCal(serviceChangeFreqText) + ' | ';
+            nlapiLogExecution('DEBUG', 'serviceChangeFreqText.length', serviceChangeFreqText.length);
+            nlapiLogExecution('DEBUG', 'serviceChangeFreqText.split(,).length', serviceChangeFreqText.split(',').length);
 
             service[service.length] = serviceNSItemText;
+            if (serviceChangeFreqText.split(',').length == 5) {
+                serviceFreq[serviceFreq.length] = 'Daily';
+            } else {
+                serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+            }
             price[price.length] = newServiceChangePrice;
         }
 
@@ -220,13 +233,17 @@ function main(request, response) {
     merge['NLSCACONTACT'] = apcontact;
 
     merge['NLDATEEFFECTIVE'] = dateEffective;
+    merge['NLSPORTAL'] = create_portal;
 
     if (!isNullorEmpty(service)) {
         for (var x = 0; x < service.length; x++) {
             merge['NLSERVICEITEM' + (x + 1)] = service[x];
+            merge['NLSCFREQ' + (x + 1)] = serviceFreq[x];
             merge['NLSCPRICE' + (x + 1)] = price[x];
         }
     }
+
+    
 
 
     var default_note = '*Quoted price excludes GST and applies for the first 16kg of mail. Further increments of 16kg incur a $2.75 charge. Registered mail $2.20 and parcels $1.10. Minimum two weeks written notice to cancel services\n' + service_freq;
