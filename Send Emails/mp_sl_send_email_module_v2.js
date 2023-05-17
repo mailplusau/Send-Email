@@ -27,6 +27,8 @@ if (role == 1000) {
   zee = 425904; //test-AR
 }
 
+var save_customer = null;
+
 function sendEmail(request, response) {
 
   if (request.getMethod() === "GET") {
@@ -35,6 +37,7 @@ function sendEmail(request, response) {
     var customer_id = request.getParameter('custid');
     var closed_won = request.getParameter('closedwon');
     var opp_with_value = request.getParameter('oppwithvalue');
+    save_customer = request.getParameter('savecustomer');
 
     if (isNullorEmpty(params)) {
       var params = request.getParameter('custparam_params');
@@ -74,6 +77,7 @@ function sendEmail(request, response) {
       referral = params.referral;
       closed_won = params.closedwon;
       opp_with_value = params.oppwithvalue;
+      save_customer = params.savecustomer;
     } else {
       var customer_id = parseInt(request.getParameter('custid'));
       var customer_record = nlapiLoadRecord('customer', customer_id);
@@ -201,7 +205,8 @@ function sendEmail(request, response) {
     if (isNullorEmpty(nosale)) {
       newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter(
         'custrecord_camp_comm_comm_type', null, 'anyof', 1);
-    } else if (nosale == 'T') {
+    }
+    else if (nosale == 'T') {
       newFiltersCampTemp[newFiltersCampTemp.length] = new nlobjSearchFilter(
         'custrecord_camp_comm_comm_type', null, 'anyof', 6);
     }
@@ -287,6 +292,8 @@ function sendEmail(request, response) {
       'hidden').setDefaultValue(closed_won);
     form.addField('custpage_opp_with_values', 'textarea', 'BODY').setDisplayType(
       'hidden').setDefaultValue(opp_with_value);
+    form.addField('custpage_save_customer', 'textarea', 'BODY').setDisplayType(
+      'hidden').setDefaultValue(save_customer);
     form.addField('custpage_save_record', 'textarea', 'BODY').setDisplayType(
       'hidden').setDefaultValue('F');
 
@@ -358,6 +365,11 @@ function sendEmail(request, response) {
       var sign_up_class = 'hide';
       var out_of_terr_class = 'hide'
     } else if (opp_with_value == 'T') {
+      var closed_won_class = 'hide';
+      var quote_class = '';
+      var sign_up_class = 'hide';
+      var out_of_terr_class = 'hide'
+    } else if (save_customer == 'T') {
       var closed_won_class = 'hide';
       var quote_class = '';
       var sign_up_class = 'hide';
@@ -716,6 +728,15 @@ function sendEmail(request, response) {
         var partner = recCustomer.getFieldValue('partner');
         var partner_text = recCustomer.getFieldText('partner');
 
+        var franchiseeSalesRepAssigned = nlapiLookupField('customer', parseInt(custId), 'partner.custentity_sales_rep_assigned');
+        if (franchiseeSalesRepAssigned == '668712') {
+          var salesRepEmail = 'belinda.urbani@mailplus.com.au';
+        } else if (franchiseeSalesRepAssigned == '668711') {
+          var salesRepEmail = 'lee.russell@mailplus.com.au'
+        } else if (franchiseeSalesRepAssigned == '696160') {
+          var salesRepEmail = 'kerina.helliwell@mailplus.com.au'
+        }
+
 
         if (!isNullorEmpty(To) && !isNullorEmpty(subject) && !isNullorEmpty(
           message)) {
@@ -733,20 +754,23 @@ function sendEmail(request, response) {
                 records, arrAttachments, true);
 
             } else {
-              nlapiSendEmail(nlapiGetContext().getUser(), To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, nlapiGetContext().getEmail(),
+
+              nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, salesRepEmail,
                 records, arrAttachments, true);
-              var email_body2 =
-                'Please check the below CUSTOMER details </br></br>';
-              email_body2 +=
-                '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
-                custId + '</br>';
-              email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
-                '</br>';
-              email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
-              nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.pope@mailplus.com.au'],
-                entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
-                'ankith.ravindran@mailplus.com.au'
-              ], null, records, null, true);
+              if (outcome == 'sendform') {
+                var email_body2 =
+                  'Please check the below CUSTOMER details </br></br>';
+                email_body2 +=
+                  '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
+                  custId + '</br>';
+                email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
+                  '</br>';
+                email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
+                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+                  entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
+                  'ankith.ravindran@mailplus.com.au'
+                ], null, records, null, true);
+              }
             }
 
           } else {
@@ -754,20 +778,23 @@ function sendEmail(request, response) {
               nlapiSendEmail(112209, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
                 nlapiGetContext().getEmail(), records, arrAttachments, true);
             } else {
-              nlapiSendEmail(nlapiGetContext().getUser(), To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
-                nlapiGetContext().getEmail(), records, arrAttachments, true);
-              var email_body2 =
-                'Please check the below CUSTOMER details </br></br>';
-              email_body2 +=
-                '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
-                custId + '</br>';
-              email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
-                '</br>';
-              email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
-              nlapiSendEmail(112209, ['fiona.harrison@protechly.com', 'popie.pope@mailplus.com.au'],
-                entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
-                'ankith.ravindran@mailplus.com.au'
-              ], null, records, null, true);
+              nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
+                salesRepEmail, records, arrAttachments, true);
+
+              if (outcome == 'sendform') {
+                var email_body2 =
+                  'Please check the below CUSTOMER details </br></br>';
+                email_body2 +=
+                  '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
+                  custId + '</br>';
+                email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
+                  '</br>';
+                email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
+                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+                  entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
+                  'ankith.ravindran@mailplus.com.au'
+                ], null, records, null, true);
+              }
             }
 
           }
