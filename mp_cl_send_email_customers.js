@@ -52,15 +52,18 @@ function pageInit() {
     $('.row_subject').removeClass('hide');
     $('.row_body').removeClass('hide');
 
-    // var customerSearch = nlapiLoadSearch('customer',
-    //   'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
-    var customerSearch = nlapiLoadSearch('customer',
-      'customsearch_bi_at_active_customers_2__6');
+    //  var customerSearch = nlapiLoadSearch('customer',
+    //    'customsearch_mass_email_customer_list'); // MASS EMAIL TO CUSTOMERS
+    //  var customerSearch = nlapiLoadSearch('customer',
+    //    'customsearch_bi_at_active_customers_2__6');
 
-    // var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
-    //   zee);
-    // customerSearch.addFilter(addFilterExpression);
-    var resultSetCustomer = customerSearch.runSearch();
+    var customerSearch = nlapiLoadSearch('customer',
+      'customsearch7005'); // Shopify Update Customer List
+
+    //  var addFilterExpression = new nlobjSearchFilter('partner', null, 'anyof',
+    //    zee);
+    //  customerSearch.addFilter(addFilterExpression);
+     var resultSetCustomer = customerSearch.runSearch();
 
 
     var count = 0;

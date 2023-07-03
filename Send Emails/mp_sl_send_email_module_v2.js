@@ -819,10 +819,10 @@ function sendEmail(request, response) {
             var email_subject = 'MP Portal - Link User to Customer - ' +
               entity_id + ' ' + company_name;
 
-            nlapiSendEmail(112209, ['mailplussupport@protechly.com'],
-              email_subject, email_body, ['mj@roundtableapps.com',
-              'ankith.ravindran@mailplus.com.au'
-            ], null, records, null, true);
+            // nlapiSendEmail(112209, ['mailplussupport@protechly.com'],
+            //   email_subject, email_body, ['mj@roundtableapps.com',
+            //   'ankith.ravindran@mailplus.com.au'
+            // ], null, records, null, true);
 
             var userJSON = '{';
             userJSON += '"customer_ns_id" : "' + custId + '",'

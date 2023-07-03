@@ -45,7 +45,7 @@ function main() {
                 nlapiLogExecution('debug', 'Email invoice', 'Scheduling email invoicing processing. The schedule is : ' + rtnSchedule);
             }
         }
-    } catch ( ex ) {
+    } catch (ex) {
         errorStr = (ex instanceof nlobjError) ? ex.getCode() + '\n' + ex.getDetails() + '\n' + ex.getStackTrace() : ex.toString();
         nlapiLogExecution('error', 'Email invoice', 'Error emailing invoices : ' + errorStr);
     }
@@ -116,12 +116,13 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
         var custRec = nlapiLoadRecord('customer', customer_id);
         var emailCCEmail = custRec.getFieldValue('custentity_accounts_cc_email');
-        if(!isNullorEmpty(emailCCEmail)){
+        var partnerId = custRec.getFieldValue('partner');
+        if (!isNullorEmpty(emailCCEmail)) {
             var emailCCArray = emailCCEmail.split(',');
         } else {
             var emailCCArray = null;
         }
-        
+
 
         nlapiLogExecution('debug', 'Email invoice', 'Customer CC : ' + emailCCEmail);
         nlapiLogExecution('debug', 'Email invoice', 'Customer CC : ' + emailCCArray);
@@ -154,10 +155,13 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
         arrAttachments = [];
 
         arrAttachments.push(nlapiPrintRecord('TRANSACTION', recId, 'PDF', null));
-        if(!isNullorEmpty(mpexUsageReport)){
-           arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport))); 
+        if (!isNullorEmpty(mpexUsageReport)) {
+            arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport)));
         }
-//         arrAttachments.push(nlapiLoadFile(parseInt(5033759)));
+        if (partnerId == 1760249 || partnerId == '1760249') {
+            arrAttachments.push(nlapiLoadFile(parseInt(6415837)));
+        }
+        // arrAttachments.push(nlapiLoadFile(parseInt(6013021)));
 
         nlapiLogExecution('debug', 'Email invoice', 'Customer : ' + recId + '. Email created : ' + !isNullorEmpty(emailFile));
 
@@ -169,7 +173,7 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
             nlapiLogExecution('debug', 'Email invoice', 'Email Sent : ' + recId);
         }
-    } catch ( ex ) {
+    } catch (ex) {
         errorStr = (ex instanceof nlobjError) ? ex.getCode() + '\n' + ex.getDetails() + '\n' + ex.getStackTrace() : ex.toString();
         nlapiLogExecution('error', 'Email invoice', 'Error in emailing invoice : ' + errorStr);
     }
