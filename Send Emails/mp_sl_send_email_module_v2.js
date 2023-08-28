@@ -513,7 +513,7 @@ function sendEmail(request, response) {
         '" id="email">';
       tab_content += email_template(resultSetCampTemp, contactResult,
         resultSet_contacts, nosale, unity, invite_to_portal, sendinfo,
-        referral);
+        referral, opp_with_value, closed_won);
       tab_content += '</div>';
 
 
@@ -688,8 +688,10 @@ function sendEmail(request, response) {
         }
         nlapiLogExecution('DEBUG', 'attSOForm', attSOForm)
         nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
+        nlapiLogExecution('DEBUG', 'before getAttachments function call closed_won', closed_won)
+        nlapiLogExecution('DEBUG', 'before getAttachments function call opp_with_values', opp_with_values)
         var arrAttachments = getAttachments(custId, commRegId, attSCForm,
-          attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm, closed_won, opp_with_value
+          attSOForm, stage, start_date, end_date, sales_record_id, attCOEForm, closed_won, opp_with_values
         );
       }
 
@@ -1011,13 +1013,27 @@ function sendEmail(request, response) {
         recCustomer.setFieldValue('custentity_date_prospect_opportunity',
           getDate());
         recCustomer.setFieldValue('custentity_cust_closed_won', 'T');
-        recCustomer.setFieldValue('entitystatus', 13);
-        recCustomer.setFieldValue('custentity_mpex_surcharge_rate', '31.9');
-        recCustomer.setFieldValue('custentity_sendle_fuel_surcharge', '6.75');
+        // recCustomer.setFieldValue('entitystatus', 13);
+        // recCustomer.setFieldValue('custentity_mpex_surcharge_rate', '31.9');
+        // recCustomer.setFieldValue('custentity_sendle_fuel_surcharge', '6.75');
         recCustomer.setFieldValue('custentity_mpex_surcharge', 1);
         if (!isNullorEmpty(mp_prod_tracking)) {
           recCustomer.setFieldValue('custentity_mp_product_tracking', mp_prod_tracking);
         }
+
+        var email_body_internal =
+          'Please check the below CUSTOMER details </br></br>';
+        email_body_internal +=
+          '<u><b>Customer Details</b></u> </br></br>Customer NS ID: ' +
+          custId + '</br>';
+        email_body_internal += 'Customer Name: ' + entity_id + ' ' + company_name +
+          '</br>';
+        email_body_internal += 'Franchisee: ' + partner_text + '</br></br>';
+        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+          entity_id + ' ' + customer_name + ' - ' + 'Customer Signed Up - Please Check & Finalise', email_body_internal, [
+          'ankith.ravindran@mailplus.com.au'
+        ], null, records, null, true);
+
 
         phonecall.setFieldValue('title', sales_campaign_name +
           ' - SCF Sent');
@@ -1550,6 +1566,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
   }
 
   merge['NLSALESREPNAME2'] = salesreptext;
+  nlapiLogExecution('DEBUG', 'stage', stage);
   if (isNullorEmpty(stage)) {
     if (!isNullorEmpty(attSCForm)) {
       merge['NLSCSTARTDATE'] = dateEffective;
@@ -1557,7 +1574,10 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
         null, merge);
       fileSCFORM.setName('MP_ServiceCommencement_' + custId + '.pdf');
 
-      if (closed_won == 'T') {
+      nlapiLogExecution('DEBUG', 'closed_won', closed_won);
+      nlapiLogExecution('DEBUG', 'opp_with_value', opp_with_value);
+
+      if (closed_won == 'T' || opp_with_value == 'T') {
         fileSCFORM.setFolder(1212243);
 
         var type = fileSCFORM.getType();
@@ -1581,14 +1601,70 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
         // Create file and upload it to the file cabinet.
         var id = nlapiSubmitFile(fileSCFORM);
 
+
+        nlapiLogExecution('DEBUG', 'comm reg id', commRegId);
         var commRegRecord = nlapiLoadRecord(
           'customrecord_commencement_register', commRegId);
 
         commRegRecord.setFieldValue('custrecord_scand_form', id);
-        commRegRecord.setFieldValue('custrecord_trial_status', 9);
+        if (closed_won == 'T') {
+          commRegRecord.setFieldValue('custrecord_trial_status', 9);
+        }
+
         commRegRecord.setFieldValue('custrecord_finalised_by',
           nlapiGetContext().getUser());
         commRegRecord.setFieldValue('custrecord_finalised_on', getDate());
+
+        nlapiSubmitRecord(commRegRecord);
+
+      }
+    }
+    if (!isNullorEmpty(attSOForm)) {
+      merge['NLSCSTARTDATE'] = dateEffective;
+      var fileSOForm = nlapiMergeRecord(attSOForm, 'customer', custId, null,
+        null, merge);
+        fileSOForm.setName('MP_StandingOrderForm_' + custId + '.pdf');
+
+      nlapiLogExecution('DEBUG', 'closed_won', closed_won);
+      nlapiLogExecution('DEBUG', 'opp_with_value', opp_with_value);
+
+      if (closed_won == 'T' || opp_with_value == 'T') {
+        fileSOForm.setFolder(1212243);
+
+        var type = fileSOForm.getType();
+        if (type == 'JPGIMAGE') {
+          type = 'jpg';
+          var file_name = getDate() + '_SOF_' + customerEntityId + '.' + type;
+
+        } else if (type == 'PDF') {
+          type == 'pdf';
+          var file_name = getDate() + '_SOF_' + customerEntityId + '.' + type;
+        } else if (type == 'PNGIMAGE') {
+          type == 'png';
+          var file_name = getDate() + '_SOF_' + customerEntityId + '.' + type;
+        } else if (type == 'PJPGIMAGE') {
+          type == 'png';
+          var file_name = getDate() + '_SOF_' + customerEntityId + '.' + type;
+        }
+
+        fileSOForm.setName(file_name);
+
+        // Create file and upload it to the file cabinet.
+        var id = nlapiSubmitFile(fileSOForm);
+
+
+        nlapiLogExecution('DEBUG', 'comm reg id', commRegId);
+        var commRegRecord = nlapiLoadRecord(
+          'customrecord_commencement_register', commRegId);
+
+        commRegRecord.setFieldValue('custrecord_standing_order_form', id);
+        // if (closed_won == 'T') {
+        //   commRegRecord.setFieldValue('custrecord_trial_status', 9);
+        // }
+
+        // commRegRecord.setFieldValue('custrecord_finalised_by',
+        //   nlapiGetContext().getUser());
+        // commRegRecord.setFieldValue('custrecord_finalised_on', getDate());
 
         nlapiSubmitRecord(commRegRecord);
 
@@ -1728,7 +1804,7 @@ function attachmentsSection(resultSetAtt, invite_to_portal) {
 }
 
 function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
-  nosale, unity, invite_to_portal, sendinfo, referral) {
+  nosale, unity, invite_to_portal, sendinfo, referral, opp_with_value, closed_won) {
 
   var html = '<div class="form-group container row_to ">';
   html += '<div class="row">';
@@ -1825,7 +1901,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
       }
     } else {
 
-      html += '<option value="' + tempId + '">' + tempName + '</option>'
+        html += '<option value="' + tempId + '">' + tempName + '</option>'
     }
 
 

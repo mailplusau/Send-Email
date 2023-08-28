@@ -246,10 +246,10 @@ function main(request, response) {
     
 
 
-    var default_note = '*Quoted price excludes GST and applies for the first 16kg of mail. Further increments of 16kg incur a $2.75 charge. Registered mail $2.20 and parcels $1.10. Minimum two weeks written notice to cancel services\n' + service_freq;
+    var default_note = '*Quoted price excludes GST and applies for the first 16kg of mail. Further increments of 16kg incur a $3.85 charge. Registered mail $3.30 and parcels $2.20. Minimum two weeks written notice to cancel services\n' + service_freq;
 
     if (scfid == 186) {
-        merge['NLSCNOTES'] = 'Change of Entity to ' + customerEntityId + ' ' + customerName + ' ABN ' + customerVatRegNumber + ' as of ' + dateEffective + '. \nPrice excludes GST but includes the first 16kg of mails. Every 16kg of mail after incurs a $2.75 charge plus charge for registered mail $2.20 and parcels $1.10.\nExcludes MailPlus Express parcels.';
+        merge['NLSCNOTES'] = 'Change of Entity to ' + customerEntityId + ' ' + customerName + ' ABN ' + customerVatRegNumber + ' as of ' + dateEffective + '. \nPrice excludes GST but includes the first 16kg of mails. Every 16kg of mail after incurs a $3.85 charge plus charge for registered mail $3.30 and parcels $2.20.\nExcludes MailPlus Express parcels.';
     } else if (!isNullorEmpty(recCustomer.getFieldValue('custentity_sc_form_notes'))) {
         merge['NLSCNOTES'] = default_note + recCustomer.getFieldValue('custentity_sc_form_notes');
     } else {

@@ -127,8 +127,9 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
         nlapiLogExecution('debug', 'Email invoice', 'Customer CC : ' + emailCCArray);
 
         // Set Template to be used for mail merge.
-        var mergeResult = nlapiCreateEmailMerger(316).merge();
+        // var mergeResult = nlapiCreateEmailMerger(316).merge();
         //var mergeResult = nlapiCreateEmailMerger(315).merge();
+        var mergeResult = nlapiCreateEmailMerger(405).merge();
 
         // Determine the subject and body.
         var emailBody = mergeResult.getBody();
@@ -157,7 +158,7 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
         if(!isNullorEmpty(mpexUsageReport)){
            arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport))); 
         }
-         arrAttachments.push(nlapiLoadFile(parseInt(5045523)));
+        //  arrAttachments.push(nlapiLoadFile(parseInt(5045523)));
 
         nlapiLogExecution('debug', 'Email invoice', 'Customer : ' + recId + '. Email created : ' + !isNullorEmpty(emailFile));
 
