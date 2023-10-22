@@ -1545,6 +1545,7 @@ function saveRecord() {
     if (referral != 'T') {
         if (isNullorEmpty(outcome2)) {
             var callback_time = onTimeChange($('#time').val());
+            var callback_endtime = onTimeChange($('#endtime').val());
             var callback_date = $('#date').val();
             var callback_notes = $('#notes').val();
             var callback_type = $('#appointment_type').val();
@@ -1555,17 +1556,18 @@ function saveRecord() {
 
                 nlapiSetFieldValue('custpage_callbackdate', callback_date);
                 nlapiSetFieldValue('custpage_callbacktime', callback_time);
+                nlapiSetFieldValue('custpage_callbackendtime', callback_endtime);
                 nlapiSetFieldValue('custpage_callnotes', callback_notes);
                 nlapiSetFieldValue('custpage_calltype', callback_type);
+
+                outcome = 'setappointment';
+
             } else {
                 nlapiSetFieldValue('custpage_callbackdate', null);
                 nlapiSetFieldValue('custpage_callbacktime', null);
                 nlapiSetFieldValue('custpage_callnotes', null);
                 nlapiSetFieldValue('custpage_calltype', null);
             }
-
-
-
 
             nlapiSetFieldValue('custpage_outcome', outcome);
         } else {

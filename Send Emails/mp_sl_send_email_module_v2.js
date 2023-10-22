@@ -302,6 +302,8 @@ function sendEmail(request, response) {
       'hidden');
     form.addField('custpage_callbacktime', 'textarea', 'BODY').setDisplayType(
       'hidden');
+    form.addField('custpage_callbackendtime', 'textarea', 'BODY').setDisplayType(
+      'hidden');
     form.addField('custpage_callnotes', 'textarea', 'BODY').setDisplayType(
       'hidden');
     form.addField('custpage_calltype', 'text', 'BODY').setDisplayType('hidden');
@@ -572,6 +574,7 @@ function sendEmail(request, response) {
     var callback = request.getParameter('custpage_callback');
     var callbackdate = request.getParameter('custpage_callbackdate');
     var callbacktime = request.getParameter('custpage_callbacktime');
+    var callbackendtime = request.getParameter('custpage_callbackendtime');
     var callnotes = request.getParameter('custpage_callnotes');
     var calltype = request.getParameter('custpage_calltype');
     var invite_to_portal = request.getParameter('custpage_invite');
@@ -588,6 +591,13 @@ function sendEmail(request, response) {
     nlapiLogExecution('DEBUG', 'attSCForm', attSCForm)
     nlapiLogExecution('DEBUG', 'attCOEForm', attCOEForm)
     nlapiLogExecution('DEBUG', 'invite_to_portal', invite_to_portal)
+
+    nlapiLogExecution('DEBUG', 'callback', callback)
+    nlapiLogExecution('DEBUG', 'callbackdate', callbackdate)
+    nlapiLogExecution('DEBUG', 'callbacktime', callbacktime)
+    nlapiLogExecution('DEBUG', 'callbacktime', callbackendtime)
+    nlapiLogExecution('DEBUG', 'callnotes', callnotes)
+    nlapiLogExecution('DEBUG', 'calltype', calltype)
 
     var sales_rep_id;
 
@@ -644,26 +654,33 @@ function sendEmail(request, response) {
     }
 
     var phonecall = nlapiCreateRecord('phonecall');
+    phonecall.setFieldValue('company', custId);
+
+    if (outcome == 'setappointment') {
+      phonecall.setFieldText('status', 'Scheduled');
+    } else {
+      phonecall.setFieldText('status', 'Completed');
+    }
+
     phonecall.setFieldValue('assigned', nlapiGetUser());
     phonecall.setFieldValue('custevent_organiser', nlapiGetUser());
     phonecall.setFieldValue('startdate', getDate());
-    phonecall.setFieldValue('company', custId);
-    phonecall.setFieldText('status', 'Completed');
     phonecall.setFieldValue('custevent_call_type', 2);
 
     nlapiLogExecution('DEBUG', 'Calltype', calltype)
 
-    if (!isNullorEmpty(calltype) && calltype == 2) {
+    if (!isNullorEmpty(calltype)) {
       var event = nlapiCreateRecord('calendarevent');
 
       event.setFieldValue('organizer', nlapiGetUser());
       event.setFieldValue('startdate', callbackdate);
       event.setFieldValue('starttime', callbacktime);
+      event.setFieldValue('endtime', callbackendtime);
       event.setFieldText('remindertype', 'Email');
       event.setFieldText('reminderminutes', '1 hour');
       event.setFieldValue('timedevent', 'T');
       event.setFieldValue('company', custId);
-      event.setFieldText('status', 'Completed');
+      event.setFieldText('status', 'Confirmed');
       event.setFieldValue('title', 'Sales - ' + sales_campaign_name +
         ' - Appointment');
       event.setFieldValue('message', callnotes);
@@ -874,7 +891,126 @@ function sendEmail(request, response) {
     }
 
 
-    if (outcome == 'callback') {
+    if (outcome == 'setappointment') {
+
+      sales_rep_id = request.getParameter('sales_rep');
+      nlapiLogExecution('DEBUG', 'sales_rep_id', sales_rep_id)
+      phonecall.setFieldValue('assigned', sales_rep_id);
+      phonecall.setFieldValue('startdate', callbackdate);
+      phonecall.setFieldValue('timedevent', 'T');
+      phonecall.setFieldValue('starttime', callbacktime);
+      phonecall.setFieldValue('endtime', callbackendtime);
+
+      if (sales_campaign_type != 1) {
+        if (customerStatus != 13) {
+          // recCustomer.setFieldValue('entitystatus', 8);
+        }
+        recCustomer.setFieldValue('custentity_date_prospect_in_contact',
+          getDate());
+        if (isNullorEmpty(sales_rep_id)) {
+          phonecall.setFieldValue('title', sales_campaign_name +
+            ' - Appointment');
+        } else {
+          phonecall.setFieldValue('title', sales_campaign_name +
+            ' - Appointment');
+
+          phonecall.setFieldValue('custevent_call_type', 8);
+
+        }
+
+      } else {
+        if (isNullorEmpty(sales_rep_id)) {
+          phonecall.setFieldValue('title', sales_campaign_name +
+            ' - Appointment');
+        } else {
+          phonecall.setFieldValue('title', sales_campaign_name +
+            ' - Appointment');
+          phonecall.setFieldValue('custevent_call_type', 8);
+
+        }
+      }
+
+      phonecall.setFieldValue('message', callnotes);
+      phonecall.setFieldValue('custevent_call_outcome', 17);
+
+      if (!isNullorEmpty(recSales)) {
+        recSales.setFieldValue('custrecord_sales_completed', "F");
+        recSales.setFieldValue('custrecord_sales_inuse', "F");
+        recSales.setFieldValue('custrecord_sales_outcome', 5);
+      }
+
+
+
+      if (!isNullorEmpty(sales_rep_id)) {
+        if (sales_rep_id == nlapiGetUser()) {
+          recSales.setFieldValue('custrecord_sales_outcome', 5);
+          recSales.setFieldValue('custrecord_sales_callbackdate',
+            callbackdate);
+          recSales.setFieldValue('custrecord_sales_callbacktime',
+            callbacktime);
+          recSales.setFieldValue('custrecord_sales_appt', 'T');
+
+          nlapiSubmitRecord(recSales);
+        } else {
+          if (!isNullorEmpty(recSales)) {
+            recSales.setFieldValue('custrecord_sales_deactivated', 'T');
+            recSales.setFieldValue('custrecord_sales_completed', 'T');
+          }
+
+          nlapiSubmitRecord(recSales);
+
+
+          var recordtoCreate = nlapiCreateRecord('customrecord_sales');
+          var date2 = new Date();
+          var subject = '';
+          var body = '';
+
+          var userRole = parseInt(nlapiGetContext().getRole());
+
+          // Set customer, campaign, user, last outcome, callback date
+          recordtoCreate.setFieldValue('custrecord_sales_customer', custId);
+          recordtoCreate.setFieldValue('custrecord_sales_campaign',
+            sales_campaign);
+
+          recordtoCreate.setFieldValue('custrecord_sales_assigned', sales_rep_id);
+
+          recordtoCreate.setFieldValue('custrecord_sales_outcome', 5);
+          recordtoCreate.setFieldValue('custrecord_sales_callbackdate',
+            callbackdate);
+          recordtoCreate.setFieldValue('custrecord_sales_callbacktime',
+            callbacktime);
+          recordtoCreate.setFieldValue('custrecord_sales_appt', 'T');
+          nlapiSubmitRecord(recordtoCreate);
+
+          var cust_id_link =
+            'https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' +
+            custId;
+
+          body =
+            'New sales record has been created. \n You have been assigned a lead. Please respond in an hour. \n Link: ' +
+            cust_id_link;
+
+          nlapiSendEmail(112209, sales_rep_id, 'Sales Lead', body, null);
+        }
+
+      }
+
+      var date2 = new Date();
+      var subject = '';
+      var body = '';
+      var cust_id_link =
+        'https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' +
+        custId;
+
+      body =
+        'Appointment has been set: '
+      body += '\n Date: ' + callbackdate + '\nTime: ' + callbacktime + '\n Link: ' +
+        cust_id_link;
+
+      nlapiSendEmail(112209, sales_rep_id, 'Sales Appointment', body, null);
+
+
+    } else if (outcome == 'callback') {
 
       sales_rep_id = request.getParameter('sales_rep');
       nlapiLogExecution('DEBUG', 'sales_rep_id', sales_rep_id)
@@ -919,45 +1055,57 @@ function sendEmail(request, response) {
 
 
       if (!isNullorEmpty(sales_rep_id)) {
-        if (!isNullorEmpty(recSales)) {
-          recSales.setFieldValue('custrecord_sales_deactivated', 'T');
-          recSales.setFieldValue('custrecord_sales_completed', 'T');
+        if (sales_rep_id == nlapiGetUser()) {
+          recordtoCreate.setFieldValue('custrecord_sales_outcome', 5);
+          recordtoCreate.setFieldValue('custrecord_sales_callbackdate',
+            callbackdate);
+          recordtoCreate.setFieldValue('custrecord_sales_callbacktime',
+            callbacktime);
+          recordtoCreate.setFieldValue('custrecord_sales_appt', 'T');
+
+          nlapiSubmitRecord(recSales);
+        } else {
+          if (!isNullorEmpty(recSales)) {
+            recSales.setFieldValue('custrecord_sales_deactivated', 'T');
+            recSales.setFieldValue('custrecord_sales_completed', 'T');
+          }
+
+          nlapiSubmitRecord(recSales);
+
+
+          var recordtoCreate = nlapiCreateRecord('customrecord_sales');
+          var date2 = new Date();
+          var subject = '';
+          var body = '';
+
+          var userRole = parseInt(nlapiGetContext().getRole());
+
+          // Set customer, campaign, user, last outcome, callback date
+          recordtoCreate.setFieldValue('custrecord_sales_customer', custId);
+          recordtoCreate.setFieldValue('custrecord_sales_campaign',
+            sales_campaign);
+
+          recordtoCreate.setFieldValue('custrecord_sales_assigned', sales_rep_id);
+
+          recordtoCreate.setFieldValue('custrecord_sales_outcome', 5);
+          recordtoCreate.setFieldValue('custrecord_sales_callbackdate',
+            callbackdate);
+          recordtoCreate.setFieldValue('custrecord_sales_callbacktime',
+            callbacktime);
+          recordtoCreate.setFieldValue('custrecord_sales_appt', 'T');
+          nlapiSubmitRecord(recordtoCreate);
+
+          var cust_id_link =
+            'https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' +
+            custId;
+
+          body =
+            'New sales record has been created. \n You have been assigned a lead. Please respond in an hour. \n Link: ' +
+            cust_id_link;
+
+          nlapiSendEmail(112209, sales_rep_id, 'Sales Lead', body, null);
         }
 
-        nlapiSubmitRecord(recSales);
-
-
-        var recordtoCreate = nlapiCreateRecord('customrecord_sales');
-        var date2 = new Date();
-        var subject = '';
-        var body = '';
-
-        var userRole = parseInt(nlapiGetContext().getRole());
-
-        // Set customer, campaign, user, last outcome, callback date
-        recordtoCreate.setFieldValue('custrecord_sales_customer', custId);
-        recordtoCreate.setFieldValue('custrecord_sales_campaign',
-          sales_campaign);
-
-        recordtoCreate.setFieldValue('custrecord_sales_assigned', sales_rep_id);
-
-        recordtoCreate.setFieldValue('custrecord_sales_outcome', 5);
-        recordtoCreate.setFieldValue('custrecord_sales_callbackdate',
-          callbackdate);
-        recordtoCreate.setFieldValue('custrecord_sales_callbacktime',
-          callbacktime);
-        recordtoCreate.setFieldValue('custrecord_sales_appt', 'T');
-        nlapiSubmitRecord(recordtoCreate);
-
-        var cust_id_link =
-          'https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' +
-          custId;
-
-        body =
-          'New sales record has been created. \n You have been assigned a lead. Please respond in an hour. \n Link: ' +
-          cust_id_link;
-
-        nlapiSendEmail(112209, sales_rep_id, 'Sales Lead', body, null);
       }
 
 
@@ -1278,6 +1426,14 @@ function sendEmail(request, response) {
 
 
   }
+}
+
+function addMinutes(time, minsToAdd) {
+  function D(J) { return (J < 10 ? '0' : '') + J; };
+  var piece = time.split(':');
+  var mins = piece[0] * 60 + +piece[1] + +minsToAdd;
+
+  return D(mins % (24 * 60) / 60 | 0) + ':' + D(mins % 60);
 }
 
 function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
@@ -1623,7 +1779,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
       merge['NLSCSTARTDATE'] = dateEffective;
       var fileSOForm = nlapiMergeRecord(attSOForm, 'customer', custId, null,
         null, merge);
-        fileSOForm.setName('MP_StandingOrderForm_' + custId + '.pdf');
+      fileSOForm.setName('MP_StandingOrderForm_' + custId + '.pdf');
 
       nlapiLogExecution('DEBUG', 'closed_won', closed_won);
       nlapiLogExecution('DEBUG', 'opp_with_value', opp_with_value);
@@ -1901,7 +2057,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
       }
     } else {
 
-        html += '<option value="' + tempId + '">' + tempName + '</option>'
+      html += '<option value="' + tempId + '">' + tempName + '</option>'
     }
 
 
@@ -2015,8 +2171,9 @@ function call_back(invite_to_portal, unity) {
   html +=
     '<div class="col-xs-4 date_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT DATE <span class="mandatory">*</span></span><input type="date" id="date" class="form-control" /></div></div>';
   html +=
-    '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
-
+    '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT START TIME <span class="mandatory">*</span></span><input type="time" id="time" class="form-control" /></div></div>';
+  html +=
+    '<div class="col-xs-4 time_section"><div class="input-group"><span class="input-group-addon">SET APPOINTMENT END TIME <span class="mandatory">*</span></span><input type="time" id="endtime" class="form-control" /></div></div>';
 
   html += '</div>';
   html += '</div>';
