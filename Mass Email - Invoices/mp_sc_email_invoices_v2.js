@@ -158,9 +158,9 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
         if (!isNullorEmpty(mpexUsageReport)) {
             arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport)));
         }
-        if (partnerId == 1760249 || partnerId == '1760249') {
-            arrAttachments.push(nlapiLoadFile(parseInt(6415837)));
-        }
+        // if (partnerId == 1760249 || partnerId == '1760249') {
+        //     arrAttachments.push(nlapiLoadFile(parseInt(6415837)));
+        // }
         // arrAttachments.push(nlapiLoadFile(parseInt(6013021)));
 
         nlapiLogExecution('debug', 'Email invoice', 'Customer : ' + recId + '. Email created : ' + !isNullorEmpty(emailFile));
