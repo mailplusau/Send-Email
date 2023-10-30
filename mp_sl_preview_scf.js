@@ -98,6 +98,7 @@ function main(request, response) {
         var service_freq = '';
 
         var dateEffective = null;
+        var trialEndDate = null;
 
         for (n = 0; n < serviceResult.length; n++) {
             var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -109,6 +110,7 @@ function main(request, response) {
             var serviceNSItemText = serviceResult[n].getText("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
             var newServiceChangePrice = serviceResult[n].getValue('custrecord_servicechg_new_price');
             dateEffective = serviceResult[n].getValue('custrecord_servicechg_date_effective');
+            trialEndDate = serviceResult[n].getValue('custrecord_trial_end_date');
             var commRegId = serviceResult[n].getValue('custrecord_servicechg_comm_reg');
             var serviceChangeTypeText = serviceResult[n].getText('custrecord_servicechg_type');
             var serviceChangeFreqText = serviceResult[n].getValue('custrecord_servicechg_new_freq');
@@ -256,8 +258,11 @@ function main(request, response) {
         merge['NLSCNOTES'] = default_note;
     }
 
-    if (scfid == 159 || scfid == 186) {
+    if (scfid == 159 || scfid == 186 || scfid == 409) {
         merge['NLSCSTARTDATE'] = dateEffective;
+    }
+    if (scfid == 409) {
+        merge['NLSCTRIALENDDATE'] = trialEndDate;
     }
 
     if (scfid == 94) {

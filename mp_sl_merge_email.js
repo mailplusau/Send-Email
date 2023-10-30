@@ -23,9 +23,12 @@ function main(request, response) {
         var fields = request.getParameter('fields');
         var zeeleadid = request.getParameter('zeeleadid');
         var commdate = request.getParameter('commdate');
+        var trialEndDate = request.getParameter('trialenddate');
         var salesRepName = request.getParameter('salesRepName');
         var emailHtml = '';
         var subject = '';
+
+        nlapiLogExecution('DEBUG', 'commdate', commdate);
 
         if (!isNullorEmpty(templateId)) {
             var recCommTemp = nlapiLoadRecord('customrecord_camp_comm_template',
@@ -688,9 +691,15 @@ function main(request, response) {
 
                     var expIntcustomerVisitederest = '<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&h=1628e8b5d3c71477d4aa&custinternalid=' + recId + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Completed</a>';
 
-                    var bookACall = '<a class="mcnButton " href="https://mailplus.com.au/book-a-sales-call/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '&lastname=' + lastname + '&contactid=' + contactID + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Book a Call</a>'
+                    var bookACall = '<a class="mcnButton " href="https://mailplus.com.au/book-a-sales-call/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '&lastname=' + lastname + '&contactid=' + contactID + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Book a Call</a>';
 
+                    if (!isNullorEmpty(trialEndDate)) {
+                        var trialEndDateText = 'Trial Start Date: ' + commdate;
+                        trialEndDateText += '</br>Trial End Date: ' + trialEndDate + '</br>';
+                        emailHtml = emailHtml.replace(/<nlemfreetrialdetails>/gi, trialEndDateText);
+                    }
                     emailHtml = emailHtml.replace(/<nlemcommstartdate>/gi, commdate);
+
                     emailHtml = emailHtml.replace(/<nlemcustomerdetails>/gi, customerDetails);
                     emailHtml = emailHtml.replace(/<nlemcustomeraddress>/gi, customerAddressDetails);
                     emailHtml = emailHtml.replace(/<nlemcontantdetails>/gi, contactDetails);
