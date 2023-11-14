@@ -1925,6 +1925,10 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
     merge['NLSCTRIALENDDATE'] = trialEndDate;
   }
 
+  if (attSCForm == 412 || attSCForm == 411) {
+    merge['NLSCINTERNALID'] = custId;
+}
+
 
 
 

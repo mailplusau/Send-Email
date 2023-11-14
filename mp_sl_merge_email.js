@@ -82,6 +82,8 @@ function main(request, response) {
                 // set variables in email
                 // emailHtml = emailHtml.replace(/<NLEMCONTACT>/gi,addressee);
                 nlapiLogExecution('AUDIT', 'templateId', templateId)
+
+                //Email template Name: Referral Program - Referral Code
                 if (templateId == 286) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -90,6 +92,7 @@ function main(request, response) {
                         last5_entityid);
                 }
 
+                //Email Template Name: Franchisee Website Leads - Owner
                 if (templateId == 329) {
                     var owner_button =
                         '<td align="center" class="mcnButtonContent" style="font-family: Arial;font-size: 16px;padding: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="middle"><a class="mcnButton " href="https://mailplus.com.au/become-a-franchisee-owner-operator-survey/?zeeleadid=' +
@@ -98,6 +101,7 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<NLEMSURVEYBUTTON>/gi, owner_button);
                 }
 
+                //Email template Name: Franchisee Website Leads - Investor
                 if (templateId == 328) {
                     var investor_button =
                         '<td align="center" class="mcnButtonContent" style="font-family: Arial;font-size: 16px;padding: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" valign="middle"><a class="mcnButton " href="https://mailplus.com.au/become-a-franchisee-investor-survey/?zeeleadid=' +
@@ -106,6 +110,12 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<NLEMSURVEYBUTTON>/gi, investor_button);
                 }
 
+                /**
+                 * Email Template Names:
+                 *  MailPlus Express - Invite to Portal
+                 *  MailPlus Standard - Activated
+                 *  Existing Customer - Portal Access Required
+                 */
                 if (templateId == 219 || templateId == 371 || templateId == 372) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -124,6 +134,7 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
+                //Email Template Name: 20230418 - New Lead Enquiry Email
                 if (templateId == 390) {
 
                     var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
@@ -154,6 +165,10 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<nlemsalesrepemailsignature>/gi, salesRepDetailsName);
                 }
 
+                //Email Template Names:
+                //  Sales Lead - Sign Up Email
+                //  Sales Lead - Are you interested
+                //  202301 - Sales - Lost - No Response
                 if (templateId == 374 || templateId == 378 || templateId == 382) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -384,6 +399,30 @@ function main(request, response) {
 
                 }
 
+                //Email template Name: 202231106 - Kellyville & Stanhope LPO - Cover Letter
+                if (templateId == 413) {
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var partner_id = customer_record.getFieldValue('partner');
+                    var partner_record = nlapiLoadRecord('partner', partner_id);
+                    var zee_contact_name = partner_record.getFieldValue('custentity3');
+                    var zee_mobile_number = partner_record.getFieldValue('custentity2');
+                    var zee_first_name = partner_record.getFieldValue('custentity_franchisee_firstname');
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname');
+                    var lastname = recContact.getFieldValue('lastname');
+
+
+                    emailHtml = emailHtml.replace(/<nlemcontactname>/gi, firstname);
+                    emailHtml = emailHtml.replace(/<nlemzeecontactname>/gi, zee_contact_name);
+                    emailHtml = emailHtml.replace(/<nlemzeecontactnumber>/gi, zee_mobile_number);
+                    emailHtml = emailHtml.replace(/<nlemzeecontactfname>/gi, zee_first_name);
+                }
+
+                //Email Template Name: MP Express & Standard Price Points
                 if (templateId == 381) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -582,6 +621,7 @@ function main(request, response) {
 
                 }
 
+                //Email Template Name: Sales Lead - Sales Call Confirmed
                 if (templateId == 375) {
                     var recContact = nlapiLoadRecord('contact', contactID);
 
@@ -635,6 +675,7 @@ function main(request, response) {
 
                 }
 
+                //Email Template Name: New Customer - Inform Franchisee
                 if (templateId == 377) {
 
                     var customer_record = nlapiLoadRecord('customer', recId);
@@ -710,6 +751,7 @@ function main(request, response) {
 
                 }
 
+                //Email Template Name: 202301 - Verify Services
                 if (templateId == 383) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -728,6 +770,7 @@ function main(request, response) {
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
+                //Email Template Name: Under Declaring Package Size Reminder
                 if (templateId == 384) {
                     if (!isNullorEmpty(recId)) {
                         var customer_record = nlapiLoadRecord('customer', recId);
@@ -754,6 +797,7 @@ function main(request, response) {
 
                 }
 
+                //Email Template Name: 202301 - 250g Now Available
                 if (templateId == 385) {
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');

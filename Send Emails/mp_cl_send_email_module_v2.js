@@ -5,6 +5,7 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
 
 var urlCall = null;
 var salesRep = escape(nlapiGetContext().getName())
+var role = nlapiGetRole();
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()
@@ -165,18 +166,18 @@ function pageInit() {
             } else {
                 var SCF_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             }
-           
+
             var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
-            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF159_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
-            if (salesCampaign == 69) { 
+            newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
+            if (salesCampaign == 69) {
                 nlapiSetFieldValue('custpage_scf', 411);
             } else {
                 nlapiSetFieldValue('custpage_scf', 159);
             }
-            
+
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF94_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Standing Order Form"><span class="input-group-addon"><input type="checkbox" id="" class="sof" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF186_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Change of Entity Form"><span class="input-group-addon"><input type="checkbox" id="" class="coe" /></span></div></div>';
 
@@ -298,7 +299,11 @@ function pageInit() {
 
             var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             if (salesCampaign == 69) {
-                var SCFFreeTrial_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=410&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+                // if (role == 3) {
+                var SCFFreeTrial_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=412&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+                // } else {
+                //     var SCFFreeTrial_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=410&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
+                // }
             } else {
                 var SCFFreeTrial_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=409&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             }
@@ -309,7 +314,11 @@ function pageInit() {
             // newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCF179_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="SC - Proposal - SCF"><span class="input-group-addon"><input type="checkbox" id="" class="propscf" /></span></div></div>';
             newHtml2 += '<div class="col-xs-4"><div class="input-group"><span class="input-group-addon"><button type="button" id="" class=" btn btn-xs glyphicon glyphicon-new-window" style="height: 20px;" onclick="onclick_preview(\'' + SCFFreeTrial_url + '\')"/></button></span><input type="text" readonly id="" class="form-control" value="Service Commencement Form"><span class="input-group-addon"><input type="checkbox" id="" class="scf" checked/></span></div></div>';
             if (salesCampaign == 69) {
-                nlapiSetFieldValue('custpage_scf', 410);
+                // nlapiSetFieldValue('custpage_scf', 410);
+                // if (role == 3) {
+                nlapiSetFieldValue('custpage_scf', 412);
+                // }
+
             } else {
                 nlapiSetFieldValue('custpage_scf', 409);
             }
@@ -429,12 +438,12 @@ function pageInit() {
 
             var newHtml2 = '<div class="row">';
             var SCF179_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=179&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
-            if (salesCampaign == 69) { 
+            if (salesCampaign == 69) {
                 var SCF_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=411&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             } else {
                 var SCF_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=159&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             }
-            
+
             var SCF94_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=94&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
             var SCF186_url = baseURL + '/app/site/hosting/scriptlet.nl?script=746&deploy=1&stage=0&custid=' + nlapiGetFieldValue('custpage_customer_id') + '&scfid=186&start=null&end=null&commreg=' + nlapiGetFieldValue('custpage_commreg') + '&salesrecordid=' + parseInt(nlapiGetFieldValue('custpage_sales_record_id'));
 
@@ -1661,7 +1670,6 @@ function saveRecord() {
             } else if ($('input#free_trial').is(':checked')) {
                 outcome = 'freetrial';
             }
-
 
             var attachments_ids = [];
             var scf_ids = [];

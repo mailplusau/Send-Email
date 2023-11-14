@@ -237,6 +237,10 @@ function main(request, response) {
     merge['NLDATEEFFECTIVE'] = dateEffective;
     merge['NLSPORTAL'] = create_portal;
 
+    if (scfid == 412 || scfid == 411) {
+        merge['NLSPORTAL'] = 'Yes';
+    }
+
     if (!isNullorEmpty(service)) {
         for (var x = 0; x < service.length; x++) {
             merge['NLSERVICEITEM' + (x + 1)] = service[x];
@@ -245,7 +249,7 @@ function main(request, response) {
         }
     }
 
-    
+
 
 
     var default_note = '*Quoted price excludes GST and applies for the first 16kg of mail. Further increments of 16kg incur a $3.85 charge. Registered mail $3.30 and parcels $2.20. Minimum two weeks written notice to cancel services\n' + service_freq;
@@ -258,11 +262,15 @@ function main(request, response) {
         merge['NLSCNOTES'] = default_note;
     }
 
-    if (scfid == 159 || scfid == 186 || scfid == 409) {
+    if (scfid == 159 || scfid == 186 || scfid == 409 || scfid == 412 || scfid == 410 || scfid == 411) {
         merge['NLSCSTARTDATE'] = dateEffective;
     }
-    if (scfid == 409) {
+    if (scfid == 409 || scfid == 412 || scfid == 410) {
         merge['NLSCTRIALENDDATE'] = trialEndDate;
+    }
+
+    if (scfid == 412) {
+        merge['NLSCINTERNALID'] = custId;
     }
 
     if (scfid == 94) {
@@ -273,7 +281,7 @@ function main(request, response) {
 
     merge['NLSALESREPNAME2'] = salesreptext;
 
-    var fileSCFORM = nlapiMergeRecord(scfid, 'customer', custId, null, null, merge);
+    var fileSCFORM = nlapiMergeRecord(scfid, 'customer', custId, null, null, merge);//Deprecated Since Version 2015 Release 1
 
 
 
