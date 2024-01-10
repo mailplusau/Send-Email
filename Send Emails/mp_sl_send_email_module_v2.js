@@ -662,6 +662,12 @@ function sendEmail(request, response) {
     var recCustomer = nlapiLoadRecord('customer', custId);
 
     var customerStatus = recCustomer.getFieldValue('entitystatus');
+    var entity_id = recCustomer.getFieldValue('entityid');
+    var customer_name = recCustomer.getFieldValue('companyname');
+    var company_name = recCustomer.getFieldValue('companyname');
+    var entity_id = recCustomer.getFieldValue('entityid');
+    var partner = recCustomer.getFieldValue('partner');
+    var partner_text = recCustomer.getFieldText('partner');
 
     if (!isNullorEmpty(sales_record_id)) {
       var recSales = nlapiLoadRecord('customrecord_sales', sales_record_id);
@@ -770,12 +776,7 @@ function sendEmail(request, response) {
         records['entity'] = custId;
 
         // var customer_record = nlapiLoadRecord('customer', custId);
-        var entity_id = recCustomer.getFieldValue('entityid');
-        var customer_name = recCustomer.getFieldValue('companyname');
-        var company_name = recCustomer.getFieldValue('companyname');
-        var entity_id = recCustomer.getFieldValue('entityid');
-        var partner = recCustomer.getFieldValue('partner');
-        var partner_text = recCustomer.getFieldText('partner');
+
 
         var franchiseeSalesRepAssigned = nlapiLookupField('customer', parseInt(custId), 'partner.custentity_sales_rep_assigned');
         if (franchiseeSalesRepAssigned == '668712') {
@@ -1927,7 +1928,7 @@ function getAttachments(custId, commRegId, attSCForm, attSOForm, stage,
 
   if (attSCForm == 412 || attSCForm == 411) {
     merge['NLSCINTERNALID'] = custId;
-}
+  }
 
 
 
