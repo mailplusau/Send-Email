@@ -269,7 +269,7 @@ function main(request, response) {
         merge['NLSCTRIALENDDATE'] = trialEndDate;
     }
 
-    if (scfid == 412) {
+    if (scfid == 412 || scfid == 411 || scfid == 159) {
         merge['NLSCINTERNALID'] = custId;
     }
 
