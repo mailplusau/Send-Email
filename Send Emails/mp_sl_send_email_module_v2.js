@@ -669,11 +669,14 @@ function sendEmail(request, response) {
     var partner = recCustomer.getFieldValue('partner');
     var partner_text = recCustomer.getFieldText('partner');
 
+    var salesRecordLastAssigned = null;
+
     if (!isNullorEmpty(sales_record_id)) {
       var recSales = nlapiLoadRecord('customrecord_sales', sales_record_id);
       var sales_emails_count = recSales.getFieldValue(
         'custrecord_sales_email_count');
       var sales_campaign = recSales.getFieldValue('custrecord_sales_campaign');
+      salesRecordLastAssigned = recSales.getFieldValue('custrecord_sales_assigned');
       sales_emails_count++;
       recSales.setFieldValue('custrecord_sales_email_count', sales_emails_count);
       if (isNullorEmpty(commRegId)) {
@@ -779,6 +782,7 @@ function sendEmail(request, response) {
 
 
         var franchiseeSalesRepAssigned = nlapiLookupField('customer', parseInt(custId), 'partner.custentity_sales_rep_assigned');
+
         if (franchiseeSalesRepAssigned == '668712') {
           var salesRepEmail = 'belinda.urbani@mailplus.com.au';
         } else if (franchiseeSalesRepAssigned == '668711') {
@@ -804,9 +808,14 @@ function sendEmail(request, response) {
                 records, arrAttachments, true);
 
             } else {
+              if (customerStatus == 13) {
+                nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, salesRepEmail,
+                  records, arrAttachments, true);
+              } else {
+                nlapiSendEmail(salesRecordLastAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, salesRepEmail,
+                  records, arrAttachments, true);
+              }
 
-              nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC, salesRepEmail,
-                records, arrAttachments, true);
               if (outcome == 'sendform') {
                 var email_body2 =
                   'Please check the below CUSTOMER details </br></br>';
@@ -828,8 +837,13 @@ function sendEmail(request, response) {
               nlapiSendEmail(112209, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
                 nlapiGetContext().getEmail(), records, arrAttachments, true);
             } else {
-              nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
-                salesRepEmail, records, arrAttachments, true);
+              if (customerStatus == 13) {
+                nlapiSendEmail(franchiseeSalesRepAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
+                  salesRepEmail, records, arrAttachments, true);
+              } else {
+                nlapiSendEmail(salesRecordLastAssigned, To, entity_id + ' ' + customer_name + ' - ' + subject, message, CC,
+                  salesRepEmail, records, arrAttachments, true);
+              }
 
               if (outcome == 'sendform') {
                 var email_body2 =
