@@ -23,6 +23,7 @@ function main(request, response) {
         var fields = request.getParameter('fields');
         var zeeleadid = request.getParameter('zeeleadid');
         var commdate = request.getParameter('commdate');
+        var commreg = request.getParameter('commreg');
         var trialEndDate = request.getParameter('trialenddate');
         var salesRepName = request.getParameter('salesRepName');
         var emailHtml = '';
@@ -770,6 +771,105 @@ function main(request, response) {
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
+                //Email Template Name: 202402 - Verify Services
+                if (templateId == 419) {
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var companyname = customer_record.getFieldValue('companyname');
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname')
+
+                    var expInterest = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' + recId + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+
+                    nlapiLogExecution("DEBUG", "commreg", commreg);
+
+
+                    var searched_service_change = nlapiLoadSearch('customrecord_servicechg', 'customsearch_salesp_service_chg');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_service_customer", "CUSTRECORD_SERVICECHG_SERVICE", 'is', recId);
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_servicechg_comm_reg", null, 'is', commreg);
+                    newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
+
+                    searched_service_change.addFilters(newFilters);
+
+                    resultSet_service_change = searched_service_change.runSearch();
+
+                    var serviceResult = resultSet_service_change.getResults(0, 6);
+
+                    var service = [];
+                    var serviceFreq = [];
+                    var price = [];
+
+                    var service_freq = '';
+
+                    var dateEffective = null;
+                    var trialEndDate = null;
+
+      
+                    var serviceTable =
+                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+
+                    for (n = 0; n < serviceResult.length; n++) {
+                        var serviceChangeId = serviceResult[n].getValue('internalid');
+                        var serviceId = serviceResult[n].getValue('custrecord_servicechg_service');
+                        var serviceText = serviceResult[n].getText('custrecord_servicechg_service');
+                        var serviceDescp = serviceResult[n].getValue("custrecord_service_description", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var oldServicePrice = serviceResult[n].getValue("custrecord_service_price", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItem = serviceResult[n].getValue("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItemText = serviceResult[n].getText("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var newServiceChangePrice = serviceResult[n].getValue('custrecord_servicechg_new_price');
+                        dateEffective = serviceResult[n].getValue('custrecord_servicechg_date_effective');
+                        trialEndDate = serviceResult[n].getValue('custrecord_trial_end_date');
+                        var commRegId = serviceResult[n].getValue('custrecord_servicechg_comm_reg');
+                        var serviceChangeTypeText = serviceResult[n].getText('custrecord_servicechg_type');
+                        var serviceChangeFreqText = serviceResult[n].getValue('custrecord_servicechg_new_freq');
+
+                        nlapiLogExecution('DEBUG', 'serviceNSItem', serviceNSItem);
+                        nlapiLogExecution('DEBUG', 'serviceNSItemText', serviceNSItemText);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.length', serviceChangeFreqText.length);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.split(,).length', serviceChangeFreqText.split(',').length);
+
+                        var serviceFreqText = '';
+
+                        service[service.length] = serviceNSItemText;
+                        if (serviceChangeFreqText.split(',').length == 5) {
+                            serviceFreq[serviceFreq.length] = 'Daily';
+                            serviceFreqText = 'Daily';
+                        } else {
+                            serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+                            serviceFreqText = freqCal(serviceChangeFreqText);
+                        }
+                        price[price.length] = newServiceChangePrice;
+
+
+                        serviceTable += '<tr>';
+                        serviceTable +=
+                            '<td>' +
+                            serviceText + '</td>';
+                        serviceTable += '<td>' + serviceFreqText + '</td>';
+                        serviceTable +=
+                            '<td>$' +
+                            newServiceChangePrice + '</td>';
+
+
+                        serviceTable += '</tr>';
+                    }
+
+                    serviceTable += '</tbody></table>';
+                    
+
+                    // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
+                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
+                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
+                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
+                }
+
                 //Email Template Name: Under Declaring Package Size Reminder
                 if (templateId == 384) {
                     if (!isNullorEmpty(recId)) {
@@ -914,4 +1014,37 @@ function getAttachments(templateId) {
             return [attachments, checked];
         } else return null;
     }
+}
+
+function freqCal(freq) {
+
+    var multiselect = '';
+
+
+
+    if (freq.indexOf(1) != -1) {
+        multiselect += 'Mon,';
+    }
+
+    if (freq.indexOf(2) != -1) {
+        multiselect += 'Tue,';
+    }
+
+    if (freq.indexOf(3) != -1) {
+        multiselect += 'Wed,';
+    }
+
+    if (freq.indexOf(4) != -1) {
+        multiselect += 'Thu,';
+    }
+
+    if (freq.indexOf(5) != -1) {
+        multiselect += 'Fri,';
+    }
+
+    if (freq.indexOf(6) != -1) {
+        multiselect += 'Adhoc,';
+    }
+    multiselect = multiselect.slice(0, -1)
+    return multiselect;
 }

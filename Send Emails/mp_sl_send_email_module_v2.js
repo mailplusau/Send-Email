@@ -1310,7 +1310,7 @@ function sendEmail(request, response) {
         contactID = contactResult[0].getValue('internalid');
         url += template_id + '&recid=' + custId + '&salesrep=' +
           null + '&dear=' + null + '&contactid=' + contactID + '&userid=' +
-          encodeURIComponent(nlapiGetContext().getUser()) + '&commdate=' + commencement_date;
+          encodeURIComponent(nlapiGetContext().getUser()) + '&commdate=' + commencement_date + '&commreg=' + commReg;
         urlCall = nlapiRequestURL(url);
         var emailHtml = urlCall.getBody();
 

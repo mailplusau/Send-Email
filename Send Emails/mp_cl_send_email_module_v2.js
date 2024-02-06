@@ -1371,10 +1371,49 @@ $(document).on('change', '#send_to', function (e) {
 
             var userID = nlapiGetContext().getUser();
 
+            var newFiltersCommReg = new Array();
+            newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+                'custrecord_commreg_sales_record', null, 'anyof', parseInt(nlapiGetFieldValue('custpage_sales_record_id')));
+            newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+                'custrecord_customer', null, 'anyof', nlapiGetFieldValue('custpage_customer_id'));
+            newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+                'custrecord_trial_status', null, 'anyof', [10, 9, 2]);
+
+            var commencement_date = null;
+
+            var col = new Array();
+            col[0] = new nlobjSearchColumn('internalId');
+            col[1] = new nlobjSearchColumn('custrecord_date_entry');
+            col[2] = new nlobjSearchColumn('custrecord_sale_type');
+            col[3] = new nlobjSearchColumn('custrecord_franchisee');
+            col[4] = new nlobjSearchColumn('custrecord_comm_date');
+            col[5] = new nlobjSearchColumn('custrecord_in_out');
+            col[6] = new nlobjSearchColumn('custrecord_customer');
+            col[7] = new nlobjSearchColumn('custrecord_trial_status');
+            col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
+
+
+            var comm_reg_results = nlapiSearchRecord(
+                'customrecord_commencement_register', null, newFiltersCommReg, col);
+
+            var commReg;
+            var commencement_date;
+            if (!isNullorEmpty(comm_reg_results)) {
+                if (comm_reg_results.length == 1) {
+                    commReg = comm_reg_results[0].getValue('internalid');
+                    commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
+                } else if (comm_reg_results.length > 1) {
+
+                }
+            }
+
+            nlapiGetFieldValue('custpage_commreg')
+
+
             var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
 
-            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID);
+            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&commdate=' + commencement_date + '&commreg=' + commReg;
 
             urlCall = nlapiRequestURL(url);
             var emailHtml = urlCall.getBody();
@@ -1448,12 +1487,48 @@ $(document).on('change', '#template', function (e) {
         }
     }
 
+    var newFiltersCommReg = new Array();
+    newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_commreg_sales_record', null, 'anyof', parseInt(nlapiGetFieldValue('custpage_sales_record_id')));
+    newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_customer', null, 'anyof', nlapiGetFieldValue('custpage_customer_id'));
+    newFiltersCommReg[newFiltersCommReg.length] = new nlobjSearchFilter(
+        'custrecord_trial_status', null, 'anyof', [10, 9, 2]);
+
+    var commencement_date = null;
+
+    var col = new Array();
+    col[0] = new nlobjSearchColumn('internalId');
+    col[1] = new nlobjSearchColumn('custrecord_date_entry');
+    col[2] = new nlobjSearchColumn('custrecord_sale_type');
+    col[3] = new nlobjSearchColumn('custrecord_franchisee');
+    col[4] = new nlobjSearchColumn('custrecord_comm_date');
+    col[5] = new nlobjSearchColumn('custrecord_in_out');
+    col[6] = new nlobjSearchColumn('custrecord_customer');
+    col[7] = new nlobjSearchColumn('custrecord_trial_status');
+    col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
+
+
+    var comm_reg_results = nlapiSearchRecord(
+        'customrecord_commencement_register', null, newFiltersCommReg, col);
+
+    var commReg;
+    var commencement_date;
+    if (!isNullorEmpty(comm_reg_results)) {
+        if (comm_reg_results.length == 1) {
+            commReg = comm_reg_results[0].getValue('internalid');
+            commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
+        } else if (comm_reg_results.length > 1) {
+
+        }
+    }
+
     var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
     if (!isNullorEmpty(salesRepName)) {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg;;
     } else {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg;;
     }
 
 
