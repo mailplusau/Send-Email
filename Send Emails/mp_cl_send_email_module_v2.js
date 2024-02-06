@@ -1402,6 +1402,7 @@ $(document).on('change', '#send_to', function (e) {
                 if (comm_reg_results.length == 1) {
                     commReg = comm_reg_results[0].getValue('internalid');
                     commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
+                    trial_end_date = comm_reg_results[0].getValue('custrecord_trial_expiry')
                 } else if (comm_reg_results.length > 1) {
 
                 }
@@ -1413,7 +1414,7 @@ $(document).on('change', '#send_to', function (e) {
             var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
 
-            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&commdate=' + commencement_date + '&commreg=' + commReg;
+            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
 
             urlCall = nlapiRequestURL(url);
             var emailHtml = urlCall.getBody();
@@ -1514,10 +1515,13 @@ $(document).on('change', '#template', function (e) {
 
     var commReg;
     var commencement_date;
+    var trial_end_date;
+
     if (!isNullorEmpty(comm_reg_results)) {
         if (comm_reg_results.length == 1) {
             commReg = comm_reg_results[0].getValue('internalid');
             commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
+            trial_end_date = comm_reg_results[0].getValue('custrecord_trial_expiry')
         } else if (comm_reg_results.length > 1) {
 
         }
@@ -1526,9 +1530,9 @@ $(document).on('change', '#template', function (e) {
     var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
     if (!isNullorEmpty(salesRepName)) {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg;;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
     } else {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg;;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
     }
 
 
