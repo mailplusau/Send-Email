@@ -1391,6 +1391,7 @@ $(document).on('change', '#send_to', function (e) {
             col[6] = new nlobjSearchColumn('custrecord_customer');
             col[7] = new nlobjSearchColumn('custrecord_trial_status');
             col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
+            col[9] = new nlobjSearchColumn('custrecord_trial_expiry');
 
 
             var comm_reg_results = nlapiSearchRecord(
@@ -1398,11 +1399,26 @@ $(document).on('change', '#send_to', function (e) {
 
             var commReg;
             var commencement_date;
+            var billingStartdate
+            var formattedBillingStartToday;
             if (!isNullorEmpty(comm_reg_results)) {
                 if (comm_reg_results.length == 1) {
                     commReg = comm_reg_results[0].getValue('internalid');
                     commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
                     trial_end_date = comm_reg_results[0].getValue('custrecord_trial_expiry')
+                    trial_end_date_split = trial_end_date.split('/');
+                    billingStartdate = new Date(trial_end_date_split[2] + "-" + trial_end_date_split[1] + "-" + trial_end_date_split[0]);
+                    billingStartdate.setDate(billingStartdate.getDate() + 1);
+
+                    var yyyy = billingStartdate.getFullYear();
+                    var mm = billingStartdate.getMonth() + 1; // Months start at 0!
+                    var dd = billingStartdate.getDate();
+
+                    if (dd < 10) dd = '0' + dd;
+                    if (mm < 10) mm = '0' + mm;
+
+                    formattedBillingStartToday = dd + '/' + mm + '/' + yyyy;
+
                 } else if (comm_reg_results.length > 1) {
 
                 }
@@ -1414,7 +1430,7 @@ $(document).on('change', '#send_to', function (e) {
             var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
 
-            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
+            url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + escape(nlapiGetContext().getName()) + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date + '&billingstartdate=' + formattedBillingStartToday;
 
             urlCall = nlapiRequestURL(url);
             var emailHtml = urlCall.getBody();
@@ -1508,6 +1524,7 @@ $(document).on('change', '#template', function (e) {
     col[6] = new nlobjSearchColumn('custrecord_customer');
     col[7] = new nlobjSearchColumn('custrecord_trial_status');
     col[8] = new nlobjSearchColumn('custrecord_comm_date_signup');
+    col[9] = new nlobjSearchColumn('custrecord_trial_expiry');
 
 
     var comm_reg_results = nlapiSearchRecord(
@@ -1516,12 +1533,26 @@ $(document).on('change', '#template', function (e) {
     var commReg;
     var commencement_date;
     var trial_end_date;
-
+    var billingStartdate;
+    var formattedBillingStartToday;
     if (!isNullorEmpty(comm_reg_results)) {
         if (comm_reg_results.length == 1) {
             commReg = comm_reg_results[0].getValue('internalid');
             commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
             trial_end_date = comm_reg_results[0].getValue('custrecord_trial_expiry')
+            trial_end_date_split = trial_end_date.split('/');
+            billingStartdate = new Date(trial_end_date_split[2] + "-" + trial_end_date_split[1] + "-" + trial_end_date_split[0]);
+            billingStartdate.setDate(billingStartdate.getDate() + 1);
+
+            var yyyy = billingStartdate.getFullYear();
+            var mm = billingStartdate.getMonth() + 1; // Months start at 0!
+            var dd = billingStartdate.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            formattedBillingStartToday = dd + '/' + mm + '/' + yyyy;
+
         } else if (comm_reg_results.length > 1) {
 
         }
@@ -1530,9 +1561,9 @@ $(document).on('change', '#template', function (e) {
     var url = 'https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=395&deploy=1&compid=1048144&h=6d4293eecb3cb3f4353e&rectype=customer&template=';
 
     if (!isNullorEmpty(salesRepName)) {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date + '&billingstartdate=' + formattedBillingStartToday;
     } else {
-        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date;
+        url += $('#template option:selected').val() + '&recid=' + nlapiGetFieldValue('custpage_customer_id') + '&salesrep=' + franchiseeSalesRepAssigned + '&dear=' + escape(first_name) + '&contactid=' + escape($('#send_to').val()) + '&userid=' + escape(userID) + '&salesRepName=' + salesRepName + '&commdate=' + commencement_date + '&commreg=' + commReg + '&trialenddate=' + trial_end_date + '&billingstartdate=' + formattedBillingStartToday;
     }
 
 

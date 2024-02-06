@@ -1516,12 +1516,26 @@ function sendEmail(request, response) {
 
       var comm_reg_results = nlapiSearchRecord(
         'customrecord_commencement_register', null, newFiltersCommReg, col);
-
+      var billingStartdate;
+      var formattedBillingStartToday;
       if (!isNullorEmpty(comm_reg_results)) {
         if (comm_reg_results.length == 1) {
           commReg = comm_reg_results[0].getValue('internalid');
           commencement_date = comm_reg_results[0].getValue('custrecord_comm_date')
           trial_end_date = comm_reg_results[0].getValue('custrecord_trial_expiry')
+          trial_end_date_split = trial_end_date.split('/');
+          billingStartdate = new Date(trial_end_date_split[2] + "-" + trial_end_date_split[1] + "-" + trial_end_date_split[0]);
+          billingStartdate.setDate(billingStartdate.getDate() + 1)
+
+          var yyyy = billingStartdate.getFullYear();
+          var mm = billingStartdate.getMonth() + 1; // Months start at 0!
+          var dd = billingStartdate.getDate();
+
+          if (dd < 10) dd = '0' + dd;
+          if (mm < 10) mm = '0' + mm;
+
+          formattedBillingStartToday = dd + '/' + mm + '/' + yyyy;
+
         } else if (comm_reg_results.length > 1) {
 
         }
@@ -1607,7 +1621,7 @@ function sendEmail(request, response) {
         contactID = contactResult[0].getValue('internalid');
         url += template_id + '&recid=' + custId + '&salesrep=' +
           null + '&dear=' + null + '&contactid=' + contactID + '&userid=' +
-          encodeURIComponent(nlapiGetContext().getUser()) + '&commdate=' + commencement_date + '&trialenddate=' + trial_end_date + '&commreg=' + commReg;
+          encodeURIComponent(nlapiGetContext().getUser()) + '&commdate=' + commencement_date + '&trialenddate=' + trial_end_date + '&commreg=' + commReg + '&billingstartdate=' + formattedBillingStartToday;
         urlCall = nlapiRequestURL(url);
         var emailHtml = urlCall.getBody();
 
@@ -2292,8 +2306,19 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
       } else {
         html += '<option value="' + tempId + '">' + tempName + '</option>'
       }
+    } else if (opp_with_value == 'T') {
+      if (tempId != 178 && tempId != 180 && tempId != 179 && tempId != 177) {
+        html += '<option value="' + tempId + '">' + tempName + '</option>'
+      }
+    } else if (closed_won == 'T') {
+      if (tempId != 178 && tempId != 180 && tempId != 156) {
+        html += '<option value="' + tempId + '">' + tempName + '</option>'
+      }
+    } else if (free_trial == 'T') {
+      if (tempId != 177 && tempId != 179 && tempId != 156) {
+        html += '<option value="' + tempId + '">' + tempName + '</option>'
+      }
     } else {
-
       html += '<option value="' + tempId + '">' + tempName + '</option>'
     }
 
