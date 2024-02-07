@@ -1354,6 +1354,7 @@ $(document).on('change', '#send_to', function (e) {
         $('.body_section').addClass('hide');
         $('.cc_section').addClass('hide');
         $('.template_section').addClass('hide');
+        $('.subject_section').addClass('hide');
 
         nlapiSetFieldValue('custpage_to', 0);
     } else {
@@ -1361,6 +1362,7 @@ $(document).on('change', '#send_to', function (e) {
         $('.body_section').removeClass('hide');
         $('.cc_section').removeClass('hide');
         $('.template_section').removeClass('hide');
+        $('.subject_section').removeClass('hide');
         nlapiSetFieldValue('custpage_to', null);
         var templateID = $('#template option:selected').val();
         if (!isNullorEmpty(templateID)) {

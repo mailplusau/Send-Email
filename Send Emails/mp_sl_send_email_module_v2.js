@@ -4,7 +4,7 @@
  * NSVersion    Date                    Author
  * 1.00         2018-02-12 16:42:05     Ankith
  *
- * Remarks: New Address Module
+ * Remarks: Send Email Module
  *
  * @Last modified by:   ankithravindran
  * @Last modified time: 2022-02-10T16:53:35+11:00
@@ -2274,7 +2274,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
   html += '<div class="row">'
 
   html +=
-    '<div class="col-xs-8 template_section"><div class="input-group"><span class="input-group-addon">TEMPLATE';
+    '<div class="col-xs-8 template_section hide"><div class="input-group"><span class="input-group-addon">TEMPLATE';
   if (isNullorEmpty(nosale)) {
     html += '<span class="mandatory">*</span>';
   }
@@ -2311,11 +2311,11 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
         html += '<option value="' + tempId + '">' + tempName + '</option>'
       }
     } else if (closed_won == 'T') {
-      if (tempId != 178 && tempId != 180 && tempId != 156) {
+      if (tempId != 178 && tempId != 180 && tempId != 156 && tempId != 184 && tempId != 183) {
         html += '<option value="' + tempId + '">' + tempName + '</option>'
       }
     } else if (free_trial == 'T') {
-      if (tempId != 177 && tempId != 179 && tempId != 156) {
+      if (tempId != 177 && tempId != 179 && tempId != 156 && tempId != 184 && tempId != 183) {
         html += '<option value="' + tempId + '">' + tempName + '</option>'
       }
     } else {
@@ -2333,7 +2333,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
   html += '<div class="form-group container row_subject ">';
   html += '<div class="row">'
   html +=
-    '<div class="col-xs-8 subject_section"><div class="input-group"><span class="input-group-addon">SUBJECT ';
+    '<div class="col-xs-8 subject_section hide"><div class="input-group"><span class="input-group-addon">SUBJECT ';
   if (isNullorEmpty(nosale)) {
     html += '<span class="mandatory">*</span>';
   }
@@ -2413,7 +2413,7 @@ function email_template(resultSetCampTemp, contactResult, resultSet_contacts,
   html += '<div class="form-group container row_body ">';
   html += '<div class="row">'
   html +=
-    '<div class="col-xs-12 body_section"><div id="email_body"></div></div>';
+    '<div class="col-xs-12 body_section hide"><div id="email_body"></div></div>';
   html += '</div>';
   html += '</div>';
   html += '<div class="form-group container row_body ">';
