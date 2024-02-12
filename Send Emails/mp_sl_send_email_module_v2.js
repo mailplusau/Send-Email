@@ -1319,8 +1319,8 @@ function sendEmail(request, response) {
 
     } else if (outcome == 'sendquote') {
       if (sales_campaign_type != 1) {
-        recCustomer.setFieldValue('entitystatus', 58);
-        //Set the Date - Prospect Opportunity.
+        recCustomer.setFieldValue('entitystatus', 50);
+        //Set the Date - Prospect Quote Sent.
         recCustomer.setFieldValue('custentity_date_lead_quote_sent',
           getDate());
         phonecall.setFieldValue('title', sales_campaign_name +
