@@ -1063,11 +1063,11 @@ function main(request, response) {
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
-                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
-                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
-                    emailHtml = emailHtml.replace(/<nlemservicetrialenddate>/gi, trialEndDate);
-                    emailHtml = emailHtml.replace(/<nlembillingstartdate>/gi, billingstartdate);
-                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemservicetrialenddate/gi, trialEndDate);
+                    emailHtml = emailHtml.replace(/nlembillingstartdate/gi, billingstartdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
