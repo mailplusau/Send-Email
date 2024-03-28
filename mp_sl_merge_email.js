@@ -1010,8 +1010,11 @@ function main(request, response) {
                     var trialEndDate = null;
 
 
-                    var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                    //Removing the service table on Luke's request.
+                    // var serviceTable =
+                    //     '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+
+                    var serviceText = 'Your PMPO collection service is scheduled to be Daily at $8'
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1045,21 +1048,23 @@ function main(request, response) {
                         }
                         price[price.length] = newServiceChangePrice;
 
-
-                        serviceTable += '<tr>';
-                        serviceTable +=
-                            '<td>' +
-                            serviceText + '</td>';
-                        serviceTable += '<td>' + serviceFreqText + '</td>';
-                        serviceTable +=
-                            '<td>$' +
-                            newServiceChangePrice + '</td>';
+                        serviceText += serviceNSItemText + ' service is scheduled to be ' + serviceFreqText + ' at $' + newServiceChangePrice;
 
 
-                        serviceTable += '</tr>';
+                        // serviceTable += '<tr>';
+                        // serviceTable +=
+                        //     '<td>' +
+                        //     serviceText + '</td>';
+                        // serviceTable += '<td>' + serviceFreqText + '</td>';
+                        // serviceTable +=
+                        //     '<td>$' +
+                        //     newServiceChangePrice + '</td>';
+
+
+                        // serviceTable += '</tr>';
                     }
 
-                    serviceTable += '</tbody></table>';
+                    // serviceTable += '</tbody></table>';
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
@@ -1067,7 +1072,8 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
                     emailHtml = emailHtml.replace(/nlemservicetrialenddate/gi, trialEndDate);
                     emailHtml = emailHtml.replace(/nlembillingstartdate/gi, billingstartdate);
-                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceText);
+                    // emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
