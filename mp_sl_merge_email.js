@@ -910,7 +910,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -948,7 +948,7 @@ function main(request, response) {
                         serviceTable += '<tr>';
                         serviceTable +=
                             '<td>' +
-                            serviceText + '</td>';
+                            serviceNSItemText + '</td>';
                         serviceTable += '<td>' + serviceFreqText + '</td>';
                         serviceTable +=
                             '<td>$' +
@@ -962,9 +962,9 @@ function main(request, response) {
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
-                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
-                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
-                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
@@ -1009,7 +1009,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1047,7 +1047,7 @@ function main(request, response) {
                         serviceTable += '<tr>';
                         serviceTable +=
                             '<td>' +
-                            serviceText + '</td>';
+                            serviceNSItemText + '</td>';
                         serviceTable += '<td>' + serviceFreqText + '</td>';
                         serviceTable +=
                             '<td>$' +
@@ -1061,9 +1061,9 @@ function main(request, response) {
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
-                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
-                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
-                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/acceptbutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
@@ -1215,7 +1215,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1253,7 +1253,7 @@ function main(request, response) {
                         serviceTable += '<tr>';
                         serviceTable +=
                             '<td>' +
-                            serviceText + '</td>';
+                            serviceNSItemText + '</td>';
                         serviceTable += '<td>' + serviceFreqText + '</td>';
                         serviceTable +=
                             '<td>$' +
@@ -1267,11 +1267,11 @@ function main(request, response) {
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
-                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
-                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
-                    emailHtml = emailHtml.replace(/<nlemservicetrialenddate>/gi, trialEndDate);
-                    emailHtml = emailHtml.replace(/<nlembillingstartdate>/gi, billingstartdate);
-                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemservicetrialenddate/gi, trialEndDate);
+                    emailHtml = emailHtml.replace(/nlembillingstartdate/gi, billingstartdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
@@ -1316,7 +1316,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1354,7 +1354,7 @@ function main(request, response) {
                         serviceTable += '<tr>';
                         serviceTable +=
                             '<td>' +
-                            serviceText + '</td>';
+                            serviceNSItemText + '</td>';
                         serviceTable += '<td>' + serviceFreqText + '</td>';
                         serviceTable +=
                             '<td>$' +
@@ -1368,11 +1368,11 @@ function main(request, response) {
 
 
                     // emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
-                    emailHtml = emailHtml.replace(/<nlemagreebutton>/gi, expInterest);
-                    emailHtml = emailHtml.replace(/<nlemservicestartdate>/gi, commdate);
-                    emailHtml = emailHtml.replace(/<nlemservicetrialenddate>/gi, trialEndDate);
-                    emailHtml = emailHtml.replace(/<nlembillingstartdate>/gi, billingstartdate);
-                    emailHtml = emailHtml.replace(/<nlemsverifyervicetable>/gi, serviceTable);
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemservicetrialenddate/gi, trialEndDate);
+                    emailHtml = emailHtml.replace(/nlembillingstartdate/gi, billingstartdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceTable);
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
