@@ -158,7 +158,7 @@ function main(request, response) {
 
                 if (templateId == 430 || templateId == 431) {
                     var mpPremiumTable =
-                        '<table border="0" cellpadding="0" cellspacing="1" style=""><thead><tr><th></th><th style="vertical-align: middle;text-align: center;"><b>PREMIUM</b></th></tr></thead><tbody>';
+                        '<table border="0" cellpadding="0" cellspacing="1" style="width: 100%;"><thead><tr><th></th><th style="vertical-align: middle;text-align: center;"><b>PREMIUM</b></th></tr></thead><tbody>';
 
                     var mpPremiumProdPricingSearch = nlapiLoadSearch('customrecord_product_pricing', 'customsearch_mp_premium_prod_pricing');
 
@@ -910,7 +910,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1009,7 +1009,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1215,7 +1215,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
@@ -1316,7 +1316,7 @@ function main(request, response) {
 
 
                     var serviceTable =
-                        '<table border="1" cellpadding="1" cellspacing="1" style=""><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+                        '<table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
 
                     for (n = 0; n < serviceResult.length; n++) {
                         var serviceChangeId = serviceResult[n].getValue('internalid');
