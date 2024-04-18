@@ -703,6 +703,7 @@ function sendEmail(request, response) {
     phonecall.setFieldValue('assigned', nlapiGetUser());
     phonecall.setFieldValue('custevent_organiser', nlapiGetUser());
     phonecall.setFieldValue('startdate', getDate());
+    phonecall.setFieldValue('duedate', getDate());
     phonecall.setFieldValue('custevent_call_type', 2);
 
     nlapiLogExecution('DEBUG', 'Calltype', calltype)
@@ -1383,6 +1384,7 @@ function sendEmail(request, response) {
 
       phonecall.setFieldValue('message', callnotes);
       phonecall.setFieldValue('startdate', getDate());
+      phonecall.setFieldValue('duedate', getDate());
       phonecall.setFieldValue('custevent_call_outcome', 16);
       if (!isNullorEmpty(recSales)) {
         recSales.setFieldValue('custrecord_sales_completed', "T");
@@ -1647,7 +1649,7 @@ function sendEmail(request, response) {
       recCustomer.setFieldValue('custentity_portal_how_to_guides', 1);
     }
     nlapiSubmitRecord(recCustomer);
-    nlapiSubmitRecord(phonecall);
+    // nlapiSubmitRecord(phonecall);
 
     if (invite_to_portal == 'T') {
       nlapiSetRedirectURL('SUITELET', 'customscript_sl_customer_list',
