@@ -235,7 +235,43 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/nlemmppremiumpricingtable/gi, mpPremiumTable);
                 }
 
+                //202404 - Premium - Your Shipping Usage
                 if (templateId == 432) {
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname');
+
+                    var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
+
+                    var newFiltersSalesRep = new Array();
+                    newFiltersSalesRep[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_assigned', 'anyof', salesRep);
+
+                    salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+                    var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+                    var salesRepDetailsName = ''
+                    var salesRepDetailsEmail = ''
+                    var salesRepDetailsPhone = ''
+
+                    salesRepDetailsSearchResults.forEachResult(function (salesRepDetailsSearchResultSet) {
+
+                        salesRepDetailsName = salesRepDetailsSearchResultSet.getText("custrecord_sales_assigned", null, "GROUP");
+                        salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue("email", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+                        salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue("phone", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+
+                        return true;
+                    });
+
+
+                    emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+                    emailHtml = emailHtml.replace(/nlemsalesreptext/gi, salesRepDetailsName);
+                }
+
+                //	202404 - Premium Old Leads - eDM Campaign
+                if (templateId == 435) {
                     var recContact = nlapiLoadRecord('contact', contactID);
 
                     var contactEmail = recContact.getFieldValue('email');
