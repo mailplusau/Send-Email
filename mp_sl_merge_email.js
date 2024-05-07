@@ -235,6 +235,84 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/nlemmppremiumpricingtable/gi, mpPremiumTable);
                 }
 
+                //Email Template: 202404 - MP Premium - New Lead Follow-Up
+                if (templateId == 443) {
+                    var mpPremiumTable =
+                        '<table border="0" cellpadding="0" cellspacing="1" style="width: 100%;"><thead><tr><th></th><th style="vertical-align: middle;text-align: center;"><b>PREMIUM</b></th></tr></thead><tbody>';
+
+                    var mpPremiumProdPricingSearch = nlapiLoadSearch('customrecord_product_pricing', 'customsearch_mp_premium_prod_pricing');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter(
+                        'internalid', 'custrecord_prod_pricing_customer', 'anyof', recId);
+
+                    mpPremiumProdPricingSearch.addFilters(newFilters);
+
+                    var mpPremiumProdPricingSearchResultSet = mpPremiumProdPricingSearch.runSearch();
+
+                    var item1Kg;
+                    var item3Kg;
+                    var item5Kg;
+                    var item10Kg;
+                    var item20Kg;
+
+                    var price1Kg;
+                    var price3Kg;
+                    var price5Kg;
+                    var price10Kg;
+                    var price20Kg;
+
+                    mpPremiumProdPricingSearchResultSet.forEachResult(function (searchResult) {
+
+                        var prodPricingInternalId = searchResult.getValue('internalid');
+                        var custId = searchResult.getValue("custrecord_prod_pricing_customer");
+                        item1Kg = searchResult.getText("custrecord_prod_pricing_1kg");
+                        item3Kg = searchResult.getText("custrecord_prod_pricing_3kg");
+                        item5Kg = searchResult.getText("custrecord_prod_pricing_5kg");
+                        item10Kg = searchResult.getText("custrecord_prod_pricing_10kg");
+                        item20Kg = searchResult.getText("custrecord_prod_pricing_20kg");
+
+                        price1Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_1KG", null);
+                        price3Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_3KG", null);
+                        price5Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_5KG", null);
+                        price10Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_10KG", null);
+                        price20Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_20KG", null);
+
+                        return true;
+                    });
+
+                    mpPremiumTable += '<tr>'
+                    mpPremiumTable += '<th>' + item1Kg + '</th>'
+                    mpPremiumTable += '<th style="text-align: center;">$' + price1Kg + '</th>'
+                    mpPremiumTable += '</tr>'
+
+                    mpPremiumTable += '<tr>'
+                    mpPremiumTable += '<th>' + item3Kg + '</th>'
+                    mpPremiumTable += '<th style="text-align: center;">$' + price3Kg + '</th>'
+                    mpPremiumTable += '</tr>'
+
+
+                    mpPremiumTable += '<tr>'
+                    mpPremiumTable += '<th>' + item5Kg + '</th>'
+                    mpPremiumTable += '<th style="text-align: center;">$' + price5Kg + '</th>'
+                    mpPremiumTable += '</tr>'
+
+                    mpPremiumTable += '<tr>'
+                    mpPremiumTable += '<th>' + item10Kg + '</th>'
+                    mpPremiumTable += '<th style="text-align: center;">$' + price10Kg + '</th>'
+                    mpPremiumTable += '</tr>'
+
+                    mpPremiumTable += '<tr>'
+                    mpPremiumTable += '<th>' + item20Kg + '</th>'
+                    mpPremiumTable += '<th style="text-align: center;">$' + price20Kg + '</th>'
+                    mpPremiumTable += '</tr>'
+
+                    mpPremiumTable += '</tbody></table>';
+                    mpPremiumTable += '<small><i>Prices exclude GST and <a href="https://mailplus.com.au/surcharge/">surcharges</a>.</i></small>'
+
+                    emailHtml = emailHtml.replace(/nlemmppremiumpricingtable/gi, mpPremiumTable);
+                }
+
                 //202404 - Premium - Your Shipping Usage
                 if (templateId == 432) {
                     var recContact = nlapiLoadRecord('contact', contactID);
