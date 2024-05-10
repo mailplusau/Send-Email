@@ -69,7 +69,7 @@ function sendMassEmailToZees() {
         emailHtml = emailHtml.replace(/nlemcallwithchris/gi, callWithCrhis);
 
 
-        nlapiSendEmail(-5, zeePersonalEmail, emailSubject, emailHtml, null, null, emailAttach);
+        nlapiSendEmail(-5, zeeEmail, emailSubject, emailHtml, null, null, emailAttach);
 
         return true;
     });
