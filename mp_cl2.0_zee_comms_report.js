@@ -47,6 +47,11 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
             var dataTable = $('#zee_table').DataTable({
                 pageLength: 100,
                 order: [[1, 'asc']],
+                layout: {
+                    topStart: {
+                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                    }
+                }
             });
 
         }
