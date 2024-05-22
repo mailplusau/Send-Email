@@ -1000,6 +1000,104 @@ function main(request, response) {
 
                 }
 
+                if (templateId == 447) {
+
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var companyname = customer_record.getFieldValue('companyname');
+
+                    var searched_address = nlapiLoadSearch('customer', 'customsearch_smc_address');
+
+                    var newFilters_addresses = new Array();
+                    newFilters_addresses[0] = new nlobjSearchFilter('internalid', null, 'is', recId);
+
+                    searched_address.addFilters(newFilters_addresses);
+
+                    var resultSet_addresses = searched_address.runSearch();
+
+                    var addressResult = resultSet_addresses.getResults(0, 1);
+
+                    var id;
+                    var addr1;
+                    var addr2;
+                    var city;
+                    var state;
+                    var zip;
+
+                    if (addressResult.length != 0) {
+                        resultSet_addresses.forEachResult(function (searchResult_address) {
+
+                            id = searchResult_address.getValue('addressinternalid', 'Address', null);
+                            addr1 = searchResult_address.getValue('address1', 'Address', null);
+                            addr2 = searchResult_address.getValue('address2', 'Address', null);
+                            city = searchResult_address.getValue('city', 'Address', null);
+                            state = searchResult_address.getValue('state', 'Address', null);
+                            zip = searchResult_address.getValue('zipcode', 'Address', null);
+
+                            return true;
+                        });
+                    }
+
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname');
+
+
+
+                    var customerDetails = 'Customer Name: ' + entityid + ' ' + companyname
+                    var customerAddressDetails = 'Address: ' + addr1 + ', ' + addr2 + ', ' + city + ' ' + state + ' - ' + zip;
+
+                    var contactDetails = firstname;
+                    var contactEmailDetails = 'Email: ' + contactEmail;
+                    var contactPhoneDetails = contactDetails + ' <b>Phone</b>: ' + contactPhone;
+
+                    var expIntcustomerVisitederest = '<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&h=1628e8b5d3c71477d4aa&custinternalid=' + recId + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Completed</a>';
+
+                    var bookACall = '<a class="mcnButton " href="https://mailplus.com.au/book-a-sales-call/?custinternalid=' + recId + '&custname=' + encodeURIComponent(companyname) + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '&lastname=' + lastname + '&contactid=' + contactID + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Book a Call</a>';
+
+                    var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
+
+                    var newFiltersSalesRep = new Array();
+                    newFiltersSalesRep[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_assigned', 'anyof', salesRep);
+
+                    salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+                    var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+                    var salesRepDetailsName = ''
+                    var salesRepDetailsEmail = ''
+                    var salesRepDetailsPhone = ''
+
+                    salesRepDetailsSearchResults.forEachResult(function (salesRepDetailsSearchResultSet) {
+
+                        salesRepDetailsName = salesRepDetailsSearchResultSet.getText("custrecord_sales_assigned", null, "GROUP");
+                        salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue("email", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+                        salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue("phone", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+
+                        return true;
+                    });
+
+                    if (!isNullorEmpty(trialEndDate)) {
+                        var trialEndDateText = '<b>Trial Start Date</b>: ' + commdate;
+                        trialEndDateText += '</br><b>Trial End Date</b>: ' + trialEndDate + '</br>';
+                        emailHtml = emailHtml.replace(/nlemfreetrialdetails/gi, trialEndDateText);
+                    }
+                    // emailHtml = emailHtml.replace(/<nlemcommstartdate>/gi, commdate);
+
+                    emailHtml = emailHtml.replace(/nlemcustomername/gi, customerDetails);
+                    emailHtml = emailHtml.replace(/nlemcustomeraddress/gi, customerAddressDetails);
+                    // emailHtml = emailHtml.replace(/nlemcontactname/gi, contactDetails);
+                    // emailHtml = emailHtml.replace(/nlemsalesrecordlastassigned/gi, contactEmailDetails);
+                    emailHtml = emailHtml.replace(/nlemcontactphone/gi, contactPhoneDetails);
+                    // emailHtml = emailHtml.replace(/<nlemcustomervisited>/gi, expIntcustomerVisitederest);
+                    // emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
+                    emailHtml = emailHtml.replace(/nlemsalesrecordlastassigned/gi, salesRepDetailsName);
+
+                }
+
                 //Email Template Name: 202301 - Verify Services
                 if (templateId == 383) {
                     var customer_record = nlapiLoadRecord('customer', recId);
