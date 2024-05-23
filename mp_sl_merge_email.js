@@ -1056,7 +1056,7 @@ function main(request, response) {
                     var contactEmailDetails = 'Email: ' + contactEmail;
                     var contactPhoneDetails = contactDetails + ' <b>Phone</b>: ' + contactPhone;
 
-                    var expIntcustomerVisitederest = '<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&h=1628e8b5d3c71477d4aa&custinternalid=' + recId + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="">Completed</a>';
+                    var expIntcustomerVisitederest = '<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&ns-at=AAEJ7tMQx27OOxfPKPXdUYPclyufhLt6bJFrTJqzV-aPHdnre2k&custinternalid=' + recId + '" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="">Completed</a>';
 
                     if (!isNullorEmpty(trialEndDate)) {
                         var trialEndDateText = '<b>Trial Start Date</b>: ' + commdate;
