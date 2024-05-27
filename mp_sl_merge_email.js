@@ -1047,6 +1047,28 @@ function main(request, response) {
                     var contactPhone = recContact.getFieldValue('phone');
                     var firstname = recContact.getFieldValue('firstname');
 
+                    var salesRepDetailsSearch = nlapiLoadSearch('customrecord_sales', 'customsearch_sales_record_auto_signed__3');
+
+                    var newFiltersSalesRep = new Array();
+                    newFiltersSalesRep[0] = new nlobjSearchFilter('internalid', 'custrecord_sales_assigned', 'anyof', salesRep);
+
+                    salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+                    var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+                    var salesRepDetailsName = ''
+                    var salesRepDetailsEmail = ''
+                    var salesRepDetailsPhone = ''
+
+                    salesRepDetailsSearchResults.forEachResult(function (salesRepDetailsSearchResultSet) {
+
+                        salesRepDetailsName = salesRepDetailsSearchResultSet.getText("custrecord_sales_assigned", null, "GROUP");
+                        salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue("email", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+                        salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue("phone", "CUSTRECORD_SALES_ASSIGNED", "GROUP");
+
+                        return true;
+                    });
+
 
 
                     var customerDetails = 'Customer Name: ' + entityid + ' ' + companyname
