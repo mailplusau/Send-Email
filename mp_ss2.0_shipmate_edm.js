@@ -12,8 +12,8 @@
 
 
 
-define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord', 'N/format', 'N/https', 'N/email', 'N/url'],
-    function (runtime, search, record, log, task, currentRecord, format, https, email, url) {
+define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord', 'N/format', 'N/https', 'N/email', 'N/url','N/file'],
+    function (runtime, search, record, log, task, currentRecord, format, https, email, url, file) {
 
         var zee = 0;
         var role = runtime.getCurrentUser().role;
@@ -80,37 +80,45 @@ define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord
                 var subject =
                     'An important MailPlus update: NEW ShipMate';
 
+                var arrAttachments = [];
+
+                arrAttachments.push(file.load({
+                    id: 6977988
+                }));
+
+
                 //Send email to the Sales Rep
                 email.send({
                     author: 112209,
                     recipients: contact_email,
                     subject: subject,
                     body: emailHtml,
+                    attachments: arrAttachments,
                     relatedRecords: { entityId: customerInternalId }
                 });
 
-                // var contactRecord = record.load({
-                //     type: record.Type.CONTACT,
-                //     id: parseInt(contact_id),
-                //     isDynamic: true
-                // });
+                var contactRecord = record.load({
+                    type: record.Type.CONTACT,
+                    id: parseInt(contact_id),
+                    isDynamic: true
+                });
 
-                // contactRecord.setValue({
-                //     fieldId: 'custentity_email_sent',
-                //     value: 1
-                // });
+                contactRecord.setValue({
+                    fieldId: 'custentity_email_sent',
+                    value: 1
+                });
 
-                // contactRecord.save();
+                contactRecord.save();
 
-                // var reschedule = task.create({
-                //     taskType: task.TaskType.SCHEDULED_SCRIPT,
-                //     scriptId: 'customscript_ss2_shipmate_edm',
-                //     deploymentId: 'customdeploy2',
-                //     params: null
-                // });
+                var reschedule = task.create({
+                    taskType: task.TaskType.SCHEDULED_SCRIPT,
+                    scriptId: 'customscript_ss2_shipmate_edm',
+                    deploymentId: 'customdeploy2',
+                    params: null
+                });
 
-                // log.debug({ title: 'Attempting: Rescheduling Script', details: reschedule });
-                // var reschedule_id = reschedule.submit();
+                log.debug({ title: 'Attempting: Rescheduling Script', details: reschedule });
+                var reschedule_id = reschedule.submit();
 
                 // count++;
                 return true;
