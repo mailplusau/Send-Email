@@ -48,7 +48,10 @@ function main(request, response) {
             }
 
             nlapiLogExecution('DEBUG', 'USer ID', userID);
-            file.setEntity('employee', userID);
+            if (!isNullorEmpty(userID)) {
+                file.setEntity('employee', userID);
+            }
+            
             if (!isNullorEmpty(contactID) && contactID != 0) {
                 if (contactID != 'null') {
                     file.setEntity('contact', contactID);
@@ -1898,6 +1901,24 @@ function main(request, response) {
                     emailHtml = emailHtml.replace(/<nlemsignup>/gi, signUp);
                     emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
 
+                }
+
+                if (templateId == 449) {
+
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var companyname = customer_record.getFieldValue('companyname');
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname');
+
+                    var portalOrientation = '<a href="https://mailplus.com.au/shipping-portal-orientation/?custinternalid=' + recId + '&custname=' + companyname + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '" target="_blank" ><strong><span style="font-family:&quot;Helvetica Neue&quot;;color:#155370">HERE</span></strong></a>'
+
+                    emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+                    emailHtml = emailHtml.replace(/nlemcontactsupport/gi, portalOrientation);
                 }
 
 
