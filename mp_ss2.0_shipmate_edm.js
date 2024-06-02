@@ -12,7 +12,7 @@
 
 
 
-define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord', 'N/format', 'N/https', 'N/email', 'N/url','N/file'],
+define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord', 'N/format', 'N/https', 'N/email', 'N/url', 'N/file'],
     function (runtime, search, record, log, task, currentRecord, format, https, email, url, file) {
 
         var zee = 0;
@@ -103,12 +103,23 @@ define(['N/runtime', 'N/search', 'N/record', 'N/log', 'N/task', 'N/currentRecord
                     isDynamic: true
                 });
 
-                contactRecord.setValue({
-                    fieldId: 'custentity_email_sent',
-                    value: 1
-                });
+                try {
+                    contactRecord.setValue({
+                        fieldId: 'custentity_email_sent',
+                        value: 1
+                    });
 
-                contactRecord.save();
+                    contactRecord.save();
+                } catch (error) {
+                    var first_name = contactRecord.getValue({
+                        fieldId: 'firstname',
+                    });
+                    contactRecord.setValue({
+                        fieldId: 'firstname',
+                        value: first_name + ' (Portal)'
+                    });
+                    contactRecord.save();
+                }
 
                 var reschedule = task.create({
                     taskType: task.TaskType.SCHEDULED_SCRIPT,

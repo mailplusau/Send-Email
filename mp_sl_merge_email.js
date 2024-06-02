@@ -1099,7 +1099,7 @@ function main(request, response) {
                 }
 
                 //Email Template Name: 202405 - LPO Zee - Reminder LPO Trial Customer
-                if (templateId == 447) {
+                if (templateId == 447 || templateId == 452) {
 
                     var customer_record = nlapiLoadRecord('customer', recId);
                     var entityid = customer_record.getFieldValue('entityid');
@@ -1914,6 +1914,7 @@ function main(request, response) {
                     var contactEmail = recContact.getFieldValue('email');
                     var contactPhone = recContact.getFieldValue('phone');
                     var firstname = recContact.getFieldValue('firstname');
+                    var firstname = recContact.getFieldValue('entityid');
 
                     var portalOrientation = '<a href="https://mailplus.com.au/shipping-portal-orientation/?custinternalid=' + recId + '&custname=' + companyname + '&email=' + contactEmail + '&phone=' + contactPhone + '&firstname=' + firstname + '" target="_blank" ><strong><span style="font-family:&quot;Helvetica Neue&quot;;color:#155370">HERE</span></strong></a>'
 
