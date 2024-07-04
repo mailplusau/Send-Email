@@ -1946,7 +1946,7 @@ function main(request, response) {
                 }
 
                 //202406 - Premium - Lost - Send 2 - Intro
-                if (templateId == 458) {
+                if (templateId == 461) {
                     nlapiLogExecution('DEBUG', "202406 - Premium - Lost - Send 2 - Intro", "");
 
                     var customer_record = nlapiLoadRecord('customer', recId);
@@ -1960,7 +1960,7 @@ function main(request, response) {
 
                         firstname = recContact.getFieldValue('firstname');
 
-                        optOutButton = '<a class="mceButtonLink" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1896&deploy=1&compid=1048144&ns-at=AAEJ7tMQW4Gl6dYoqwmeMLNGC5DMzj_w0yktOoO0kv2PRzfvnPk&custinternalid=' + recId + '&contactid=' + contactID + '" style="background-color: #ffffff; border-radius: 50px; border: 1px solid #000000; color: #000000; display: block; font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; font-size: 12px; font-weight: normal; font-style: normal; padding: 16px 28px; text-decoration: none; min-width: 30px; text-align: center; direction: ltr; letter-spacing: 0px;" target="_blank" rel="noopener">OPT OUT</a>'
+                        optOutButton = '<a class="mceButtonLink" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1896&deploy=1&compid=1048144&ns-at=AAEJ7tMQW4Gl6dYoqwmeMLNGC5DMzj_w0yktOoO0kv2PRzfvnPk&custinternalid=' + recId + '&contactid=' + contactID + '" style="background-color: #ffffff; border-radius: 50px; color: #000000; display: block; font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; font-size: 12px; font-weight: normal; font-style: normal; padding: 16px 28px; text-decoration: none; min-width: 30px; text-align: center; direction: ltr; letter-spacing: 0px;" target="_blank" rel="noopener">OPT OUT</a>'
                     }
 
 
