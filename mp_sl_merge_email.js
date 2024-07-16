@@ -1946,7 +1946,7 @@ function main(request, response) {
                 }
 
                 //202406 - Premium - Lost - Send 2 - Intro
-                if (templateId == 461) {
+                if (templateId == 461 || templateId == 462) {
                     nlapiLogExecution('DEBUG', "202406 - Premium - Lost - Send 2 - Intro", "");
 
                     var customer_record = nlapiLoadRecord('customer', recId);
@@ -1954,17 +1954,23 @@ function main(request, response) {
 
                     var recContact = '';
                     var firstname = '';
+                    var lastname = '';
+                    var email = '';
+                    var phone = '';
                     var optOutButton = '';
                     if (!isNullorEmpty(contactID)) {
                         recContact = nlapiLoadRecord('contact', contactID);
 
                         firstname = recContact.getFieldValue('firstname');
+                        lastname = recContact.getFieldValue('lastname');
+                        email = recContact.getFieldValue('email');
+                        phone = recContact.getFieldValue('phone');
 
                         optOutButton = '<a class="mceButtonLink" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1896&deploy=1&compid=1048144&ns-at=AAEJ7tMQW4Gl6dYoqwmeMLNGC5DMzj_w0yktOoO0kv2PRzfvnPk&custinternalid=' + recId + '&contactid=' + contactID + '" style="background-color: #ffffff; border-radius: 50px; color: #000000; display: block; font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; font-size: 12px; font-weight: normal; font-style: normal; padding: 16px 28px; text-decoration: none; min-width: 30px; text-align: center; direction: ltr; letter-spacing: 0px;" target="_blank" rel="noopener">OPT OUT</a>'
                     }
 
 
-                    var reactivateAccountChangeStatusToHotLead = '<a class="mceButtonLink" href="https://mailplus.com.au/reactivate-account/?entityid=' + entityid + '" style="background-color: #155370; border-radius: 50px;  color: #ffffff; display: block; font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 16px 28px; text-decoration: none; min-width: 30px; text-align: center; direction: ltr; letter-spacing: 0px;" target="_blank" rel="noopener">REACTIVATE MY FREE ACCOUNT</a>'
+                    var reactivateAccountChangeStatusToHotLead = '<a class="mceButtonLink" href="https://mailplus.com.au/reactivate-account/?entityid=' + entityid + '&contactid=' + contactID + '&firstname=' + firstname + '&lastname=' + lastname + '&email=' + email + '&phone=' + phone + '" style="background-color: #155370; border-radius: 50px;  color: #ffffff; display: block; font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif; font-size: 16px; font-weight: bold; font-style: normal; padding: 16px 28px; text-decoration: none; min-width: 30px; text-align: center; direction: ltr; letter-spacing: 0px;" target="_blank" rel="noopener">REACTIVATE MY FREE ACCOUNT</a>'
 
 
                     emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
