@@ -45,7 +45,7 @@ define(['N/email', 'N/runtime', 'N/search', 'N/record', 'N/http', 'N/log',
 
             afterSubmit();
             var dataTable = $('#zee_table').DataTable({
-                pageLength: 100,
+                pageLength: 200,
                 order: [[1, 'asc']],
                 layout: {
                     topStart: {

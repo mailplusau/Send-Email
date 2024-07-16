@@ -79,16 +79,27 @@ define(['N/ui/serverWidget', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/
                         name: "custentity_zee_mass_email"
                     });
 
-                    parsedButtonClickedJSON = JSON.parse(buttonClickedJSON);
+                    if (!isNullorEmpty(buttonClickedJSON)) {
+                        parsedButtonClickedJSON = JSON.parse(buttonClickedJSON);
+                    }
+
 
                     inlineHtml += '<tr class="text-center">';
                     inlineHtml += '<td>' + zeeInternalId + '</td>'
                     inlineHtml += '<td>' + zeeName + '</td>'
-                    inlineHtml += '<td>' + parsedButtonClickedJSON[0].leadcampaigncount + '</td>'
-                    inlineHtml += '<td>' + parsedButtonClickedJSON[0].lpocount + '</td>'
-                    inlineHtml += '<td>' + parsedButtonClickedJSON[0].premiumcount + '</td>'
-                    inlineHtml += '<td>' + parsedButtonClickedJSON[0].buycustomerscount + '</td>'
-                    inlineHtml += '<td>' + parsedButtonClickedJSON[0].callwithchriscount + '</td>'
+                    if (!isNullorEmpty(buttonClickedJSON)) {
+                        inlineHtml += '<td>' + parsedButtonClickedJSON[0].leadcampaigncount + '</td>'
+                        inlineHtml += '<td>' + parsedButtonClickedJSON[0].lpocount + '</td>'
+                        inlineHtml += '<td>' + parsedButtonClickedJSON[0].premiumcount + '</td>'
+                        inlineHtml += '<td>' + parsedButtonClickedJSON[0].buycustomerscount + '</td>'
+                        inlineHtml += '<td>' + parsedButtonClickedJSON[0].callwithchriscount + '</td>'
+                    } else {
+                        inlineHtml += '<td>' + 0 + '</td>'
+                        inlineHtml += '<td>' + 0 + '</td>'
+                        inlineHtml += '<td>' + 0 + '</td>'
+                        inlineHtml += '<td>' + 0 + '</td>'
+                        inlineHtml += '<td>' + 0 + '</td>'
+                    }
                     inlineHtml += '</tr>';
 
                     return true;
