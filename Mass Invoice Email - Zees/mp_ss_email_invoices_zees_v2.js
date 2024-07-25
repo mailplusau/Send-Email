@@ -133,6 +133,10 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
         // Determine the subject and body.
         var emailBody = mergeResult.getBody();
+        var monthlyPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&payment=monthly&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Monthly Payment">Monthly Payment</a>';
+        var fullPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&payment=full&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Payment in Full">Payment in Full</a>';
+        emailBody = emailBody.replace(/nlemmonthlypayment/gi, monthlyPayment);
+        emailBody = emailBody.replace(/nlemfullpayment/gi, fullPayment);
 
         // email subject not declared in template due to other uses. Need to manually set.
         var emailSubject = 'Mail Plus Invoice : ' + invoiceDetail.getValue('number');
