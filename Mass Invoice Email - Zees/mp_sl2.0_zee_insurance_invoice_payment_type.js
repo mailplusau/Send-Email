@@ -14,9 +14,9 @@
 
 
 define(['N/runtime', 'N/http', 'N/https', 'N/log', 'N/url', 'N/email',
-    'N/record', 'N/format', 'N/file', 'N/search'
+    'N/record', 'N/format', 'N/file', 'N/search', 'N/ui/serverWidget'
 ], function (runtime, http, https, log,
-    url, email, record, format, file, search) {
+    url, email, record, format, file, search, ui) {
     function onRequest(context) {
 
         var role = runtime.getCurrentUser().role;
@@ -67,6 +67,8 @@ define(['N/runtime', 'N/http', 'N/https', 'N/log', 'N/url', 'N/email',
             values: franchiseeCustomerEmail
         }));
 
+        var count = 0;
+
         activeFranchiseesSearch.run().each(function (
             searchResult) {
 
@@ -90,13 +92,22 @@ define(['N/runtime', 'N/http', 'N/https', 'N/log', 'N/url', 'N/email',
             });
 
             franchiseeRecord.save();
-
+            
+            count++;
             return true;
         });
 
+        if (count > 0) {
+            var form = ui.createForm({
+                title: 'Payment Type has been submitted to the Finance Team'
+            });
+        } else {
+            var form = ui.createForm({
+                title: 'Payment Type has not been submitted to the Finance Team'
+            });
+        }
 
-
-
+        context.response.writePage(form);
     }
 
     function isNullorEmpty(strVal) {
