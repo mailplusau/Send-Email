@@ -1,9 +1,10 @@
 /**
- * @author mmasiello
- * 
- * $id:$
- * 
- * include :    mp_lib.js
+ * Author:               Ankith Ravindran
+ * Modified on:          Fri Jul 26 2024 09:43:56
+ * SuiteScript Version:  1.0 
+ * Description:           
+ *
+ * Copyright (c) 2024 MailPlus Pty. Ltd.
  */
 
 
@@ -45,7 +46,7 @@ function main() {
                 nlapiLogExecution('debug', 'Email invoice', 'Scheduling email invoicing processing. The schedule is : ' + rtnSchedule);
             }
         }
-    } catch ( ex ) {
+    } catch (ex) {
         errorStr = (ex instanceof nlobjError) ? ex.getCode() + '\n' + ex.getDetails() + '\n' + ex.getStackTrace() : ex.toString();
         nlapiLogExecution('error', 'Email invoice', 'Error emailing invoices : ' + errorStr);
     }
@@ -116,12 +117,12 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
         var custRec = nlapiLoadRecord('customer', customer_id);
         var emailCCEmail = custRec.getFieldValue('custentity_accounts_cc_email');
-        if(!isNullorEmpty(emailCCEmail)){
+        if (!isNullorEmpty(emailCCEmail)) {
             var emailCCArray = emailCCEmail.split(',');
         } else {
             var emailCCArray = null;
         }
-        
+
 
         nlapiLogExecution('debug', 'Email invoice', 'Customer CC : ' + emailCCEmail);
         nlapiLogExecution('debug', 'Email invoice', 'Customer CC : ' + emailCCArray);
@@ -133,8 +134,8 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
         // Determine the subject and body.
         var emailBody = mergeResult.getBody();
-        var monthlyPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&payment=monthly&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Monthly Payment">Monthly Payment</a>';
-        var fullPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&payment=full&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Payment in Full">Payment in Full</a>';
+        var monthlyPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1908&deploy=1&compid=1048144&ns-at=AAEJ7tMQ5hmEfqN9qJJoiQRo2Lb8sKjX0Kldkd3qaRIj_nSFFmg&payment=monthly&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Monthly Payment">Monthly Payment</a>';
+        var fullPayment = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1908&deploy=1&compid=1048144&ns-at=AAEJ7tMQ5hmEfqN9qJJoiQRo2Lb8sKjX0Kldkd3qaRIj_nSFFmg&payment=full&custinternalid=' + customer_id + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Payment in Full">Payment in Full</a>';
         emailBody = emailBody.replace(/nlemmonthlypayment/gi, monthlyPayment);
         emailBody = emailBody.replace(/nlemfullpayment/gi, fullPayment);
 
@@ -159,8 +160,8 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
         arrAttachments = [];
 
         arrAttachments.push(nlapiPrintRecord('TRANSACTION', recId, 'PDF', null));
-        if(!isNullorEmpty(mpexUsageReport)){
-           arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport))); 
+        if (!isNullorEmpty(mpexUsageReport)) {
+            arrAttachments.push(nlapiLoadFile(parseInt(mpexUsageReport)));
         }
         //  arrAttachments.push(nlapiLoadFile(parseInt(5045523)));
 
@@ -174,7 +175,7 @@ function emailInvoice(recId, invoiceDetail, emailSender) {
 
             nlapiLogExecution('debug', 'Email invoice', 'Email Sent : ' + recId);
         }
-    } catch ( ex ) {
+    } catch (ex) {
         errorStr = (ex instanceof nlobjError) ? ex.getCode() + '\n' + ex.getDetails() + '\n' + ex.getStackTrace() : ex.toString();
         nlapiLogExecution('error', 'Email invoice', 'Error in emailing invoice : ' + errorStr);
     }
