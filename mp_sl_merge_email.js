@@ -1610,6 +1610,163 @@ function main(request, response) {
                     // emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
                 }
 
+                //Email Template Name: 202408 - LPO x StarTrack
+                //Email Template Name: 202408 - LPO - StarTrack Only
+                //Email Template Name: 202408 - Standard LPO Trials
+                if (templateId == 463 || templateId == 464 || templateId == 465) {
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var companyname = customer_record.getFieldValue('companyname');
+                    var partner_id = customer_record.getFieldValue('partner');
+                    var partner_record = nlapiLoadRecord('partner', partner_id);
+                    var mp_str_activated = partner_record.getFieldValue('custentity_zee_mp_str_activated');
+                    if (isNullorEmpty(mp_str_activated) || mp_str_activated == 2) {
+                        var nostdactive = '<br><span style="color:#FF0000">Premium delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        emailHtml = emailHtml.replace(/nlemprmactive/gi, nostdactive);
+                    } else {
+                        emailHtml = emailHtml.replace(/nlemprmactive/gi, '');
+                    }
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname')
+
+                    var expInterest = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' + recId + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+
+                    nlapiLogExecution("DEBUG", "commreg", commreg);
+
+
+                    var searched_service_change = nlapiLoadSearch('customrecord_servicechg', 'customsearch_salesp_service_chg');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_service_customer", "CUSTRECORD_SERVICECHG_SERVICE", 'is', recId);
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_servicechg_comm_reg", null, 'is', commreg);
+                    newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
+
+                    searched_service_change.addFilters(newFilters);
+
+                    resultSet_service_change = searched_service_change.runSearch();
+
+                    var serviceResult = resultSet_service_change.getResults(0, 6);
+
+                    var service = [];
+                    var serviceFreq = [];
+                    var price = [];
+
+                    var service_freq = '';
+
+                    var dateEffective = null;
+                    var trialEndDate = null;
+
+
+                    //Removing the service table on Luke's request.
+                    // var serviceTable =
+                    //     '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+
+                    var serviceText = 'Your PMPO collection service is scheduled to be Daily at $8'
+
+                    for (n = 0; n < serviceResult.length; n++) {
+                        var serviceChangeId = serviceResult[n].getValue('internalid');
+                        var serviceId = serviceResult[n].getValue('custrecord_servicechg_service');
+                        var serviceText = serviceResult[n].getText('custrecord_servicechg_service');
+                        var serviceDescp = serviceResult[n].getValue("custrecord_service_description", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var oldServicePrice = serviceResult[n].getValue("custrecord_service_price", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItem = serviceResult[n].getValue("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItemText = serviceResult[n].getText("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var newServiceChangePrice = serviceResult[n].getValue('custrecord_servicechg_new_price');
+                        dateEffective = serviceResult[n].getValue('custrecord_servicechg_date_effective');
+                        trialEndDate = serviceResult[n].getValue('custrecord_trial_end_date');
+                        var commRegId = serviceResult[n].getValue('custrecord_servicechg_comm_reg');
+                        var serviceChangeTypeText = serviceResult[n].getText('custrecord_servicechg_type');
+                        var serviceChangeFreqText = serviceResult[n].getValue('custrecord_servicechg_new_freq');
+
+                        nlapiLogExecution('DEBUG', 'serviceNSItem', serviceNSItem);
+                        nlapiLogExecution('DEBUG', 'serviceNSItemText', serviceNSItemText);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.length', serviceChangeFreqText.length);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.split(,).length', serviceChangeFreqText.split(',').length);
+
+                        var serviceFreqText = '';
+
+                        service[service.length] = serviceNSItemText;
+                        if (serviceChangeFreqText.split(',').length == 5) {
+                            serviceFreq[serviceFreq.length] = 'Daily';
+                            serviceFreqText = 'Daily';
+                        } else {
+                            serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+                            serviceFreqText = freqCal(serviceChangeFreqText);
+                        }
+                        price[price.length] = newServiceChangePrice;
+
+                        serviceText = serviceNSItemText + ': $' + newServiceChangePrice + ' exc. GST per collection. (After the trial.) '
+
+                    }
+
+                    //NS Search: Product Pricing - Letters - Quotes
+                    var prodPricingLetterstobeSentSearch = nlapiLoadSearch('customrecord_product_pricing', 'customsearch_prod_pricing_letters_quotes');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter(
+                        'internalid', 'custrecord_prod_pricing_customer', 'anyof', recId);
+                    newFilters[newFilters.length] = new nlobjSearchFilter(
+                        'custrecord_prod_pricing_delivery_speeds', null, 'anyof', 4);
+
+                    prodPricingLetterstobeSentSearch.addFilters(newFilters);
+
+                    var resultSetProdPricingLetters = prodPricingLetterstobeSentSearch.runSearch();
+
+                    var mpPrm1kg = [];
+                    var mpPrm3kg = [];
+                    var mpPrm5kg = [];
+                    var mpPrm10kg = [];
+                    var mpPrm20kg = [];
+                    var oldCustomerId = null;
+                    var count = 0;
+                    var oldDeliverySpeed = null;
+                    /**
+                     * 
+                     */
+
+                    resultSetProdPricingLetters.forEachResult(function (searchResult) {
+
+                        var prodPricingInternalId = searchResult.getValue('internalid');
+                        var custId = searchResult.getValue("custrecord_prod_pricing_customer");
+                        var deliverySpeed = searchResult.getValue("custrecord_prod_pricing_delivery_speeds");
+
+                        var pricePlan1Kg = searchResult.getValue("custrecord_prod_pricing_1kg");
+                        var price1Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_1KG", null);
+                        var pricePlan3Kg = searchResult.getValue("custrecord_prod_pricing_3kg");
+                        var price3Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_3KG", null);
+                        var pricePlan5Kg = searchResult.getValue("custrecord_prod_pricing_5kg");
+                        var price5Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_5KG", null);
+                        var pricePlan10Kg = searchResult.getValue("custrecord_prod_pricing_10kg");
+                        var price10Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_10KG", null);
+                        var pricePlan20Kg = searchResult.getValue("custrecord_prod_pricing_20kg");
+                        var price20Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_20KG", null);
+
+                        //EXPRESS
+                        emailHtml = emailHtml.replace(/nlem1kgprm/gi, price1Kg);
+                        emailHtml = emailHtml.replace(/nlem3kgprm/gi, price3Kg);
+                        emailHtml = emailHtml.replace(/nlem5kgprm/gi, price5Kg);
+                        emailHtml = emailHtml.replace(/nlem10kgprm/gi, price10Kg);
+                        emailHtml = emailHtml.replace(/nlem20kgprm/gi, price20Kg);
+
+
+                        oldCustomerId = custId;
+                        oldDeliverySpeed = deliverySpeed;
+                        count++;
+                        return true;
+                    });
+
+
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+                    emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemservicetrialenddate/gi, trialEndDate);
+                    emailHtml = emailHtml.replace(/nlembillingstartdate/gi, billingstartdate);
+                    emailHtml = emailHtml.replace(/nlemsverifyervicetable/gi, serviceText);
+                }
+
                 //Email Template Name: 202402 - Verify Free Trial Quote
                 if (templateId == 423) {
                     var customer_record = nlapiLoadRecord('customer', recId);
@@ -1993,6 +2150,254 @@ function main(request, response) {
                     }
 
                     emailHtml = emailHtml.replace(/nlemoptoutbutton/gi, optOutButton);
+                }
+
+                //Email Template Name: 202408 - BAU - MP Product Quotes
+                if (templateId == 466) {
+                    var customer_record = nlapiLoadRecord('customer', recId);
+                    var entityid = customer_record.getFieldValue('entityid');
+                    var companyname = customer_record.getFieldValue('companyname');
+                    var partner_id = customer_record.getFieldValue('partner');
+                    var partner_record = nlapiLoadRecord('partner', partner_id);
+                    var mp_str_activated = partner_record.getFieldValue('custentity_zee_mp_str_activated');
+                    var mp_std_activated = partner_record.getFieldValue('custentity_zee_mp_std_activated');
+                    if (isNullorEmpty(mp_str_activated) || mp_str_activated == 2) {
+                        var nostdactive = '<br><span style="color:#FF0000">Premium delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        emailHtml = emailHtml.replace(/nlemprmactive/gi, nostdactive);
+                    } else {
+                        emailHtml = emailHtml.replace(/nlemprmactive/gi, '');
+                    }
+
+                    if ((mp_std_activated != 1 && mp_std_activated != '1') ) {
+                        var nostdactive = '<br><span style="color:#FF0000">Standard delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        emailHtml = emailHtml.replace(/nlemnostdactive/gi, nostdactive);
+                    } else {
+                        emailHtml = emailHtml.replace(/nlemnostdactive/gi, '');
+                    }
+
+
+                    var recContact = nlapiLoadRecord('contact', contactID);
+
+                    var contactEmail = recContact.getFieldValue('email');
+                    var contactPhone = recContact.getFieldValue('phone');
+                    var firstname = recContact.getFieldValue('firstname')
+
+                    //AGREE TO T&C'S
+                    var expInterest = '<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' + recId + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+
+                    nlapiLogExecution("DEBUG", "commreg", commreg);
+
+
+                    var searched_service_change = nlapiLoadSearch('customrecord_servicechg', 'customsearch_salesp_service_chg');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_service_customer", "CUSTRECORD_SERVICECHG_SERVICE", 'is', recId);
+                    newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_servicechg_comm_reg", null, 'is', commreg);
+                    newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_servicechg_status', null, 'anyof', [1, 2, 4]);
+
+                    searched_service_change.addFilters(newFilters);
+
+                    resultSet_service_change = searched_service_change.runSearch();
+
+                    var serviceResult = resultSet_service_change.getResults(0, 6);
+
+                    var service = [];
+                    var serviceFreq = [];
+                    var price = [];
+
+                    var service_freq = '';
+
+                    var dateEffective = null;
+                    var trialEndDate = null;
+
+
+                    //Removing the service table on Luke's request.
+                    // var serviceTable =
+                    //     '<table border="1" cellpadding="1" cellspacing="1" style="width:500px;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+
+                    var serviceText = 'Your PMPO collection service is scheduled to be Daily at $8'
+
+                    for (n = 0; n < serviceResult.length; n++) {
+                        var serviceChangeId = serviceResult[n].getValue('internalid');
+                        var serviceId = serviceResult[n].getValue('custrecord_servicechg_service');
+                        var serviceText = serviceResult[n].getText('custrecord_servicechg_service');
+                        var serviceDescp = serviceResult[n].getValue("custrecord_service_description", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var oldServicePrice = serviceResult[n].getValue("custrecord_service_price", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItem = serviceResult[n].getValue("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var serviceNSItemText = serviceResult[n].getText("custrecord_service_ns_item", "CUSTRECORD_SERVICECHG_SERVICE", null);
+                        var newServiceChangePrice = serviceResult[n].getValue('custrecord_servicechg_new_price');
+                        dateEffective = serviceResult[n].getValue('custrecord_servicechg_date_effective');
+                        trialEndDate = serviceResult[n].getValue('custrecord_trial_end_date');
+                        var commRegId = serviceResult[n].getValue('custrecord_servicechg_comm_reg');
+                        var serviceChangeTypeText = serviceResult[n].getText('custrecord_servicechg_type');
+                        var serviceChangeFreqText = serviceResult[n].getValue('custrecord_servicechg_new_freq');
+
+                        nlapiLogExecution('DEBUG', 'serviceNSItem', serviceNSItem);
+                        nlapiLogExecution('DEBUG', 'serviceNSItemText', serviceNSItemText);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.length', serviceChangeFreqText.length);
+                        nlapiLogExecution('DEBUG', 'serviceChangeFreqText.split(,).length', serviceChangeFreqText.split(',').length);
+
+                        var serviceFreqText = '';
+
+                        service[service.length] = serviceNSItemText;
+                        if (serviceChangeFreqText.split(',').length == 5) {
+                            serviceFreq[serviceFreq.length] = 'Daily';
+                            serviceFreqText = 'Daily';
+                        } else {
+                            serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+                            serviceFreqText = freqCal(serviceChangeFreqText);
+                        }
+                        price[price.length] = newServiceChangePrice;
+
+                        serviceText = serviceNSItemText + ': $' + newServiceChangePrice + ' exc. GST per collection. (After the trial.) '
+
+                    }
+
+                    
+
+                    //NS Search: Product Pricing - Letters - Quotes
+                    var prodPricingLetterstobeSentSearch = nlapiLoadSearch('customrecord_product_pricing', 'customsearch_prod_pricing_letters_quotes');
+
+                    var newFilters = new Array();
+                    newFilters[newFilters.length] = new nlobjSearchFilter(
+                        'internalid', 'custrecord_prod_pricing_customer', 'anyof', recId);
+
+                    prodPricingLetterstobeSentSearch.addFilters(newFilters);
+
+                    var resultSetProdPricingLetters = prodPricingLetterstobeSentSearch.runSearch();
+
+
+                    var mpStd250g = [];
+                    var mpStd500g = [];
+                    var mpStd1kg = [];
+                    var mpStd3kg = [];
+                    var mpStd5kg = [];
+                    var mpStd10kg = [];
+                    var mpStd25kg = [];
+                    var mpStd20kg = [];
+
+
+                    var mpExp500g = [];
+                    var mpExp1kg = [];
+                    var mpExp3kg = [];
+                    var mpExp5kg = [];
+
+                    var mpPrm1kg = [];
+                    var mpPrm3kg = [];
+                    var mpPrm5kg = [];
+                    var mpPrm5kg = [];
+                    var mpPrm5kg = [];
+
+                    var oldCustomerId = null;
+                    var count = 0;
+                    var oldDeliverySpeed = null;
+
+                    resultSetProdPricingLetters.forEachResult(function (searchResult) {
+
+                        var prodPricingInternalId = searchResult.getValue('internalid');
+                        var custId = searchResult.getValue("custrecord_prod_pricing_customer");
+                        var deliverySpeed = searchResult.getValue("custrecord_prod_pricing_delivery_speeds");
+                        var pricePlan250g = searchResult.getValue("custrecord_prod_pricing_250g");
+                        var price250g = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_250G", null);
+                        var pricePlan500g = searchResult.getValue("custrecord_prod_pricing_500g");
+                        var price500g = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_500G", null);
+                        var pricePlan1Kg = searchResult.getValue("custrecord_prod_pricing_1kg");
+                        var price1Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_1KG", null);
+                        var pricePlan3Kg = searchResult.getValue("custrecord_prod_pricing_3kg");
+                        var price3Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_3KG", null);
+                        var pricePlan5Kg = searchResult.getValue("custrecord_prod_pricing_5kg");
+                        var price5Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_5KG", null);
+                        var pricePlan10Kg = searchResult.getValue("custrecord_prod_pricing_10kg");
+                        var price10Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_10KG", null);
+                        var pricePlan20Kg = searchResult.getValue("custrecord_prod_pricing_20kg");
+                        var price20Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_20KG", null);
+                        var pricePlan25Kg = searchResult.getValue("custrecord_prod_pricing_25kg");
+                        var price25Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_25KG", null);
+
+                        if (count == 0) {
+                            if (deliverySpeed == 2) {
+                                mpExp500g.push(price500g);
+                                mpExp1kg.push(price1Kg);
+                                mpExp3kg.push(price3Kg);
+                                mpExp5kg.push(price5Kg);
+                            } else if (deliverySpeed == 1) {
+                                mpStd250g.push(price250g);
+                                mpStd500g.push(price500g);
+                                mpStd1kg.push(price1Kg);
+                                mpStd3kg.push(price3Kg);
+                                mpStd5kg.push(price5Kg);
+                                mpStd10kg.push(price10Kg);
+                                mpStd20kg.push(price20Kg);
+                                mpStd25kg.push(price25Kg);
+                            } else if (deliverySpeed == 4) {
+                                mpPrm1kg.push(price1Kg);
+                                mpPrm3kg.push(price3Kg);
+                                mpPrm5kg.push(price5Kg);
+                                mpPrm10kg.push(price10Kg);
+                                mpPrm20kg.push(price20Kg);
+                            }
+                        } else if (oldCustomerId == custId) {
+                            if (oldDeliverySpeed == deliverySpeed) {
+                                nlapiDeleteRecord('customrecord_product_pricing', prodPricingInternalId);
+                                count--;
+                            } else {
+                                if (deliverySpeed == 2) {
+                                    mpExp500g.push(price500g);
+                                    mpExp1kg.push(price1Kg);
+                                    mpExp3kg.push(price3Kg);
+                                    mpExp5kg.push(price5Kg);
+                                } else if (deliverySpeed == 1) {
+                                    mpStd250g.push(price250g);
+                                    mpStd500g.push(price500g);
+                                    mpStd1kg.push(price1Kg);
+                                    mpStd3kg.push(price3Kg);
+                                    mpStd5kg.push(price5Kg);
+                                    mpStd10kg.push(price10Kg);
+                                    mpStd20kg.push(price20Kg);
+                                    mpStd25kg.push(price25Kg);
+                                } else if (deliverySpeed == 4) {
+                                    mpPrm1kg.push(price1Kg);
+                                    mpPrm3kg.push(price3Kg);
+                                    mpPrm5kg.push(price5Kg);
+                                    mpPrm10kg.push(price10Kg);
+                                    mpPrm20kg.push(price20Kg);
+                                }
+                            }
+
+                        }
+
+                        oldCustomerId = custId;
+                        oldDeliverySpeed = deliverySpeed;
+                        count++;
+                        return true;
+                    });
+
+                    if (count > 0 && !isNullorEmpty(oldCustomerId)) {
+
+                        //EXPRESS
+                        emailHtml = emailHtml.replace(/nlem5kgexp/gi, mpExp5kg[0]);
+                        emailHtml = emailHtml.replace(/nlem3kgexp/gi, mpExp3kg[0]);
+                        emailHtml = emailHtml.replace(/nlem1kgexp/gi, mpExp1kg[0]);
+                        emailHtml = emailHtml.replace(/nlem500gexp/gi, mpExp500g[0]);
+                        //STANDAR
+                        emailHtml = emailHtml.replace(/nlem20kgstd/gi, mpStd20kg[0]);
+                        emailHtml = emailHtml.replace(/nlem25kgstd/gi, mpStd25kg[0]);
+                        emailHtml = emailHtml.replace(/nlem10kgstd/gi, mpStd10kg[0]);
+                        emailHtml = emailHtml.replace(/nlem5kgstd/gi, mpStd5kg[0]);
+                        emailHtml = emailHtml.replace(/nlem3kgstd/gi, mpStd3kg[0]);
+                        emailHtml = emailHtml.replace(/nlem1kgstd/gi, mpStd1kg[0]);
+                        emailHtml = emailHtml.replace(/nlem500gstd/gi, mpStd500g[0]);
+                        emailHtml = emailHtml.replace(/nlem250gstd/gi, mpStd250g[0]);
+                        //PREMIUM
+                        emailHtml = emailHtml.replace(/nlem1kgprm/gi, mpPrm1kg[0]);
+                        emailHtml = emailHtml.replace(/nlem3kgprm/gi, mpPrm3kg[0]);
+                        emailHtml = emailHtml.replace(/nlem5kgprm/gi, mpPrm5kg[0]);
+                        emailHtml = emailHtml.replace(/nlem10kgprm/gi, mpPrm10kg[0]);
+                        emailHtml = emailHtml.replace(/nlem20kgprm/gi, mpPrm20kg[0]);
+
+
+                    }
+
                 }
 
 
