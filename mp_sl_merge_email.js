@@ -1621,7 +1621,7 @@ function main(request, response) {
                     var partner_record = nlapiLoadRecord('partner', partner_id);
                     var mp_str_activated = partner_record.getFieldValue('custentity_zee_mp_str_activated');
                     if (isNullorEmpty(mp_str_activated) || mp_str_activated == 2) {
-                        var nostdactive = '<br><span style="color:#FF0000">Premium delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        var nostdactive = '<br><span style="color:#FF0000">Unfortunately, this service is not currently available in your area yet.</span><br><br>';
                         emailHtml = emailHtml.replace(/nlemprmactive/gi, nostdactive);
                     } else {
                         emailHtml = emailHtml.replace(/nlemprmactive/gi, '');
@@ -2162,14 +2162,14 @@ function main(request, response) {
                     var mp_str_activated = partner_record.getFieldValue('custentity_zee_mp_str_activated');
                     var mp_std_activated = partner_record.getFieldValue('custentity_zee_mp_std_activated');
                     if (isNullorEmpty(mp_str_activated) || mp_str_activated == 2) {
-                        var nostdactive = '<br><span style="color:#FF0000">Premium delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        var nostdactive = '<br><span style="color:#FF0000">Unfortunately, this service is not currently available in your area yet.</span><br><br>';
                         emailHtml = emailHtml.replace(/nlemprmactive/gi, nostdactive);
                     } else {
                         emailHtml = emailHtml.replace(/nlemprmactive/gi, '');
                     }
 
                     if ((mp_std_activated != 1 && mp_std_activated != '1') ) {
-                        var nostdactive = '<br><span style="color:#FF0000">Standard delivery is not available in your&nbsp;area just yet. We will let you know as soon as it has&nbsp;expanded to your pickup location.</span><br><br>';
+                        var nostdactive = '<br><span style="color:#FF0000">Unfortunately, this service is not currently available in your area yet.</span><br><br>';
                         emailHtml = emailHtml.replace(/nlemnostdactive/gi, nostdactive);
                     } else {
                         emailHtml = emailHtml.replace(/nlemnostdactive/gi, '');
@@ -2267,26 +2267,26 @@ function main(request, response) {
                     var resultSetProdPricingLetters = prodPricingLetterstobeSentSearch.runSearch();
 
 
-                    var mpStd250g = [];
-                    var mpStd500g = [];
-                    var mpStd1kg = [];
-                    var mpStd3kg = [];
-                    var mpStd5kg = [];
-                    var mpStd10kg = [];
-                    var mpStd25kg = [];
-                    var mpStd20kg = [];
+                    var mpStd250g = [0];
+                    var mpStd500g = [0];
+                    var mpStd1kg = [0];
+                    var mpStd3kg = [0];
+                    var mpStd5kg = [0];
+                    var mpStd10kg = [0];
+                    var mpStd25kg = [0];
+                    var mpStd20kg = [0];
 
 
-                    var mpExp500g = [];
-                    var mpExp1kg = [];
-                    var mpExp3kg = [];
-                    var mpExp5kg = [];
+                    var mpExp500g = [0];
+                    var mpExp1kg = [0];
+                    var mpExp3kg = [0];
+                    var mpExp5kg = [0];
 
-                    var mpPrm1kg = [];
-                    var mpPrm3kg = [];
-                    var mpPrm5kg = [];
-                    var mpPrm5kg = [];
-                    var mpPrm5kg = [];
+                    var mpPrm1kg = [0];
+                    var mpPrm3kg = [0];
+                    var mpPrm5kg = [0];
+                    var mpPrm10kg = [0];
+                    var mpPrm20kg = [0];
 
                     var oldCustomerId = null;
                     var count = 0;
