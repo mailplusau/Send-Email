@@ -23,6 +23,8 @@ function main(request, response) {
 
     var recCustomer = nlapiLoadRecord('customer', request.getParameter('custid'));
 
+    nlapiLogExecution('DEBUG', 'scfid', scfid);
+
     var customerName = recCustomer.getFieldValue('companyname');
     var customerEntityId = recCustomer.getFieldValue('entityid');
     var customerVatRegNumber = recCustomer.getFieldValue('vatregnumber');
