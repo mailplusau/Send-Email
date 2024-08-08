@@ -989,17 +989,17 @@ function main(request, response) {
                     if (!isNullorEmpty(trialEndDate)) {
                         var trialEndDateText = 'Trial Start Date: ' + commdate;
                         trialEndDateText += '</br>Trial End Date: ' + trialEndDate + '</br>';
-                        emailHtml = emailHtml.replace(/<nlemfreetrialdetails>/gi, trialEndDateText);
+                        emailHtml = emailHtml.replace(/nlemfreetrialdetails/gi, trialEndDateText);
                     }
-                    emailHtml = emailHtml.replace(/<nlemcommstartdate>/gi, commdate);
+                    emailHtml = emailHtml.replace(/nlemcommstartdate/gi, commdate);
 
-                    emailHtml = emailHtml.replace(/<nlemcustomerdetails>/gi, customerDetails);
-                    emailHtml = emailHtml.replace(/<nlemcustomeraddress>/gi, customerAddressDetails);
-                    emailHtml = emailHtml.replace(/<nlemcontantdetails>/gi, contactDetails);
-                    emailHtml = emailHtml.replace(/<nlemcontactemail>/gi, contactEmailDetails);
-                    emailHtml = emailHtml.replace(/<nlemcontactphone>/gi, contactPhoneDetails);
-                    emailHtml = emailHtml.replace(/<nlemcustomervisited>/gi, expIntcustomerVisitederest);
-                    emailHtml = emailHtml.replace(/<nlembookacall>/gi, bookACall);
+                    emailHtml = emailHtml.replace(/nlemcustomerdetails/gi, customerDetails);
+                    emailHtml = emailHtml.replace(/nlemcustomeraddress/gi, customerAddressDetails);
+                    emailHtml = emailHtml.replace(/nlemcontantdetails/gi, contactDetails);
+                    emailHtml = emailHtml.replace(/nlemcontactemail/gi, contactEmailDetails);
+                    emailHtml = emailHtml.replace(/nlemcontactphone/gi, contactPhoneDetails);
+                    emailHtml = emailHtml.replace(/nlemcustomervisited/gi, expIntcustomerVisitederest);
+                    emailHtml = emailHtml.replace(/nlembookacall/gi, bookACall);
 
                 }
 
