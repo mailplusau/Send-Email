@@ -2398,6 +2398,8 @@ function main(request, response) {
 
                     }
 
+                    emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+
                 }
 
 
