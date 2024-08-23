@@ -2168,7 +2168,7 @@ function main(request, response) {
                         emailHtml = emailHtml.replace(/nlemprmactive/gi, '');
                     }
 
-                    if ((mp_std_activated != 1 && mp_std_activated != '1') ) {
+                    if ((mp_std_activated != 1 && mp_std_activated != '1')) {
                         var nostdactive = '<br><span style="color:#FF0000">Unfortunately, this service is not currently available in your area yet.</span><br><br>';
                         emailHtml = emailHtml.replace(/nlemnostdactive/gi, nostdactive);
                     } else {
@@ -2253,7 +2253,7 @@ function main(request, response) {
 
                     }
 
-                    
+
 
                     //NS Search: Product Pricing - Letters - Quotes
                     var prodPricingLetterstobeSentSearch = nlapiLoadSearch('customrecord_product_pricing', 'customsearch_prod_pricing_letters_quotes');
@@ -2267,26 +2267,26 @@ function main(request, response) {
                     var resultSetProdPricingLetters = prodPricingLetterstobeSentSearch.runSearch();
 
 
-                    var mpStd250g = [0];
-                    var mpStd500g = [0];
-                    var mpStd1kg = [0];
-                    var mpStd3kg = [0];
-                    var mpStd5kg = [0];
-                    var mpStd10kg = [0];
-                    var mpStd25kg = [0];
-                    var mpStd20kg = [0];
+                    var mpStd250g = [];
+                    var mpStd500g = [];
+                    var mpStd1kg = [];
+                    var mpStd3kg = [];
+                    var mpStd5kg = [];
+                    var mpStd10kg = [];
+                    var mpStd25kg = [];
+                    var mpStd20kg = [];
 
 
-                    var mpExp500g = [0];
-                    var mpExp1kg = [0];
-                    var mpExp3kg = [0];
-                    var mpExp5kg = [0];
+                    var mpExp500g = [];
+                    var mpExp1kg = [];
+                    var mpExp3kg = [];
+                    var mpExp5kg = [];
 
-                    var mpPrm1kg = [0];
-                    var mpPrm3kg = [0];
-                    var mpPrm5kg = [0];
-                    var mpPrm10kg = [0];
-                    var mpPrm20kg = [0];
+                    var mpPrm1kg = [];
+                    var mpPrm3kg = [];
+                    var mpPrm5kg = [];
+                    var mpPrm10kg = [];
+                    var mpPrm20kg = [];
 
                     var oldCustomerId = null;
                     var count = 0;
@@ -2314,6 +2314,17 @@ function main(request, response) {
                         var pricePlan25Kg = searchResult.getValue("custrecord_prod_pricing_25kg");
                         var price25Kg = searchResult.getValue("baseprice", "CUSTRECORD_PROD_PRICING_25KG", null);
 
+                        nlapiLogExecution('DEBUG', 'deliverySpeed', deliverySpeed);
+                        nlapiLogExecution('DEBUG', 'custId', custId);
+                        nlapiLogExecution('DEBUG', 'price250g', price250g);
+                        nlapiLogExecution('DEBUG', 'price500g', price500g);
+                        nlapiLogExecution('DEBUG', 'price1Kg', price1Kg);
+                        nlapiLogExecution('DEBUG', 'price3Kg', price3Kg);
+                        nlapiLogExecution('DEBUG', 'price5Kg', price5Kg);
+                        nlapiLogExecution('DEBUG', 'price10Kg', price10Kg);
+                        nlapiLogExecution('DEBUG', 'price20Kg', price20Kg);
+                        nlapiLogExecution('DEBUG', 'price25Kg', price25Kg);
+
                         if (count == 0) {
                             if (deliverySpeed == 2) {
                                 mpExp500g.push(price500g);
@@ -2337,6 +2348,8 @@ function main(request, response) {
                                 mpPrm20kg.push(price20Kg);
                             }
                         } else if (oldCustomerId == custId) {
+                            nlapiLogExecution('DEBUG', 'Same customer: oldCustomerId', oldCustomerId);
+                            nlapiLogExecution('DEBUG', 'Same customer: oldDeliverySpeed', oldDeliverySpeed);
                             if (oldDeliverySpeed == deliverySpeed) {
                                 nlapiDeleteRecord('customrecord_product_pricing', prodPricingInternalId);
                                 count--;
@@ -2372,14 +2385,65 @@ function main(request, response) {
                         return true;
                     });
 
-                    if (count > 0 && !isNullorEmpty(oldCustomerId)) {
 
+
+                    if (count > 0 && !isNullorEmpty(oldCustomerId)) {
                         //EXPRESS
+                        if (mpExp5kg.length == 0) {
+                            mpExp5kg[0] = 0;
+                        }
+                        if (mpExp3kg.length == 0) {
+                            mpExp3kg[0] = 0;
+                        }
+                        if (mpExp1kg.length == 0) {
+                            mpExp1kg[0] = 0;
+                        }
+                        if (mpExp500g.length == 0) {
+                            mpExp500g[0] = 0;
+                        }
+                        
+                        nlapiLogExecution('DEBUG', 'Out loop:Exp ', mpExp5kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Exp ', mpExp3kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Exp ', mpExp1kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Exp ', mpExp500g);
+                        
                         emailHtml = emailHtml.replace(/nlem5kgexp/gi, mpExp5kg[0]);
                         emailHtml = emailHtml.replace(/nlem3kgexp/gi, mpExp3kg[0]);
                         emailHtml = emailHtml.replace(/nlem1kgexp/gi, mpExp1kg[0]);
                         emailHtml = emailHtml.replace(/nlem500gexp/gi, mpExp500g[0]);
-                        //STANDAR
+                        //STANDARD
+                        if (mpStd20kg.length == 0) {
+                            mpStd20kg[0] = 0;
+                        }
+                        if (mpStd25kg.length == 0) {
+                            mpStd25kg[0] = 0;
+                        }
+                        if (mpStd10kg.length == 0) {
+                            mpStd10kg[0] = 0;
+                        }
+                        if (mpStd5kg.length == 0) {
+                            mpStd5kg[0] = 0;
+                        }
+                        if (mpStd3kg.length == 0) {
+                            mpStd3kg[0] = 0;
+                        }
+                        if (mpStd1kg.length == 0) {
+                            mpStd1kg[0] = 0;
+                        }
+                        if (mpStd500g.length == 0) {
+                            mpStd500g[0] = 0;
+                        }
+                        if (mpStd250g.length == 0) {
+                            mpStd250g[0] = 0;
+                        }
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd20kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd25kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd10kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd5kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd3kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd1kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd500g);
+                        nlapiLogExecution('DEBUG', 'Out loop:Std ', mpStd250g);
                         emailHtml = emailHtml.replace(/nlem20kgstd/gi, mpStd20kg[0]);
                         emailHtml = emailHtml.replace(/nlem25kgstd/gi, mpStd25kg[0]);
                         emailHtml = emailHtml.replace(/nlem10kgstd/gi, mpStd10kg[0]);
@@ -2389,6 +2453,26 @@ function main(request, response) {
                         emailHtml = emailHtml.replace(/nlem500gstd/gi, mpStd500g[0]);
                         emailHtml = emailHtml.replace(/nlem250gstd/gi, mpStd250g[0]);
                         //PREMIUM
+                        if (mpPrm1kg.length == 0) {
+                            mpPrm1kg[0] = 0;
+                        }
+                        if (mpPrm3kg.length == 0) {
+                            mpPrm3kg[0] = 0;
+                        }
+                        if (mpPrm5kg.length == 0) {
+                            mpPrm5kg[0] = 0;
+                        }
+                        if (mpPrm10kg.length == 0) {
+                            mpPrm10kg[0] = 0;
+                        }
+                        if (mpPrm20kg.length == 0) {
+                            mpPrm20kg[0] = 0;
+                        }
+                        nlapiLogExecution('DEBUG', 'Out loop:Prm ', mpPrm1kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Prm ', mpPrm3kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Prm ', mpPrm5kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Prm ', mpPrm10kg);
+                        nlapiLogExecution('DEBUG', 'Out loop:Prm ', mpPrm20kg);
                         emailHtml = emailHtml.replace(/nlem1kgprm/gi, mpPrm1kg[0]);
                         emailHtml = emailHtml.replace(/nlem3kgprm/gi, mpPrm3kg[0]);
                         emailHtml = emailHtml.replace(/nlem5kgprm/gi, mpPrm5kg[0]);
