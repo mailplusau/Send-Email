@@ -302,7 +302,7 @@ function main(request, response) {
 
 					mpPremiumTable += "</tbody></table>";
 					mpPremiumTable +=
-						'<small><i>Prices exclude GST and <a href="https://mailplus.com.au/surcharge/">surcharges</a>.</i></small>';
+						'<small><i>Prices exclude GST and <a href="https://mailplus.com.au/shipping-surcharge/">surcharges</a>.</i></small>';
 
 					emailHtml = emailHtml.replace(
 						/nlemmppremiumpricingtable/gi,
@@ -419,7 +419,7 @@ function main(request, response) {
 
 					mpPremiumTable += "</tbody></table>";
 					mpPremiumTable +=
-						'<small><i>Prices exclude GST and <a href="https://mailplus.com.au/surcharge/">surcharges</a>.</i></small>';
+						'<small><i>Prices exclude GST and <a href="https://mailplus.com.au/shipping-surcharge/">surcharges</a>.</i></small>';
 
 					emailHtml = emailHtml.replace(
 						/nlemmppremiumpricingtable/gi,
