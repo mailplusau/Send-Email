@@ -3932,6 +3932,33 @@ function main(request, response) {
 
 					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
 				}
+
+				//Email template Name: 202409 - LPO - No Answer - Nudge
+				if (templateId == 471) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var partner_id = customer_record.getFieldValue("partner");
+					var parent_lpo_id = customer_record.getFieldValue("custentity_lpo_parent_account");
+					var parent_lpo_record = nlapiLoadRecord("customer", parent_lpo_id);
+					var parent_lpo_name = parent_lpo_record.getFieldValue("companyname");
+					var partner_record = nlapiLoadRecord("partner", partner_id);
+					var zee_contact_name = partner_record.getFieldValue("custentity3");
+					var zee_mobile_number = partner_record.getFieldValue("custentity2");
+					var zee_first_name = partner_record.getFieldValue(
+						"custentity_franchisee_firstname"
+					);
+
+					var recContact = nlapiLoadRecord("contact", contactID);
+
+					var contactEmail = recContact.getFieldValue("email");
+					var contactPhone = recContact.getFieldValue("phone");
+					var firstname = recContact.getFieldValue("firstname");
+					var lastname = recContact.getFieldValue("lastname");
+
+					emailHtml = emailHtml.replace(/nlemlponame/gi, parent_lpo_name);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+					emailHtml = emailHtml.replace(/nlemsalesreptext/gi, salesRepName);
+					
+				}
 			}
 		}
 		response.setHeader("Custom-Header-SubjectLine", subject);
