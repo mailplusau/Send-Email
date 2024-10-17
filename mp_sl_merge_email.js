@@ -2093,12 +2093,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -2247,12 +2249,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -2401,12 +2405,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -2593,12 +2599,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -2854,12 +2862,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -3016,12 +3026,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
@@ -3526,12 +3538,14 @@ function main(request, response) {
 						"is",
 						recId
 					);
-					newFilters[newFilters.length] = new nlobjSearchFilter(
-						"custrecord_servicechg_comm_reg",
-						null,
-						"is",
-						commreg
-					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
 					newFilters[newFilters.length] = new nlobjSearchFilter(
 						"custrecord_servicechg_status",
 						null,
