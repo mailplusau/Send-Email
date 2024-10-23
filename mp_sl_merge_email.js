@@ -2053,7 +2053,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2075,7 +2075,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2231,7 +2231,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&ns-at=AAEJ7tMQHJCpmu_LOKA_mV9MxQAZyGUoAcIFTb67OX_ajo-b2ok&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Accept</a>';
 
@@ -2387,7 +2387,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2581,7 +2581,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2844,7 +2844,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&h=374970ce5575b3b56d7e&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1840&deploy=1&compid=1048144&ns-at=AAEJ7tMQHJCpmu_LOKA_mV9MxQAZyGUoAcIFTb67OX_ajo-b2ok&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Accept</a>';
 
@@ -3008,7 +3008,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -3520,7 +3520,7 @@ function main(request, response) {
 
 					//AGREE TO T&C'S
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&h=d8b0de7789c0382654ab&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -3951,7 +3951,9 @@ function main(request, response) {
 				if (templateId == 471) {
 					var customer_record = nlapiLoadRecord("customer", recId);
 					var partner_id = customer_record.getFieldValue("partner");
-					var parent_lpo_id = customer_record.getFieldValue("custentity_lpo_parent_account");
+					var parent_lpo_id = customer_record.getFieldValue(
+						"custentity_lpo_parent_account"
+					);
 					var parent_lpo_record = nlapiLoadRecord("customer", parent_lpo_id);
 					var parent_lpo_name = parent_lpo_record.getFieldValue("companyname");
 					var partner_record = nlapiLoadRecord("partner", partner_id);
@@ -3971,7 +3973,6 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/nlemlponame/gi, parent_lpo_name);
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 					emailHtml = emailHtml.replace(/nlemsalesreptext/gi, salesRepName);
-					
 				}
 			}
 		}
