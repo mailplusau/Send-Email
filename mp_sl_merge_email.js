@@ -162,7 +162,9 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
 				}
 
-				if (templateId == 219) {
+				//EmailTemplate ID 219: 202404 - MailPlus - Invite to Portal
+				//EmailTemplate ID 477: 20241113 - T4 - Your ShipMate Access is Ready 
+				if (templateId == 219 || templateId == 477) {
 					var customer_record = nlapiLoadRecord("customer", recId);
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
