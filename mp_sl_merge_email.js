@@ -190,6 +190,7 @@ function main(request, response) {
 					// emailHtml = emailHtml.replace(/<nlemexpbutton>/gi, expInterest);
 					// emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
 
+					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, salesRepName);
 					emailHtml = emailHtml.replace(/nlembookacall/gi, expInterest);
 				}
 
@@ -602,6 +603,73 @@ function main(request, response) {
 					);
 					emailHtml = emailHtml.replace(
 						/<nlemsalesrepemailsignature>/gi,
+						salesRepDetailsName
+					);
+				}
+
+				//Email Template Name: 20241113 - T1 - Automated Acknowledgment Email
+				if (templateId == 474) {
+					var salesRepDetailsSearch = nlapiLoadSearch(
+						"customrecord_sales",
+						"customsearch_sales_record_auto_signed__3"
+					);
+
+					var newFiltersSalesRep = new Array();
+					newFiltersSalesRep[0] = new nlobjSearchFilter(
+						"internalid",
+						"custrecord_sales_assigned",
+						"anyof",
+						salesRep
+					);
+
+					salesRepDetailsSearch.addFilters(newFiltersSalesRep);
+
+					var salesRepDetailsSearchResults = salesRepDetailsSearch.runSearch();
+
+					var salesRepDetailsName = "";
+					var salesRepDetailsEmail = "";
+					var salesRepDetailsPhone = "";
+
+					salesRepDetailsSearchResults.forEachResult(function (
+						salesRepDetailsSearchResultSet
+					) {
+						salesRepDetailsName = salesRepDetailsSearchResultSet.getText(
+							"custrecord_sales_assigned",
+							null,
+							"GROUP"
+						);
+						salesRepDetailsEmail = salesRepDetailsSearchResultSet.getValue(
+							"email",
+							"CUSTRECORD_SALES_ASSIGNED",
+							"GROUP"
+						);
+						salesRepDetailsPhone = salesRepDetailsSearchResultSet.getValue(
+							"phone",
+							"CUSTRECORD_SALES_ASSIGNED",
+							"GROUP"
+						);
+
+						return true;
+					});
+
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						salesRepDetailsName
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepphone/gi,
+						salesRepDetailsPhone
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemail/gi,
+						salesRepDetailsEmail
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemailsignature/gi,
 						salesRepDetailsName
 					);
 				}
@@ -3484,7 +3552,8 @@ function main(request, response) {
 				}
 
 				//Email Template Name: 202408 - BAU - MP Product Quotes
-				if (templateId == 466) {
+				//Email Template Name: 20241113 - T2 - Quote Sent Email - Premium Focus
+				if (templateId == 466 || templateId == 475) {
 					var customer_record = nlapiLoadRecord("customer", recId);
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
