@@ -25,6 +25,7 @@ function main(request, response) {
 		var trialEndDate = request.getParameter("trialenddate");
 		var billingstartdate = request.getParameter("billingstartdate");
 		var salesRepName = request.getParameter("salesRepName");
+		var onboardingTime = request.getParameter("time");
 		var emailHtml = "";
 		var subject = "";
 
@@ -127,6 +128,11 @@ function main(request, response) {
 					);
 				}
 
+				//Email Template Name: 20241114 - T5 - Onboarding Reminder
+				if (templateId == 478) {
+					emailHtml = emailHtml.replace(/nlemtime/gi, onboardingTime);
+				}
+
 				/**
 				 * Email Template Names:
 				 *  MailPlus Express - Invite to Portal
@@ -163,7 +169,7 @@ function main(request, response) {
 				}
 
 				//EmailTemplate ID 219: 202404 - MailPlus - Invite to Portal
-				//EmailTemplate ID 477: 20241113 - T4 - Your ShipMate Access is Ready 
+				//EmailTemplate ID 477: 20241113 - T4 - Your ShipMate Access is Ready
 				if (templateId == 219 || templateId == 477) {
 					var customer_record = nlapiLoadRecord("customer", recId);
 					var entityid = customer_record.getFieldValue("entityid");
@@ -1582,7 +1588,7 @@ function main(request, response) {
 					var contactPhoneDetails = "Phone: " + contactPhone;
 
 					var expIntcustomerVisitederest =
-						'<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&h=1628e8b5d3c71477d4aa&custinternalid=' +
+						'<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&ns-at=AAEJ7tMQx27OOxfPKPXdUYPclyufhLt6bJFrTJqzV-aPHdnre2k&custinternalid=' +
 						recId +
 						'" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Completed</a>';
 
@@ -1872,7 +1878,7 @@ function main(request, response) {
 						contactDetails + " <b>Phone</b>: " + contactPhone;
 
 					var expIntcustomerVisitederest =
-						'<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&h=1628e8b5d3c71477d4aa&custinternalid=' +
+						'<a class="mcnButton" href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1656&deploy=1&compid=1048144&ns-at=AAEJ7tMQx27OOxfPKPXdUYPclyufhLt6bJFrTJqzV-aPHdnre2k&custinternalid=' +
 						recId +
 						'" style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Completed</a>';
 
