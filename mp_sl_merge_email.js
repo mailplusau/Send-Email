@@ -25,7 +25,7 @@ function main(request, response) {
 		var trialEndDate = request.getParameter("trialenddate");
 		var billingstartdate = request.getParameter("billingstartdate");
 		var salesRepName = request.getParameter("salesRepName");
-		var onboardingTime = request.getParameter("time");
+		var onboardingTime = request.getParameter("tasktime");
 		var emailHtml = "";
 		var subject = "";
 
@@ -130,7 +130,9 @@ function main(request, response) {
 
 				//Email Template Name: 20241114 - T5 - Onboarding Reminder
 				if (templateId == 478) {
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
 					emailHtml = emailHtml.replace(/nlemtime/gi, onboardingTime);
+					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, salesRepName);
 				}
 
 				/**
