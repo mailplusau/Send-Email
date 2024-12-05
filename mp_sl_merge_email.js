@@ -1619,6 +1619,8 @@ function main(request, response) {
 							/nlemfreetrialdetails/gi,
 							trialEndDateText
 						);
+					} else {
+						emailHtml = emailHtml.replace(/nlemfreetrialdetails/gi, "");
 					}
 					emailHtml = emailHtml.replace(/nlemcommstartdate/gi, commdate);
 
@@ -2131,7 +2133,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2153,7 +2155,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2452,6 +2454,166 @@ function main(request, response) {
 					// emailHtml = emailHtml.replace(/<nlemcontactfirstname>/gi, firstname);
 				}
 
+				//Email Template Name: 20241122 - T6 - PUD - Thank You & Next Steps
+				if (templateId == 479) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+					var portal_access = customer_record.getFieldValue(
+						"custentity_portal_access"
+					);
+
+					var recContact = nlapiLoadRecord("contact", contactID);
+
+					var contactEmail = recContact.getFieldValue("email");
+					var contactPhone = recContact.getFieldValue("phone");
+					var firstname = recContact.getFieldValue("firstname");
+
+					var searched_service_change = nlapiLoadSearch(
+						"customrecord_servicechg",
+						"customsearch_salesp_service_chg"
+					);
+
+					var newFilters = new Array();
+					newFilters[newFilters.length] = new nlobjSearchFilter(
+						"custrecord_service_customer",
+						"CUSTRECORD_SERVICECHG_SERVICE",
+						"is",
+						recId
+					);
+					if (!isNullorEmpty(commreg)) {
+						newFilters[newFilters.length] = new nlobjSearchFilter(
+							"custrecord_servicechg_comm_reg",
+							null,
+							"is",
+							commreg
+						);
+					}
+					newFilters[newFilters.length] = new nlobjSearchFilter(
+						"custrecord_servicechg_status",
+						null,
+						"anyof",
+						[1, 2, 4]
+					);
+
+					searched_service_change.addFilters(newFilters);
+
+					resultSet_service_change = searched_service_change.runSearch();
+
+					var serviceResult = resultSet_service_change.getResults(0, 6);
+
+					var service = [];
+					var serviceFreq = [];
+					var price = [];
+
+					var service_freq = "";
+
+					var dateEffective = null;
+					var trialEndDate = null;
+
+					if (portal_access == 1 || portal_access == "1") {
+						var shipMateAccess = "ShipMate Access</br>";
+						shipMateAccess +=
+							"- You will soon receive separate email with your ShipMate login credentials for the express bookings.</br>";
+						shipMateAccess +=
+							"- Please set up your password within 24 hours of receiving these details.</br>";
+						shipMateAccess +=
+							"- Our ShipMate Onboarding team will reach out to you to provide optional ShipMate onboarding and training.</br></br>";
+					} else {
+						var shipMateAccess = "";
+					}
+
+					var serviceTable =
+						'<table border="1" cellpadding="1" cellspacing="1" style="width: 100%;"><thead><tr><th><b>SERVICE NAME</b></th><th style="vertical-align: middle;text-align: center;"><b>FREQUENCY</b></th><th style="vertical-align: middle;text-align: center;"><b>RATE</b></th></tr></thead><tbody>';
+
+					for (n = 0; n < serviceResult.length; n++) {
+						var serviceChangeId = serviceResult[n].getValue("internalid");
+						var serviceId = serviceResult[n].getValue(
+							"custrecord_servicechg_service"
+						);
+						var serviceText = serviceResult[n].getText(
+							"custrecord_servicechg_service"
+						);
+						var serviceDescp = serviceResult[n].getValue(
+							"custrecord_service_description",
+							"CUSTRECORD_SERVICECHG_SERVICE",
+							null
+						);
+						var oldServicePrice = serviceResult[n].getValue(
+							"custrecord_service_price",
+							"CUSTRECORD_SERVICECHG_SERVICE",
+							null
+						);
+						var serviceNSItem = serviceResult[n].getValue(
+							"custrecord_service_ns_item",
+							"CUSTRECORD_SERVICECHG_SERVICE",
+							null
+						);
+						var serviceNSItemText = serviceResult[n].getText(
+							"custrecord_service_ns_item",
+							"CUSTRECORD_SERVICECHG_SERVICE",
+							null
+						);
+						var newServiceChangePrice = serviceResult[n].getValue(
+							"custrecord_servicechg_new_price"
+						);
+						dateEffective = serviceResult[n].getValue(
+							"custrecord_servicechg_date_effective"
+						);
+						trialEndDate = serviceResult[n].getValue(
+							"custrecord_trial_end_date"
+						);
+						var commRegId = serviceResult[n].getValue(
+							"custrecord_servicechg_comm_reg"
+						);
+						var serviceChangeTypeText = serviceResult[n].getText(
+							"custrecord_servicechg_type"
+						);
+						var serviceChangeFreqText = serviceResult[n].getValue(
+							"custrecord_servicechg_new_freq"
+						);
+
+						nlapiLogExecution("DEBUG", "serviceNSItem", serviceNSItem);
+						nlapiLogExecution("DEBUG", "serviceNSItemText", serviceNSItemText);
+						nlapiLogExecution(
+							"DEBUG",
+							"serviceChangeFreqText.length",
+							serviceChangeFreqText.length
+						);
+						nlapiLogExecution(
+							"DEBUG",
+							"serviceChangeFreqText.split(,).length",
+							serviceChangeFreqText.split(",").length
+						);
+
+						var serviceFreqText = "";
+
+						service[service.length] = serviceNSItemText;
+						if (serviceChangeFreqText.split(",").length == 5) {
+							serviceFreq[serviceFreq.length] = "Daily";
+							serviceFreqText = "Daily";
+						} else {
+							serviceFreq[serviceFreq.length] = freqCal(serviceChangeFreqText);
+							serviceFreqText = freqCal(serviceChangeFreqText);
+						}
+						price[price.length] = newServiceChangePrice;
+
+						serviceTable += "<tr>";
+						serviceTable += "<td>" + serviceNSItemText + "</td>";
+						serviceTable += "<td>" + serviceFreqText + "</td>";
+						serviceTable += "<td>$" + newServiceChangePrice + "</td>";
+
+						serviceTable += "</tr>";
+					}
+
+					serviceTable += "</tbody></table>";
+
+					emailHtml = emailHtml.replace(/nlemservicedeatils/gi, serviceTable);
+					emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
+					emailHtml = emailHtml.replace(/nlemshipmateaccess/gi, shipMateAccess);
+					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, salesRepName);
+				}
+
 				//Email Template Name: 202402 - LPO Verify Free Trial Services
 				if (templateId == 418) {
 					var customer_record = nlapiLoadRecord("customer", recId);
@@ -2465,7 +2627,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -2659,7 +2821,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -3086,7 +3248,7 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
@@ -3599,7 +3761,7 @@ function main(request, response) {
 
 					//AGREE TO T&C'S
 					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1691&deploy=1&compid=1048144&ns-at=AAEJ7tMQyfjW_zd73TI9xN0dtYrMz5CVSZiOimJE-xwIQ7z1GxI&custinternalid=' +
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 
