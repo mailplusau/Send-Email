@@ -4215,6 +4215,50 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 					emailHtml = emailHtml.replace(/nlemsalesreptext/gi, salesRepName);
 				}
+
+				//EmailTemplate ID 484: 202502 - Call Force - Email Brush Off
+				//EmailTemplate ID 483: 202502 - Call Force - Email Interested
+				if (templateId == 483 || templateId == 484) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					var recContact = nlapiLoadRecord("contact", contactID);
+
+					var contactEmail = recContact.getFieldValue("email");
+					var contactPhone = recContact.getFieldValue("phone");
+					var firstname = recContact.getFieldValue("firstname");
+
+					var expInterest =
+						'<a class=" " href="https://mailplus.com.au/shipping-portal-orientation/?custinternalid=' +
+						recId +
+						"&custname=" +
+						companyname +
+						"&email=" +
+						contactEmail +
+						"&phone=" +
+						contactPhone +
+						"&firstname=" +
+						firstname +
+						'" >Book a Quick Call Here</a>';
+
+					var employeeFields = ["entityid", "email", "phone"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepnumber/gi,
+						employeeFieldsValues.phone
+					);
+					emailHtml = emailHtml.replace(/nlembookacall/gi, expInterest);
+				}
 			}
 		}
 		response.setHeader("Custom-Header-SubjectLine", subject);
