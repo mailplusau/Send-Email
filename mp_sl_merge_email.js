@@ -4223,14 +4223,22 @@ function main(request, response) {
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
 
-					var recContact = nlapiLoadRecord("contact", contactID);
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
 
-					var contactEmail = recContact.getFieldValue("email");
-					var contactPhone = recContact.getFieldValue("phone");
-					var firstname = recContact.getFieldValue("firstname");
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
 
 					var expInterest =
-						'<a class=" " href="https://mailplus.com.au/shipping-portal-orientation/?custinternalid=' +
+						'<a class=" " href="https://mailplus.com.au/schedule-a-call/?custinternalid=' +
 						recId +
 						"&custname=" +
 						companyname +
