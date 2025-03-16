@@ -25,6 +25,7 @@ function main(request, response) {
 		var trialEndDate = request.getParameter("trialenddate");
 		var billingstartdate = request.getParameter("billingstartdate");
 		var salesRepName = request.getParameter("salesRepName");
+		var onboardingDate = request.getParameter("taskDate");
 		var onboardingTime = request.getParameter("tasktime");
 		var emailHtml = "";
 		var subject = "";
@@ -4250,7 +4251,7 @@ function main(request, response) {
 						firstname +
 						'" >Book a Quick Call Here</a>';
 
-					var employeeFields = ["entityid", "email", "phone"];
+					var employeeFields = ["entityid", "email", "phone", "custentity_8x8_number"];
 					var employeeFieldsValues = nlapiLookupField(
 						"employee",
 						parseInt(userID),
@@ -4266,6 +4267,186 @@ function main(request, response) {
 						employeeFieldsValues.phone
 					);
 					emailHtml = emailHtml.replace(/nlembookacall/gi, expInterest);
+				}
+
+				//487: Call Force - Interested no Appointment Set
+				if (templateId == 487) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var expInterest =
+						'<a class=" " href="https://mailplus.com.au/schedule-a-call/?custinternalid=' +
+						recId +
+						"&custname=" +
+						companyname +
+						"&email=" +
+						contactEmail +
+						"&phone=" +
+						contactPhone +
+						"&firstname=" +
+						firstname +
+						'" >Schedule Call</a>';
+
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepfirstname/gi,
+						employeeFieldsValues.firstname
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+					emailHtml = emailHtml.replace(/nlembookacall/gi, expInterest);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//486: 202503 - Call Force - Intro to MailPlus
+				if (templateId == 486) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemtaskdate/gi,
+						onboardingDate
+					);
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//488: 202503 - Call Force - Brush Off Email 1
+				if (templateId == 488) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					var yesContact =
+						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=yes&salesrep=' +
+						userID +
+						"&custinternalid=" +
+						recId +
+						"&custname=" +
+						companyname +
+						"&email=" +
+						contactEmail +
+						"&phone=" +
+						contactPhone +
+						"&firstname=" +
+						firstname +
+						'" >YES</a>';
+
+					var noContact =
+						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=no&custinternalid=' +
+						recId +
+						"&custname=" +
+						companyname +
+						"&email=" +
+						contactEmail +
+						"&phone=" +
+						contactPhone +
+						"&firstname=" +
+						firstname +
+						'" >NO</a>';
+					emailHtml = emailHtml.replace(/nlemyescontact/gi, yesContact);
+					emailHtml = emailHtml.replace(/nlemnocontact/gi, noContact);
+
+					emailHtml = emailHtml.replace(
+						/nlemtaskdate/gi,
+						onboardingDate
+					);
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 			}
 		}
