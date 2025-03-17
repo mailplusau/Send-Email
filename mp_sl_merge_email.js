@@ -4378,6 +4378,60 @@ function main(request, response) {
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
 
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					var yesContact =
+						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=yes&salesrep=' +
+						userID +
+						"&custinternalid=" +
+						recId +
+						"&custname=" +
+						companyname +
+						'&email=&phone=&firstname=" >YES</a>';
+
+					var noContact =
+						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=no&salesrep=' +
+						userID +
+						"&custinternalid=" +
+						recId +
+						"&custname=" +
+						companyname +
+						'&email=&phone=&firstname=" >NO</a>';
+					emailHtml = emailHtml.replace(/nlemyescontact/gi, yesContact);
+					emailHtml = emailHtml.replace(/nlemnocontact/gi, noContact);
+
+					emailHtml = emailHtml.replace(
+						/nlemtaskdate/gi,
+						onboardingDate
+					);
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+					emailHtml = emailHtml.replace(/nlemcustomername/gi, companyname);
+				}
+
+				//488: 202503 - Call Force - Brush Off Email 2
+				if (templateId == 489) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
 					if (!isNullorEmpty(contactID)) {
 						var recContact = nlapiLoadRecord("contact", contactID);
 
@@ -4406,26 +4460,16 @@ function main(request, response) {
 						recId +
 						"&custname=" +
 						companyname +
-						"&email=" +
-						contactEmail +
-						"&phone=" +
-						contactPhone +
-						"&firstname=" +
-						firstname +
-						'" >YES</a>';
+						'&email=&phone=&firstname=" >Yes, I’d like to know more</a>';
 
 					var noContact =
-						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=no&custinternalid=' +
+						'<a class=" " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1997&deploy=1&compid=1048144&ns-at=AAEJ7tMQzmt7q_nLKp6j_rTuH1ia0SD1pPE8AFL46MpcjmMDSgE&outcome=no&salesrep=' +
+						userID +
+						"&custinternalid=" +
 						recId +
 						"&custname=" +
 						companyname +
-						"&email=" +
-						contactEmail +
-						"&phone=" +
-						contactPhone +
-						"&firstname=" +
-						firstname +
-						'" >NO</a>';
+						'&email=&phone=&firstname="  >No, please remove me</a>';
 					emailHtml = emailHtml.replace(/nlemyescontact/gi, yesContact);
 					emailHtml = emailHtml.replace(/nlemnocontact/gi, noContact);
 
@@ -4447,6 +4491,54 @@ function main(request, response) {
 					);
 
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+					emailHtml = emailHtml.replace(/nlemcustomername/gi, companyname);
+				}
+
+				//488: 202503 - Call Force - Prospect - ShipMate Demo
+				if (templateId == 490) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+
+					//AGREE TO T&C'S
+					var expInterest =
+						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+						recId +
+						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
 				}
 			}
 		}
