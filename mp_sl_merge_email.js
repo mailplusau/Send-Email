@@ -4326,7 +4326,8 @@ function main(request, response) {
 				}
 
 				//486: 202503 - Call Force - Intro to MailPlus
-				if (templateId == 486) {
+				//492: 202503 - Call Force - Intro to MailPlus 2
+				if (templateId == 486 || templateId == 492) {
 					var customer_record = nlapiLoadRecord("customer", recId);
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
@@ -4539,6 +4540,58 @@ function main(request, response) {
 						recId +
 						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
 					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+				}
+
+				//487: 202503 - Call Force - Reminder Email
+				if (templateId == 491) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemtaskdate/gi,
+						onboardingDate
+					);
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepfirstname/gi,
+						employeeFieldsValues.firstname
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.custentity_8x8_number
+					);
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 			}
 		}
