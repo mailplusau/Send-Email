@@ -27,9 +27,12 @@ function main(request, response) {
 		var salesRepName = request.getParameter("salesRepName");
 		var onboardingDate = request.getParameter("taskDate");
 		var onboardingTime = request.getParameter("tasktime");
+		var trackingid = request.getParameter("trackingid");
+		var barcodeRecordID = request.getParameter("barcode");
 		var emailHtml = "";
 		var subject = "";
 
+		nlapiLogExecution("DEBUG", "barcodeRecordID", barcodeRecordID);
 		nlapiLogExecution("DEBUG", "contactID", contactID);
 		nlapiLogExecution("DEBUG", "commdate", commdate);
 
@@ -4592,6 +4595,48 @@ function main(request, response) {
 					);
 
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//494: Customer Service – Not Dispatched
+				if (templateId == 494) {
+					emailHtml = emailHtml.replace(/nlemtrackingid/gi, trackingid);
+				}
+
+				//495: Customer Service – Check Address
+				if (templateId == 495) {
+					var barcodeRecord = nlapiLoadRecord("customrecord_customer_product_stock", barcodeRecordID);
+					var receiverName = barcodeRecord.getFieldValue(
+						"custrecord_receiver_name"
+					);
+					var revieverAddress1 = barcodeRecord.getFieldValue(
+						"custrecord_receiver_addr1"
+					);
+					var revieverAddress2 = barcodeRecord.getFieldValue(
+						"custrecord_receiver_addr2"
+					);
+					var revieverSuburb = barcodeRecord.getFieldValue(
+						"custrecord_receiver_suburb"
+					);
+					var revieverState = barcodeRecord.getFieldValue(
+						"custrecord_receiver_state"
+					);
+					var revieverPostcode = barcodeRecord.getFieldValue(
+						"custrecord_receiver_postcode"
+					);
+
+					if (!isNullorEmpty(revieverAddress2)) {
+						var receiverAddress = revieverAddress2 + " " + revieverAddress1 + " " + revieverSuburb + " " + revieverState + " - " + revieverPostcode;
+					} else {
+						var receiverAddress = revieverAddress1 + " " + revieverSuburb + " " + revieverState + " - " + revieverPostcode;
+					}
+
+
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, addressee);
+					emailHtml = emailHtml.replace(/nlemtrackingid/gi, trackingid);
+					emailHtml = emailHtml.replace(/nlemreceivername/gi, receiverName);
+					emailHtml = emailHtml.replace(/nlemreceiveraddress/gi, receiverAddress);
+
+
 				}
 			}
 		}
