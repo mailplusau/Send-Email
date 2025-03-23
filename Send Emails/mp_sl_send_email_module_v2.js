@@ -826,7 +826,7 @@ function sendEmail(request, response) {
                 email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
                   '</br>';
                 email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
-                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au', 'beatriz.lima@mailplus.com.au'],
                   entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
                   'ankith.ravindran@mailplus.com.au'
                 ], null, records, null, true);
@@ -855,7 +855,7 @@ function sendEmail(request, response) {
                 email_body2 += 'Customer Name: ' + entity_id + ' ' + company_name +
                   '</br>';
                 email_body2 += 'Franchisee: ' + partner_text + '</br></br>';
-                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+                nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au', 'beatriz.lima@mailplus.com.au'],
                   entity_id + ' ' + customer_name + ' - ' + 'Signed Up - Please Check', email_body2, [
                   'ankith.ravindran@mailplus.com.au'
                 ], null, records, null, true);
@@ -1223,7 +1223,7 @@ function sendEmail(request, response) {
         email_body_internal += 'Customer Name: ' + entity_id + ' ' + company_name +
           '</br>';
         email_body_internal += 'Franchisee: ' + partner_text + '</br></br>';
-        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au', 'beatriz.lima@mailplus.com.au'],
           entity_id + ' ' + customer_name + ' - ' + 'Customer Signed Up - Please Check & Finalise', email_body_internal, [
           'ankith.ravindran@mailplus.com.au'
         ], null, records, null, true);
@@ -1469,7 +1469,7 @@ function sendEmail(request, response) {
         email_body_internal += 'Customer Name: ' + entity_id + ' ' + company_name +
           '</br>';
         email_body_internal += 'Franchisee: ' + partner_text + '</br></br>';
-        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au', 'beatriz.lima@mailplus.com.au'],
           entity_id + ' ' + customer_name + ' - ' + 'Customer Signed Up - Please Check & Finalise', email_body_internal, [
           'ankith.ravindran@mailplus.com.au'
         ], null, records, null, true);
@@ -1569,7 +1569,7 @@ function sendEmail(request, response) {
         email_body_internal += 'Franchisee: ' + partner_text + '</br></br>';
         email_body_internal += '<b><u>Trial Details:</u></b></br>Trial Start Date: ' + commencement_date + '</br>';
         email_body_internal += 'Trial End Date: ' + trial_end_date + '</br></br>';
-        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au'],
+        nlapiSendEmail(112209, ['fiona.harrison@mailplus.com.au', 'popie.popie@mailplus.com.au', 'beatriz.lima@mailplus.com.au'],
           entity_id + ' ' + customer_name + ' - ' + 'Customer Free Trial - Please Check & Finalise', email_body_internal, [
           'ankith.ravindran@mailplus.com.au'
         ], null, records, null, true);
