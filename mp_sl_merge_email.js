@@ -4638,6 +4638,36 @@ function main(request, response) {
 
 
 				}
+
+				//498: 202503 - Call Force Existing Customers - Activate ShipMate
+				if (templateId == 498) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var companyname = customer_record.getFieldValue("companyname");
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
+					emailHtml = emailHtml.replace(/nlemcompanyname/gi, companyname);
+					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, employeeFieldsValues.entityid);
+				}
+
+				//499: 202503 - Call Force Existing Customers - Email Interested
+				if (templateId == 499) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var companyname = customer_record.getFieldValue("companyname");
+					var employeeFields = ["entityid", "firstname", "email", "phone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+					emailHtml = emailHtml.replace(/nlemsalesrep8x8number/gi, employeeFieldsValues.custentity_8x8_number);
+					emailHtml = emailHtml.replace(/nlemcompanyname/gi, companyname);
+					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, employeeFieldsValues.entityid);
+				}
 			}
 		}
 		response.setHeader("Custom-Header-SubjectLine", subject);
