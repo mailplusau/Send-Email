@@ -4597,6 +4597,52 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 
+				//487: 202505 - Illicium 1.1 - Reminder Appointment Set
+				if (templateId == 503) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					// emailHtml = emailHtml.replace(
+					// 	/nlemtaskdate/gi,
+					// 	onboardingDate
+					// );
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrep8x8number/gi,
+						employeeFieldsValues.mobilephone
+					);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
 				//494: Customer Service – Not Dispatched
 				if (templateId == 494) {
 					emailHtml = emailHtml.replace(/nlemtrackingid/gi, trackingid);
