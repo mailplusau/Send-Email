@@ -4597,52 +4597,6 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 
-				//487: 202505 - Illicium 1.1 - Reminder Appointment Set
-				if (templateId == 503) {
-					var customer_record = nlapiLoadRecord("customer", recId);
-					var entityid = customer_record.getFieldValue("entityid");
-					var companyname = customer_record.getFieldValue("companyname");
-
-					if (!isNullorEmpty(contactID)) {
-						var recContact = nlapiLoadRecord("contact", contactID);
-
-						var contactEmail = recContact.getFieldValue("email");
-						var contactPhone = recContact.getFieldValue("phone");
-						var firstname = recContact.getFieldValue("firstname");
-					} else {
-						var firstname = "";
-						var contactEmail = customer_record.getFieldValue(
-							"custentity_email_service"
-						);
-						var contactPhone = customer_record.getFieldValue("phone");
-					}
-
-					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
-					var employeeFieldsValues = nlapiLookupField(
-						"employee",
-						parseInt(userID),
-						employeeFields
-					);
-
-					// emailHtml = emailHtml.replace(
-					// 	/nlemtaskdate/gi,
-					// 	onboardingDate
-					// );
-					emailHtml = emailHtml.replace(
-						/nlemtasktime/gi,
-						onboardingTime
-					);
-					emailHtml = emailHtml.replace(
-						/nlemsalesrepname/gi,
-						employeeFieldsValues.entityid
-					);
-					emailHtml = emailHtml.replace(
-						/nlemsalesrep8x8number/gi,
-						employeeFieldsValues.mobilephone
-					);
-					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
-				}
-
 				//494: Customer Service – Not Dispatched
 				if (templateId == 494) {
 					emailHtml = emailHtml.replace(/nlemtrackingid/gi, trackingid);
@@ -4713,6 +4667,178 @@ function main(request, response) {
 					emailHtml = emailHtml.replace(/nlemsalesrep8x8number/gi, employeeFieldsValues.custentity_8x8_number);
 					emailHtml = emailHtml.replace(/nlemcompanyname/gi, companyname);
 					emailHtml = emailHtml.replace(/nlemsalesrepname/gi, employeeFieldsValues.entityid);
+				}
+
+				//503: 202505 - Illicium 1.1 - Reminder Appointment Set
+				if (templateId == 503) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					// emailHtml = emailHtml.replace(
+					// 	/nlemtaskdate/gi,
+					// 	onboardingDate
+					// );
+					emailHtml = emailHtml.replace(
+						/nlemtasktime/gi,
+						onboardingTime
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepmobile/gi,
+						employeeFieldsValues.mobilephone
+					);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//501: 202505 - Illicium T3 - Confirming FU Appointment
+				if (templateId == 501) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepmobile/gi,
+						employeeFieldsValues.mobilephone
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemail/gi,
+						employeeFieldsValues.email
+					);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//502: 202505 - Illicium T1.5 - ShipMate Setup & Your Free Delivery
+				if (templateId == 502) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepmobile/gi,
+						employeeFieldsValues.mobilephone
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemail/gi,
+						employeeFieldsValues.email
+					);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+
+				//504: 202505 - Illicium T4 - Welcome to MailPlus
+				if (templateId == 504) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+					if (!isNullorEmpty(contactID)) {
+						var recContact = nlapiLoadRecord("contact", contactID);
+
+						var contactEmail = recContact.getFieldValue("email");
+						var contactPhone = recContact.getFieldValue("phone");
+						var firstname = recContact.getFieldValue("firstname");
+					} else {
+						var firstname = "";
+						var contactEmail = customer_record.getFieldValue(
+							"custentity_email_service"
+						);
+						var contactPhone = customer_record.getFieldValue("phone");
+					}
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepmobile/gi,
+						employeeFieldsValues.mobilephone
+					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemail/gi,
+						employeeFieldsValues.email
+					);
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 			}
 		}
