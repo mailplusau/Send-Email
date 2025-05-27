@@ -4712,6 +4712,10 @@ function main(request, response) {
 						/nlemsalesrepmobile/gi,
 						employeeFieldsValues.mobilephone
 					);
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepemail/gi,
+						employeeFieldsValues.email
+					);
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
 
