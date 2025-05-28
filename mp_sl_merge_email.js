@@ -4844,6 +4844,33 @@ function main(request, response) {
 					);
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
+
+				//506: 202505 - Illicium T6 - Expired ShipMate Access
+				if (templateId == 506) {
+					var customer_record = nlapiLoadRecord("customer", recId);
+					var entityid = customer_record.getFieldValue("entityid");
+					var companyname = customer_record.getFieldValue("companyname");
+
+
+					var employeeFields = ["entityid", "firstname", "email", "mobilephone", "custentity_8x8_number"];
+					var employeeFieldsValues = nlapiLookupField(
+						"employee",
+						parseInt(userID),
+						employeeFields
+					);
+
+					var customerRecordLink = 'https://1048144.app.netsuite.com/app/common/entity/custjob.nl?id=' + recId + '&whence=';
+					var customerRecordLinkHTML = '<a href="' + customerRecordLink + '" target="_blank">' + companyname + '</a>';
+
+					emailHtml = emailHtml.replace(
+						/nlemsalesrepname/gi,
+						employeeFieldsValues.entityid
+					);
+					emailHtml = emailHtml.replace(
+						/nlemcustomerrecord/gi,
+						customerRecordLinkHTML
+					);
+				}
 			}
 		}
 		response.setHeader("Custom-Header-SubjectLine", subject);
