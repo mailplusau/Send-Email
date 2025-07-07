@@ -4504,6 +4504,11 @@ function main(request, response) {
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
 
+					//Get Premium, Express 7 Standard Surcharges at the Customer Level
+					var premiumSurcharge = customer_record.getFieldValue("custentity_startrack_fuel_surcharge");
+					var expressSurcharge = customer_record.getFieldValue("custentity_mpex_surcharge_rate");
+					var standardSurcharge = customer_record.getFieldValue("custentity_sendle_fuel_surcharge");
+
 					if (!isNullorEmpty(contactID)) {
 						var recContact = nlapiLoadRecord("contact", contactID);
 
@@ -4537,6 +4542,307 @@ function main(request, response) {
 
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 
+
+					//NS Search: Product Pricing - Letters - Quotes
+					var prodPricingLetterstobeSentSearch = nlapiLoadSearch(
+						"customrecord_product_pricing",
+						"customsearch_prod_pricing_letters_quotes"
+					);
+
+					var newFilters = new Array();
+					newFilters[newFilters.length] = new nlobjSearchFilter(
+						"internalid",
+						"custrecord_prod_pricing_customer",
+						"anyof",
+						recId
+					);
+
+					prodPricingLetterstobeSentSearch.addFilters(newFilters);
+
+					var resultSetProdPricingLetters =
+						prodPricingLetterstobeSentSearch.runSearch();
+
+					var mpStd250g = [];
+					var mpStd500g = [];
+					var mpStd1kg = [];
+					var mpStd3kg = [];
+					var mpStd5kg = [];
+					var mpStd10kg = [];
+					var mpStd25kg = [];
+					var mpStd20kg = [];
+
+					var mpExp500g = [];
+					var mpExp1kg = [];
+					var mpExp3kg = [];
+					var mpExp5kg = [];
+
+					var mpPrm1kg = [];
+					var mpPrm3kg = [];
+					var mpPrm5kg = [];
+					var mpPrm10kg = [];
+					var mpPrm20kg = [];
+
+					var oldCustomerId = null;
+					var count = 0;
+					var oldDeliverySpeed = null;
+
+					resultSetProdPricingLetters.forEachResult(function (searchResult) {
+						var prodPricingInternalId = searchResult.getValue("internalid");
+						var custId = searchResult.getValue(
+							"custrecord_prod_pricing_customer"
+						);
+						var deliverySpeed = searchResult.getValue(
+							"custrecord_prod_pricing_delivery_speeds"
+						);
+						var pricePlan250g = searchResult.getValue(
+							"custrecord_prod_pricing_250g"
+						);
+						var price250g = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_250G",
+							null
+						);
+						var pricePlan500g = searchResult.getValue(
+							"custrecord_prod_pricing_500g"
+						);
+						var price500g = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_500G",
+							null
+						);
+						var pricePlan1Kg = searchResult.getValue(
+							"custrecord_prod_pricing_1kg"
+						);
+						var price1Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_1KG",
+							null
+						);
+						var pricePlan3Kg = searchResult.getValue(
+							"custrecord_prod_pricing_3kg"
+						);
+						var price3Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_3KG",
+							null
+						);
+						var pricePlan5Kg = searchResult.getValue(
+							"custrecord_prod_pricing_5kg"
+						);
+						var price5Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_5KG",
+							null
+						);
+						var pricePlan10Kg = searchResult.getValue(
+							"custrecord_prod_pricing_10kg"
+						);
+						var price10Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_10KG",
+							null
+						);
+						var pricePlan20Kg = searchResult.getValue(
+							"custrecord_prod_pricing_20kg"
+						);
+						var price20Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_20KG",
+							null
+						);
+						var pricePlan25Kg = searchResult.getValue(
+							"custrecord_prod_pricing_25kg"
+						);
+						var price25Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_25KG",
+							null
+						);
+
+						nlapiLogExecution("DEBUG", "deliverySpeed", deliverySpeed);
+						nlapiLogExecution("DEBUG", "custId", custId);
+						nlapiLogExecution("DEBUG", "price250g", price250g);
+						nlapiLogExecution("DEBUG", "price500g", price500g);
+						nlapiLogExecution("DEBUG", "price1Kg", price1Kg);
+						nlapiLogExecution("DEBUG", "price3Kg", price3Kg);
+						nlapiLogExecution("DEBUG", "price5Kg", price5Kg);
+						nlapiLogExecution("DEBUG", "price10Kg", price10Kg);
+						nlapiLogExecution("DEBUG", "price20Kg", price20Kg);
+						nlapiLogExecution("DEBUG", "price25Kg", price25Kg);
+
+						if (count == 0) {
+							if (deliverySpeed == 2) {
+								mpExp500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * expressSurcharge) / 100) + (price500g * 1.1)) });
+								mpExp1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * expressSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpExp3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * expressSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpExp5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * expressSurcharge) / 100) + (price5Kg * 1.1)) });
+							} else if (deliverySpeed == 1) {
+								mpStd250g.push({ price250g: price250g, price250gGST: price250g * 1.1, price250gwithGSTSurcharge: ((((price250g * 1.1) * standardSurcharge) / 100) + (price250g * 1.1)) });
+								mpStd500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * standardSurcharge) / 100) + (price500g * 1.1)) });
+								mpStd1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * standardSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpStd3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * standardSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpStd5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * standardSurcharge) / 100) + (price5Kg * 1.1)) });
+								mpStd10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * standardSurcharge) / 100) + (price10Kg * 1.1)) });
+								mpStd20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * standardSurcharge) / 100) + (price20Kg * 1.1)) });
+								mpStd25kg.push({ price25Kg: price25Kg, price25KgGST: price25Kg * 1.1, price25KgwithGSTSurcharge: ((((price25Kg * 1.1) * standardSurcharge) / 100) + (price25Kg * 1.1)) });
+							} else if (deliverySpeed == 4) {
+								mpPrm1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * premiumSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpPrm3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * premiumSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpPrm5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * premiumSurcharge) / 100) + (price5Kg * 1.1)) });
+								mpPrm10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * premiumSurcharge) / 100) + (price10Kg * 1.1)) });
+								mpPrm20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * premiumSurcharge) / 100) + (price20Kg * 1.1)) });
+							}
+						} else if (oldCustomerId == custId) {
+							nlapiLogExecution(
+								"DEBUG",
+								"Same customer: oldCustomerId",
+								oldCustomerId
+							);
+							nlapiLogExecution(
+								"DEBUG",
+								"Same customer: oldDeliverySpeed",
+								oldDeliverySpeed
+							);
+							if (oldDeliverySpeed == deliverySpeed) {
+								nlapiDeleteRecord(
+									"customrecord_product_pricing",
+									prodPricingInternalId
+								);
+								count--;
+							} else {
+								if (deliverySpeed == 2) {
+									mpExp500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * expressSurcharge) / 100) + (price500g * 1.1)) });
+									mpExp1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * expressSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpExp3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * expressSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpExp5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * expressSurcharge) / 100) + (price5Kg * 1.1)) });
+								} else if (deliverySpeed == 1) {
+									mpStd250g.push({ price250g: price250g, price250gGST: price250g * 1.1, price250gwithGSTSurcharge: ((((price250g * 1.1) * standardSurcharge) / 100) + (price250g * 1.1)) });
+									mpStd500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * standardSurcharge) / 100) + (price500g * 1.1)) });
+									mpStd1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * standardSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpStd3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * standardSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpStd5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * standardSurcharge) / 100) + (price5Kg * 1.1)) });
+									mpStd10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * standardSurcharge) / 100) + (price10Kg * 1.1)) });
+									mpStd20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * standardSurcharge) / 100) + (price20Kg * 1.1)) });
+									mpStd25kg.push({ price25Kg: price25Kg, price25KgGST: price25Kg * 1.1, price25KgwithGSTSurcharge: ((((price25Kg * 1.1) * standardSurcharge) / 100) + (price25Kg * 1.1)) });
+								} else if (deliverySpeed == 4) {
+									mpPrm1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * premiumSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpPrm3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * premiumSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpPrm5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * premiumSurcharge) / 100) + (price5Kg * 1.1)) });
+									mpPrm10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * premiumSurcharge) / 100) + (price10Kg * 1.1)) });
+									mpPrm20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * premiumSurcharge) / 100) + (price20Kg * 1.1)) });
+								}
+							}
+						}
+
+						oldCustomerId = custId;
+						oldDeliverySpeed = deliverySpeed;
+						count++;
+						return true;
+					});
+
+					if (count > 0 && !isNullorEmpty(oldCustomerId)) {
+						//EXPRESS
+						if (mpExp5kg.length == 0) {
+							mpExp5kg[0] = 0;
+						}
+						if (mpExp3kg.length == 0) {
+							mpExp3kg[0] = 0;
+						}
+						if (mpExp1kg.length == 0) {
+							mpExp1kg[0] = 0;
+						}
+						if (mpExp500g.length == 0) {
+							mpExp500g[0] = 0;
+						}
+
+						nlapiLogExecution("DEBUG", "Out loop:Exp ", mpExp5kg);
+						nlapiLogExecution("DEBUG", "Out loop:Exp ", mpExp3kg);
+						nlapiLogExecution("DEBUG", "Out loop:Exp ", mpExp1kg);
+						nlapiLogExecution("DEBUG", "Out loop:Exp ", mpExp500g);
+
+						emailHtml = emailHtml.replace(/nlem5kgexp/gi, mpExp5kg[0].mpExp5kg);
+						emailHtml = emailHtml.replace(/nlem3kgexp/gi, mpExp3kg[0].mpExp3kg);
+						emailHtml = emailHtml.replace(/nlem1kgexp/gi, mpExp1kg[0].mpExp1kg);
+						emailHtml = emailHtml.replace(/nlem500gexp/gi, mpExp500g[0].mpExp500g);
+						//STANDARD
+						if (mpStd20kg.length == 0) {
+							mpStd20kg[0].mpStd20kg = 0;
+						}
+						if (mpStd25kg.length == 0) {
+							mpStd25kg[0].mpStd25kg = 0;
+						}
+						if (mpStd10kg.length == 0) {
+							mpStd10kg[0].mpStd10kg = 0;
+						}
+						if (mpStd5kg.length == 0) {
+							mpStd5kg[0].mpStd5kg = 0;
+						}
+						if (mpStd3kg.length == 0) {
+							mpStd3kg[0].mpStd3kg = 0;
+						}
+						if (mpStd1kg.length == 0) {
+							mpStd1kg[0].mpStd1kg = 0;
+						}
+						if (mpStd500g.length == 0) {
+							mpStd500g[0].mpStd500g = 0;
+						}
+						if (mpStd250g.length == 0) {
+							mpStd250g[0].mpStd250g = 0;
+						}
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd20kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd25kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd10kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd5kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd3kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd1kg);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd500g);
+						nlapiLogExecution("DEBUG", "Out loop:Std ", mpStd250g);
+						emailHtml = emailHtml.replace(/nlem20kgstd/gi, mpStd20kg[0].mpStd20kg);
+						emailHtml = emailHtml.replace(/nlem25kgstd/gi, mpStd25kg[0].mpStd25kg);
+						emailHtml = emailHtml.replace(/nlem10kgstd/gi, mpStd10kg[0].mpStd10kg);
+						emailHtml = emailHtml.replace(/nlem5kgstd/gi, mpStd5kg[0].mpStd5kg);
+						emailHtml = emailHtml.replace(/nlem3kgstd/gi, mpStd3kg[0].mpStd3kg);
+						emailHtml = emailHtml.replace(/nlem1kgstd/gi, mpStd1kg[0].mpStd1kg);
+						emailHtml = emailHtml.replace(/nlem500gstd/gi, mpStd500g[0].mpStd500g);
+						emailHtml = emailHtml.replace(/nlem250gstd/gi, mpStd250g[0].mpStd250g);
+						//PREMIUM
+						if (mpPrm1kg.length == 0) {
+							mpPrm1kg[0].mpPrm1kg = 0;
+						}
+						if (mpPrm3kg.length == 0) {
+							mpPrm3kg[0].mpPrm3kg = 0;
+						}
+						if (mpPrm5kg.length == 0) {
+							mpPrm5kg[0].mpPrm5kg = 0;
+						}
+						if (mpPrm10kg.length == 0) {
+							mpPrm10kg[0].mpPrm10kg = 0;
+						}
+						if (mpPrm20kg.length == 0) {
+							mpPrm20kg[0].mpPrm20kg = 0;
+						}
+						nlapiLogExecution("DEBUG", "Out loop:Prm ", JSON.stringify(mpPrm1kg));
+						nlapiLogExecution("DEBUG", "Out loop:Prm ", JSON.stringify(mpPrm3kg));
+						nlapiLogExecution("DEBUG", "Out loop:Prm ", JSON.stringify(mpPrm5kg));
+						nlapiLogExecution("DEBUG", "Out loop:Prm ", JSON.stringify(mpPrm10kg));
+						nlapiLogExecution("DEBUG", "Out loop:Prm ", JSON.stringify(mpPrm20kg));
+
+
+						emailHtml = emailHtml.replace(/nlem1kgprm/gi, parseFloat(mpPrm1kg[0].price1Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgprm/gi, parseFloat(mpPrm3kg[0].price3Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgprm/gi, parseFloat(mpPrm5kg[0].price5Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgprm/gi, parseFloat(mpPrm10kg[0].price10Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem20kgprm/gi, parseFloat(mpPrm20kg[0].price20Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgwithgstwithfuelprm/gi, parseFloat(mpPrm1kg[0].price1KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgwithgstwithfuelprm/gi, parseFloat(mpPrm3kg[0].price3KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgwithgstwithfuelprm/gi, parseFloat(mpPrm5kg[0].price5KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgwithgstwithfuelprm/gi, parseFloat(mpPrm10kg[0].price10KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem20kgwithgstwithfuelprm/gi, parseFloat(mpPrm20kg[0].price20KgwithGSTSurcharge).toFixed(2));
+					}
+
+					//Set Current Month & Year for the product rate table
+					emailHtml = emailHtml.replace(/nlemmonthyear/gi, getCurrentMonthYear());
+					
 					//AGREE TO T&C'S
 					var expInterest =
 						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
@@ -4876,6 +5182,17 @@ function main(request, response) {
 		response.setHeader("Custom-Header-SubjectLine", subject);
 		response.write(emailHtml);
 	}
+}
+
+function getCurrentMonthYear() {
+	var now = new Date();
+	var monthNames = [
+		"January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December"
+	];
+	var month = monthNames[now.getMonth()];
+	var year = now.getFullYear();
+	return month + "-" + year;
 }
 
 function getMergeFields(templateId) {
