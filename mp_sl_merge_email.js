@@ -2945,6 +2945,12 @@ function main(request, response) {
 					var entityid = customer_record.getFieldValue("entityid");
 					var companyname = customer_record.getFieldValue("companyname");
 					var partner_id = customer_record.getFieldValue("partner");
+
+					//Get Premium, Express 7 Standard Surcharges at the Customer Level
+					var premiumSurcharge = customer_record.getFieldValue("custentity_startrack_fuel_surcharge");
+					var expressSurcharge = customer_record.getFieldValue("custentity_mpex_surcharge_rate");
+					var standardSurcharge = customer_record.getFieldValue("custentity_sendle_fuel_surcharge");
+
 					var partner_record = nlapiLoadRecord("partner", partner_id);
 					var mp_str_activated = partner_record.getFieldValue(
 						"custentity_zee_mp_str_activated"
@@ -3123,17 +3129,29 @@ function main(request, response) {
 					var resultSetProdPricingLetters =
 						prodPricingLetterstobeSentSearch.runSearch();
 
+					var mpStd250g = [];
+					var mpStd500g = [];
+					var mpStd1kg = [];
+					var mpStd3kg = [];
+					var mpStd5kg = [];
+					var mpStd10kg = [];
+					var mpStd25kg = [];
+					var mpStd20kg = [];
+
+					var mpExp500g = [];
+					var mpExp1kg = [];
+					var mpExp3kg = [];
+					var mpExp5kg = [];
+
 					var mpPrm1kg = [];
 					var mpPrm3kg = [];
 					var mpPrm5kg = [];
 					var mpPrm10kg = [];
 					var mpPrm20kg = [];
+
 					var oldCustomerId = null;
 					var count = 0;
 					var oldDeliverySpeed = null;
-					/**
-					 *
-					 */
 
 					resultSetProdPricingLetters.forEachResult(function (searchResult) {
 						var prodPricingInternalId = searchResult.getValue("internalid");
@@ -3143,7 +3161,22 @@ function main(request, response) {
 						var deliverySpeed = searchResult.getValue(
 							"custrecord_prod_pricing_delivery_speeds"
 						);
-
+						var pricePlan250g = searchResult.getValue(
+							"custrecord_prod_pricing_250g"
+						);
+						var price250g = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_250G",
+							null
+						);
+						var pricePlan500g = searchResult.getValue(
+							"custrecord_prod_pricing_500g"
+						);
+						var price500g = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_500G",
+							null
+						);
 						var pricePlan1Kg = searchResult.getValue(
 							"custrecord_prod_pricing_1kg"
 						);
@@ -3184,19 +3217,216 @@ function main(request, response) {
 							"CUSTRECORD_PROD_PRICING_20KG",
 							null
 						);
+						var pricePlan25Kg = searchResult.getValue(
+							"custrecord_prod_pricing_25kg"
+						);
+						var price25Kg = searchResult.getValue(
+							"baseprice",
+							"CUSTRECORD_PROD_PRICING_25KG",
+							null
+						);
 
-						//EXPRESS
-						emailHtml = emailHtml.replace(/nlem1kgprm/gi, price1Kg);
-						emailHtml = emailHtml.replace(/nlem3kgprm/gi, price3Kg);
-						emailHtml = emailHtml.replace(/nlem5kgprm/gi, price5Kg);
-						emailHtml = emailHtml.replace(/nlem10kgprm/gi, price10Kg);
-						emailHtml = emailHtml.replace(/nlem20kgprm/gi, price20Kg);
+						nlapiLogExecution("DEBUG", "deliverySpeed", deliverySpeed);
+						nlapiLogExecution("DEBUG", "custId", custId);
+						nlapiLogExecution("DEBUG", "price250g", price250g);
+						nlapiLogExecution("DEBUG", "price500g", price500g);
+						nlapiLogExecution("DEBUG", "price1Kg", price1Kg);
+						nlapiLogExecution("DEBUG", "price3Kg", price3Kg);
+						nlapiLogExecution("DEBUG", "price5Kg", price5Kg);
+						nlapiLogExecution("DEBUG", "price10Kg", price10Kg);
+						nlapiLogExecution("DEBUG", "price20Kg", price20Kg);
+						nlapiLogExecution("DEBUG", "price25Kg", price25Kg);
+
+						if (count == 0) {
+							if (deliverySpeed == 2) {
+								mpExp500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * expressSurcharge) / 100) + (price500g * 1.1)) });
+								mpExp1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * expressSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpExp3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * expressSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpExp5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * expressSurcharge) / 100) + (price5Kg * 1.1)) });
+							} else if (deliverySpeed == 1) {
+								mpStd250g.push({ price250g: price250g, price250gGST: price250g * 1.1, price250gwithGSTSurcharge: ((((price250g * 1.1) * standardSurcharge) / 100) + (price250g * 1.1)) });
+								mpStd500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * standardSurcharge) / 100) + (price500g * 1.1)) });
+								mpStd1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * standardSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpStd3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * standardSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpStd5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * standardSurcharge) / 100) + (price5Kg * 1.1)) });
+								mpStd10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * standardSurcharge) / 100) + (price10Kg * 1.1)) });
+								mpStd20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * standardSurcharge) / 100) + (price20Kg * 1.1)) });
+								mpStd25kg.push({ price25Kg: price25Kg, price25KgGST: price25Kg * 1.1, price25KgwithGSTSurcharge: ((((price25Kg * 1.1) * standardSurcharge) / 100) + (price25Kg * 1.1)) });
+							} else if (deliverySpeed == 4) {
+								mpPrm1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * premiumSurcharge) / 100) + (price1Kg * 1.1)) });
+								mpPrm3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * premiumSurcharge) / 100) + (price3Kg * 1.1)) });
+								mpPrm5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * premiumSurcharge) / 100) + (price5Kg * 1.1)) });
+								mpPrm10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * premiumSurcharge) / 100) + (price10Kg * 1.1)) });
+								mpPrm20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * premiumSurcharge) / 100) + (price20Kg * 1.1)) });
+							}
+						} else if (oldCustomerId == custId) {
+							nlapiLogExecution(
+								"DEBUG",
+								"Same customer: oldCustomerId",
+								oldCustomerId
+							);
+							nlapiLogExecution(
+								"DEBUG",
+								"Same customer: oldDeliverySpeed",
+								oldDeliverySpeed
+							);
+							if (oldDeliverySpeed == deliverySpeed) {
+								nlapiDeleteRecord(
+									"customrecord_product_pricing",
+									prodPricingInternalId
+								);
+								count--;
+							} else {
+								if (deliverySpeed == 2) {
+									mpExp500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * expressSurcharge) / 100) + (price500g * 1.1)) });
+									mpExp1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * expressSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpExp3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * expressSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpExp5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * expressSurcharge) / 100) + (price5Kg * 1.1)) });
+								} else if (deliverySpeed == 1) {
+									mpStd250g.push({ price250g: price250g, price250gGST: price250g * 1.1, price250gwithGSTSurcharge: ((((price250g * 1.1) * standardSurcharge) / 100) + (price250g * 1.1)) });
+									mpStd500g.push({ price500g: price500g, price500gGST: price500g * 1.1, price500gwithGSTSurcharge: ((((price500g * 1.1) * standardSurcharge) / 100) + (price500g * 1.1)) });
+									mpStd1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * standardSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpStd3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * standardSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpStd5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * standardSurcharge) / 100) + (price5Kg * 1.1)) });
+									mpStd10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * standardSurcharge) / 100) + (price10Kg * 1.1)) });
+									mpStd20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * standardSurcharge) / 100) + (price20Kg * 1.1)) });
+									mpStd25kg.push({ price25Kg: price25Kg, price25KgGST: price25Kg * 1.1, price25KgwithGSTSurcharge: ((((price25Kg * 1.1) * standardSurcharge) / 100) + (price25Kg * 1.1)) });
+								} else if (deliverySpeed == 4) {
+									mpPrm1kg.push({ price1Kg: price1Kg, price1KgGST: price1Kg * 1.1, price1KgwithGSTSurcharge: ((((price1Kg * 1.1) * premiumSurcharge) / 100) + (price1Kg * 1.1)) });
+									mpPrm3kg.push({ price3Kg: price3Kg, price3KgGST: price3Kg * 1.1, price3KgwithGSTSurcharge: ((((price3Kg * 1.1) * premiumSurcharge) / 100) + (price3Kg * 1.1)) });
+									mpPrm5kg.push({ price5Kg: price5Kg, price5KgGST: price5Kg * 1.1, price5KgwithGSTSurcharge: ((((price5Kg * 1.1) * premiumSurcharge) / 100) + (price5Kg * 1.1)) });
+									mpPrm10kg.push({ price10Kg: price10Kg, price10KgGST: price10Kg * 1.1, price10KgwithGSTSurcharge: ((((price10Kg * 1.1) * premiumSurcharge) / 100) + (price10Kg * 1.1)) });
+									mpPrm20kg.push({ price20Kg: price20Kg, price20KgGST: price20Kg * 1.1, price20KgwithGSTSurcharge: ((((price20Kg * 1.1) * premiumSurcharge) / 100) + (price20Kg * 1.1)) });
+								}
+							}
+						}
 
 						oldCustomerId = custId;
 						oldDeliverySpeed = deliverySpeed;
 						count++;
 						return true;
 					});
+
+					if (count > 0 && !isNullorEmpty(oldCustomerId)) {
+
+						nlapiLogExecution("DEBUG", "Express", "");
+						nlapiLogExecution("DEBUG", "Out loop:Express Rates ", JSON.stringify(mpExp5kg));
+						nlapiLogExecution("DEBUG", "Out loop:Express Rates ", JSON.stringify(mpExp3kg));
+						nlapiLogExecution("DEBUG", "Out loop:Express Rates ", JSON.stringify(mpExp1kg));
+						nlapiLogExecution("DEBUG", "Out loop:Express Rates ", JSON.stringify(mpExp500g));
+
+						nlapiLogExecution("DEBUG", "Standard", "");
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd20kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd25kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd10kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd5kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd3kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd1kg));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd500g));
+						nlapiLogExecution("DEBUG", "Out loop:Standard Rates ", JSON.stringify(mpStd250g));
+
+						nlapiLogExecution("DEBUG", "Premium", "");
+						nlapiLogExecution("DEBUG", "Out loop:Premium Rates ", JSON.stringify(mpPrm1kg));
+						nlapiLogExecution("DEBUG", "Out loop:Premium Rates ", JSON.stringify(mpPrm3kg));
+						nlapiLogExecution("DEBUG", "Out loop:Premium Rates ", JSON.stringify(mpPrm5kg));
+						nlapiLogExecution("DEBUG", "Out loop:Premium Rates ", JSON.stringify(mpPrm10kg));
+						nlapiLogExecution("DEBUG", "Out loop:Premium Rates ", JSON.stringify(mpPrm20kg));
+
+						//EXPRESS
+						if (mpExp5kg.length == 0) {
+							mpExp5kg.push({ price5Kg: 0, price5KgGST: 0, price5KgwithGSTSurcharge: 0 });
+						}
+						if (mpExp3kg.length == 0) {
+							mpExp3kg.push({ price3Kg: 0, price3KgGST: 0, price3KgwithGSTSurcharge: 0 });
+						}
+						if (mpExp1kg.length == 0) {
+							mpExp1kg.push({ price1Kg: 0, price1KgGST: 0, price1KgwithGSTSurcharge: 0 });
+						}
+						if (mpExp500g.length == 0) {
+							mpExp500g.push({ price500g: 0, price500gGST: 0, price500gwithGSTSurcharge: 0 });
+						}
+
+						emailHtml = emailHtml.replace(/nlem5kgexp/gi, parseFloat(mpExp5kg[0].price5Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgexp/gi, parseFloat(mpExp3kg[0].price3Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgexp/gi, parseFloat(mpExp1kg[0].price1Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem500gexp/gi, parseFloat(mpExp500g[0].price500g).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgwithgstwithfuelexp/gi, parseFloat(mpExp5kg[0].price5KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgwithgstwithfuelexp/gi, parseFloat(mpExp3kg[0].price3KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgwithgstwithfuelexp/gi, parseFloat(mpExp1kg[0].price1KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem500gwithgstwithfuelexp/gi, parseFloat(mpExp500g[0].price500gwithGSTSurcharge).toFixed(2));
+						//STANDARD
+						if (mpStd20kg.length == 0) {
+							mpStd20kg.push({ price20Kg: 0, price20KgGST: 0, price20KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd25kg.length == 0) {
+							mpStd25kg.push({ price25Kg: 0, price25KgGST: 0, price25KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd10kg.length == 0) {
+							mpStd10kg.push({ price10Kg: 0, price10KgGST: 0, price10KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd5kg.length == 0) {
+							mpStd5kg.push({ price5Kg: 0, price5KgGST: 0, price5KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd3kg.length == 0) {
+							mpStd3kg.push({ price3Kg: 0, price3KgGST: 0, price3KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd1kg.length == 0) {
+							mpStd1kg.push({ price1Kg: 0, price1KgGST: 0, price1KgwithGSTSurcharge: 0 });
+						}
+						if (mpStd500g.length == 0) {
+							mpStd500g.push({ price500g: 0, price500gGST: 0, price500gwithGSTSurcharge: 0 });
+						}
+						if (mpStd250g.length == 0) {
+							mpStd250g.push({ price250g: 0, price250gGST: 0, price250gwithGSTSurcharge: 0 });
+						}
+
+						emailHtml = emailHtml.replace(/nlem20kgstd/gi, parseFloat(mpStd20kg[0].price20Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem25kgstd/gi, parseFloat(mpStd25kg[0].price25Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgstd/gi, parseFloat(mpStd10kg[0].price10Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgstd/gi, parseFloat(mpStd5kg[0].price5Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgstd/gi, parseFloat(mpStd3kg[0].price3Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgstd/gi, parseFloat(mpStd1kg[0].price1Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem500gstd/gi, parseFloat(mpStd500g[0].price500g).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem250gstd/gi, parseFloat(mpStd250g[0].price250g).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem20kgwithgstwithfuelstd/gi, parseFloat(mpStd20kg[0].price20KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem25kgwithgstwithfuelstd/gi, parseFloat(mpStd25kg[0].price25KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgwithgstwithfuelstd/gi, parseFloat(mpStd10kg[0].price10KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgwithgstwithfuelstd/gi, parseFloat(mpStd5kg[0].price5KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgwithgstwithfuelstd/gi, parseFloat(mpStd3kg[0].price3KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgwithgstwithfuelstd/gi, parseFloat(mpStd1kg[0].price1KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem500gwithgstwithfuelstd/gi, parseFloat(mpStd500g[0].price500gwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem250gwithgstwithfuelstd/gi, parseFloat(mpStd250g[0].price250gwithGSTSurcharge).toFixed(2));
+						//PREMIUM
+						if (mpPrm1kg.length == 0) {
+							mpPrm1kg.push({ price1Kg: 0, price1KgGST: 0, price1KgwithGSTSurcharge: 0 });
+						}
+						if (mpPrm3kg.length == 0) {
+							mpPrm3kg.push({ price3Kg: 0, price3KgGST: 0, price3KgwithGSTSurcharge: 0 });
+						}
+						if (mpPrm5kg.length == 0) {
+							mpPrm5kg.push({ price5Kg: 0, price5KgGST: 0, price5KgwithGSTSurcharge: 0 });
+						}
+						if (mpPrm10kg.length == 0) {
+							mpPrm10kg.push({ price10Kg: 0, price10KgGST: 0, price10KgwithGSTSurcharge: 0 });
+						}
+						if (mpPrm20kg.length == 0) {
+							mpPrm20kg.push({ price20Kg: 0, price20KgGST: 0, price20KgwithGSTSurcharge: 0 });
+						}
+
+						emailHtml = emailHtml.replace(/nlem1kgprm/gi, parseFloat(mpPrm1kg[0].price1Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgprm/gi, parseFloat(mpPrm3kg[0].price3Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgprm/gi, parseFloat(mpPrm5kg[0].price5Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgprm/gi, parseFloat(mpPrm10kg[0].price10Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem20kgprm/gi, parseFloat(mpPrm20kg[0].price20Kg).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem1kgwithgstwithfuelprm/gi, parseFloat(mpPrm1kg[0].price1KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem3kgwithgstwithfuelprm/gi, parseFloat(mpPrm3kg[0].price3KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem5kgwithgstwithfuelprm/gi, parseFloat(mpPrm5kg[0].price5KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem10kgwithgstwithfuelprm/gi, parseFloat(mpPrm10kg[0].price10KgwithGSTSurcharge).toFixed(2));
+						emailHtml = emailHtml.replace(/nlem20kgwithgstwithfuelprm/gi, parseFloat(mpPrm20kg[0].price20KgwithGSTSurcharge).toFixed(2));
+					}
+
+					//Set Current Month & Year for the product rate table
+					emailHtml = emailHtml.replace(/nlemmonthyear/gi, getCurrentMonthYear());
 
 					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
 					emailHtml = emailHtml.replace(/nlemservicestartdate/gi, commdate);
