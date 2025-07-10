@@ -5566,6 +5566,16 @@ function main(request, response) {
 						customerRecordLinkHTML
 					);
 				}
+
+				if (templateId == 508 || templateId == 509) {
+					var recContact = nlapiLoadRecord("contact", contactID);
+
+					var contactEmail = recContact.getFieldValue("email");
+					var contactPhone = recContact.getFieldValue("phone");
+					var firstname = recContact.getFieldValue("firstname");
+					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+
+				}
 			}
 		}
 		response.setHeader("Custom-Header-SubjectLine", subject);
