@@ -35,6 +35,7 @@ function main(request, response) {
 		nlapiLogExecution("DEBUG", "barcodeRecordID", barcodeRecordID);
 		nlapiLogExecution("DEBUG", "contactID", contactID);
 		nlapiLogExecution("DEBUG", "commdate", commdate);
+		nlapiLogExecution("DEBUG", "commreg", commreg);
 
 		if (!isNullorEmpty(templateId)) {
 			var recCommTemp = nlapiLoadRecord(
@@ -2275,10 +2276,22 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
+
 
 					// emailHtml = emailHtml.replace(/<nlemsalesrepname>/gi, salesRepName);
 					emailHtml = emailHtml.replace(/<nlemagree>/gi, expInterest);
@@ -2297,10 +2310,21 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -2453,10 +2477,23 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Accept</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Accept">Accept</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Accept">Accept</a>';
+					}
+
+
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -2769,10 +2806,23 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
+
+
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -2969,10 +3019,21 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -3456,10 +3517,23 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Accept</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Accept">Accept</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Accept">Accept</a>';
+					}
+
+
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -3620,10 +3694,21 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -4132,11 +4217,23 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 
-					//AGREE TO T&C'S
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
+
+
 
 					nlapiLogExecution("DEBUG", "commreg", commreg);
 
@@ -5232,11 +5329,22 @@ function main(request, response) {
 					//Set Current Month & Year for the product rate table
 					emailHtml = emailHtml.replace(/nlemmonthyear/gi, getCurrentMonthYear());
 
-					//AGREE TO T&C'S
-					var expInterest =
-						'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
-						recId +
-						'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Book a call">Agree</a>';
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+
+					if (isNullorEmpty(dynamicSCFURL)) {
+						var expInterest =
+							'<a class="mcnButton " href="https://1048144.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1959&deploy=1&compid=1048144&ns-at=AAEJ7tMQCuxUJvJ4RvyaI99vrX6kaBIKkbBebvVixmguZdaobdA&custinternalid=' +
+							recId +
+							'"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					} else {
+						var expInterest =
+							'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+					}
+
 					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
 				}
 
