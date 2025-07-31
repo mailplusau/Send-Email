@@ -32,7 +32,9 @@ function main(request, response) {
 		var emailHtml = "";
 		var subject = "";
 
-		nlapiLogExecution("DEBUG", "barcodeRecordID", barcodeRecordID);
+		nlapiLogExecution("DEBUG", "Custom Record templateId", templateId);
+		nlapiLogExecution("DEBUG", "addressee", addressee);
+		nlapiLogExecution("DEBUG", "recId", recId);
 		nlapiLogExecution("DEBUG", "contactID", contactID);
 		nlapiLogExecution("DEBUG", "commdate", commdate);
 		nlapiLogExecution("DEBUG", "commreg", commreg);
@@ -45,6 +47,7 @@ function main(request, response) {
 			templateId = recCommTemp.getFieldValue(
 				"custrecord_camp_comm_email_template"
 			);
+			nlapiLogExecution("DEBUG", "Email templateId", templateId);
 			subject = recCommTemp.getFieldValue("custrecord_camp_comm_subject");
 			var sms = recCommTemp.getFieldValue("custrecord_camp_comm_sms_template");
 
@@ -5682,6 +5685,13 @@ function main(request, response) {
 					var contactPhone = recContact.getFieldValue("phone");
 					var firstname = recContact.getFieldValue("firstname");
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
+				}
+				
+				nlapiLogExecution("DEBUG", "Template ID", templateId);
+				//Email Template Name: 202507 - LPO - EOI Submitted
+				if (templateId == 510 || templateId == '510') {
+					nlapiLogExecution("DEBUG", "Inside Template ID 510", addressee);
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
 
 				}
 			}
