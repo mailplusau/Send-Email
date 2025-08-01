@@ -29,6 +29,7 @@ function main(request, response) {
 		var onboardingTime = request.getParameter("tasktime");
 		var trackingid = request.getParameter("trackingid");
 		var barcodeRecordID = request.getParameter("barcode");
+		var adhocurl = request.getParameter("adhocurl");
 		var emailHtml = "";
 		var subject = "";
 
@@ -5686,12 +5687,47 @@ function main(request, response) {
 					var firstname = recContact.getFieldValue("firstname");
 					emailHtml = emailHtml.replace(/nlemcontactfirstname/gi, firstname);
 				}
-				
-				nlapiLogExecution("DEBUG", "Template ID", templateId);
+
 				//Email Template Name: 202507 - LPO - EOI Submitted
-				if (templateId == 510 || templateId == '510') {
+				if (templateId == 510) {
 					nlapiLogExecution("DEBUG", "Inside Template ID 510", addressee);
 					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
+
+				}
+
+				//Email Template Name: 202507 - LPO - Accept T&C's
+				if (templateId == 511) {
+					nlapiLogExecution("DEBUG", "Inside Template ID 511", addressee);
+					nlapiLogExecution("DEBUG", "Inside Template ID 511", adhocurl);
+
+					var dynamicSCFURL = null;
+					if (!isNullorEmpty(commreg)) {
+						var commRegRecord = nlapiLoadRecord('customrecord_commencement_register', commreg);
+						dynamicSCFURL = commRegRecord.getFieldValue('custrecord_dynamic_scf_url');
+					}
+					var expInterest =
+						'<a class="mcnButton " href="' + dynamicSCFURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">Agree</a>';
+
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
+					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
+
+				}
+
+				//Email Template Name: 202507 - LPO - Accept T&C's
+				if (templateId == 512) {
+					nlapiLogExecution("DEBUG", "Inside Template ID 512", addressee);
+					nlapiLogExecution("DEBUG", "Inside Template ID 512", recId);
+
+					var adhocBookingURL = null;
+					if (!isNullorEmpty(recId)) {
+						var lpoLeadProfileRecord = nlapiLoadRecord('customrecord_lpo_lead_form', recId);
+						adhocBookingURL = lpoLeadProfileRecord.getFieldValue('custrecord_lpo_adhoc_booking_url');
+					}
+					var expInterest =
+						'<a class="mcnButton " href="' + adhocBookingURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">DASHBOARD</a>';
+
+					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
+					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
 
 				}
 			}
