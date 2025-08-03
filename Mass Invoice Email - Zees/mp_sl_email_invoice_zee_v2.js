@@ -125,7 +125,7 @@ function displayForm(request, lRefreshPage) {
     fld.setDisplayType('hidden');
 
     // Add sublist of available invoices based on the filters above.
-    getInvoiceLines(form, strFranchisee, strCustomer, strPostPeriod, strCreateDateFrom, strCreateDateTo, strDueDateFrom, strDueDateTo, strAccount /*, strInvType, strInvMtd*/ );
+    getInvoiceLines(form, strFranchisee, strCustomer, strPostPeriod, strCreateDateFrom, strCreateDateTo, strDueDateFrom, strDueDateTo, strAccount /*, strInvType, strInvMtd*/);
 
     // Add buttons (Submit and Reset)
     form.addSubmitButton('Submit');
@@ -212,7 +212,7 @@ function getInvoiceLines(form, strFranchisee, strCustomer, strPostPeriod, strCre
 
     // Add satchel filter.
     if (!isNullorEmpty(strAccount)) {
-       filters[nPos++] = new nlobjSearchFilter('account', null, 'anyof', strAccount);
+        filters[nPos++] = new nlobjSearchFilter('account', null, 'anyof', strAccount);
     }
 
     // Add invoice distribution method filter.
@@ -221,19 +221,19 @@ function getInvoiceLines(form, strFranchisee, strCustomer, strPostPeriod, strCre
     // }
 
     // Create search with which to populate the Sublist
-	    var columns = new Array();
-	    columns[0] = new nlobjSearchColumn('internalid');
-	    columns[1] = new nlobjSearchColumn('partner');
-	    columns[2] = new nlobjSearchColumn('entity');
-	    columns[3] = new nlobjSearchColumn('number');
-	    columns[4] = new nlobjSearchColumn('formulatext');
-	    columns[5] = new nlobjSearchColumn('status');
-	    columns[6] = new nlobjSearchColumn('location');
-	    columns[7] = new nlobjSearchColumn('postingperiod');
-	    columns[8] = new nlobjSearchColumn('trandate');
-	    columns[9] = new nlobjSearchColumn('duedate');
-	    columns[10] = new nlobjSearchColumn('amount');
-	    columns[11] = new nlobjSearchColumn('custbody_inv_type');
+    var columns = new Array();
+    columns[0] = new nlobjSearchColumn('internalid');
+    columns[1] = new nlobjSearchColumn('partner');
+    columns[2] = new nlobjSearchColumn('entity');
+    columns[3] = new nlobjSearchColumn('number');
+    columns[4] = new nlobjSearchColumn('formulatext');
+    columns[5] = new nlobjSearchColumn('status');
+    columns[6] = new nlobjSearchColumn('location');
+    columns[7] = new nlobjSearchColumn('postingperiod');
+    columns[8] = new nlobjSearchColumn('trandate');
+    columns[9] = new nlobjSearchColumn('duedate');
+    columns[10] = new nlobjSearchColumn('amount');
+    columns[11] = new nlobjSearchColumn('custbody_inv_type');
 
     // Populate the sublist from the search.
     var searchResults = nlapiSearchRecord('transaction', 'customsearch_invoice_mass_email_2', filters, columns);
