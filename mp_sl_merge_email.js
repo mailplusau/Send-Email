@@ -5724,7 +5724,7 @@ function main(request, response) {
 						adhocBookingURL = lpoLeadProfileRecord.getFieldValue('custrecord_lpo_adhoc_booking_url');
 					}
 					var expInterest =
-						'<a class="mcnButton " href="' + adhocBookingURL + '"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">DASHBOARD</a>';
+						'<a class="mcnButton " href="https://1048144.app.netsuite.com/core/media/media.nl?id=7783066&c=1048144&h=k7U_wRwLmi2pisUljem4qJ_88EsSVkoKmQmfo8qwlZG4VKQH&_xt=.html"  style="font-weight: bold;letter-spacing: normal;line-height: 100%;text-align: center;text-decoration: none;color: #FFFFFF;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;display: block;" target="_blank" title="Agree">DASHBOARD</a>';
 
 					emailHtml = emailHtml.replace(/nlemcontactname/gi, addressee);
 					emailHtml = emailHtml.replace(/nlemagreebutton/gi, expInterest);
